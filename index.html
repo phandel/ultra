@@ -3,403 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultramarathon Training Summary | Peter</title>
+    <title>Join Peter for 50 Miles! · September 5, 2026</title>
+    <meta name="description" content="Peter is running 50 miles for his 50th birthday on September 5, 2026. Run a lap, cheer him on, and celebrate at the 6 PM party. RSVP here!">
     <style>
         :root {
-            --bg-color: #0d1117;
-            --text-color: #c9d1d9;
-            --heading-color: #58a6ff;
-            --card-bg: #161b22;
-            --border-color: #30363d;
-            --highlight: #2ea043;
-            --accent: #f0883e;
-            --table-header: #21262d;
-            --table-alt: #1c2128;
+            --ink: #1a1a1a;
+            --muted: #5c5c5c;
+            --accent: #e8590c;
+            --accent-soft: #fff1e8;
+            --border: #ececec;
+            --card-shadow: 0 2px 16px rgba(0,0,0,0.06);
         }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #ffffff;
+            color: var(--ink);
             line-height: 1.6;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
         }
-        h1, h2, h3 {
-            color: var(--heading-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.3em;
-        }
-        h1 { font-size: 2.2em; border-bottom: 2px solid var(--border-color); }
-        h2 { margin-top: 1.5em; font-size: 1.5em; }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1.5rem;
-        }
-        .card h3 {
-            margin-top: 0;
-            border-bottom: none;
-            color: var(--highlight);
-        }
-        .table-wrapper {
-            overflow-x: auto;
-            margin-bottom: 2rem;
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9em;
-        }
-        th, td {
-            padding: 12px 10px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-        }
-        th {
-            background-color: var(--table-header);
-            color: var(--heading-color);
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        tbody tr:nth-child(even) {
-            background-color: var(--table-alt);
-        }
-        .tag {
+        .wrap { max-width: 820px; margin: 0 auto; padding: 0 1.25rem; }
+
+        /* Hero */
+        header { text-align: center; padding: 4rem 1.25rem 1.5rem; }
+        .eyebrow {
             display: inline-block;
-            padding: 0.2em 0.5em;
-            font-size: 0.85em;
-            background-color: rgba(88, 166, 255, 0.1);
-            color: var(--heading-color);
-            border-radius: 4px;
-            border: 1px solid rgba(88, 166, 255, 0.2);
-            margin-right: 0.5em;
-            margin-bottom: 0.5em;
-        }
-        .alert {
-            background-color: rgba(240, 136, 62, 0.1);
-            border-left: 4px solid var(--accent);
-            padding: 1rem;
-            margin: 1.5rem 0;
-        }
-        ul { padding-left: 1.5rem; }
-        li { margin-bottom: 0.5rem; }
-        .highlight-event {
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.8rem;
+            font-weight: 700;
             color: var(--accent);
-            font-weight: bold;
-            display: block;
-            margin-top: 4px;
-            font-size: 0.9em;
+            background: var(--accent-soft);
+            padding: 0.4em 0.9em;
+            border-radius: 999px;
+            margin-bottom: 1.25rem;
         }
-        .total-col {
-            font-weight: bold;
-            color: var(--highlight);
+        h1 {
+            font-size: clamp(2.2rem, 6vw, 3.6rem);
+            line-height: 1.1;
+            margin: 0 0 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        h1 .accent { color: var(--accent); }
+        .tagline { font-size: 1.2rem; color: var(--muted); margin: 0.5rem auto 1.75rem; max-width: 30ch; }
+        .date-badge {
+            display: inline-block;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border: 2px solid var(--ink);
+            border-radius: 12px;
+            padding: 0.6em 1.1em;
+        }
+        .date-badge .day { color: var(--accent); }
+
+        /* Photo */
+        .photo-frame {
+            margin: 2.5rem auto;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        .photo-frame img { display: block; width: 100%; height: auto; }
+
+        /* Info cards */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1rem;
+            margin: 2.5rem 0;
+        }
+        .info-card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.4rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+        }
+        .info-card .emoji { font-size: 2rem; line-height: 1; }
+        .info-card h3 { margin: 0.6rem 0 0.3rem; font-size: 1.1rem; }
+        .info-card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+        /* Story */
+        .story { font-size: 1.1rem; margin: 2.5rem 0; }
+        .story h2 { font-size: 1.6rem; letter-spacing: -0.01em; }
+        .story .highlight { color: var(--accent); font-weight: 600; }
+
+        /* RSVP */
+        .rsvp {
+            background: var(--accent-soft);
+            border-radius: 18px;
+            padding: 2.25rem 1.75rem;
+            margin: 3rem 0;
+        }
+        .rsvp h2 { margin-top: 0; font-size: 1.8rem; text-align: center; }
+        .rsvp .sub { text-align: center; color: var(--muted); margin-top: -0.3rem; margin-bottom: 1.75rem; }
+        form { display: grid; gap: 1.1rem; max-width: 460px; margin: 0 auto; }
+        label { display: block; font-weight: 600; font-size: 0.95rem; }
+        input, select {
+            width: 100%;
+            margin-top: 0.4rem;
+            padding: 0.75em 0.9em;
+            font-size: 1rem;
+            border: 1px solid #d9d0c8;
+            border-radius: 10px;
+            background: #fff;
+            font-family: inherit;
+        }
+        input:focus, select:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+        button {
+            margin-top: 0.5rem;
+            padding: 0.9em 1rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            background: var(--accent);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: filter 0.15s ease;
+        }
+        button:hover { filter: brightness(1.08); }
+
+        footer { text-align: center; color: var(--muted); font-size: 0.9rem; padding: 2rem 1.25rem 3rem; }
+
+        @media (max-width: 480px) {
+            header { padding-top: 2.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <h1>Project 50/50: Ultramarathon Training Protocol</h1>
-    <p><em>Last Updated: May 12, 2026</em></p>
-
-    <div class="grid">
-        <div class="card">
-            <h3>The Objective</h3>
-            <ul>
-                <li><strong>Event:</strong> 50 Miles for 50th Birthday</li>
-                <li><strong>Date:</strong> September 5, 2026</li>
-                <li><strong>Format:</strong> 200 laps of Crescent Drive (0.25-mile neighborhood loops)</li>
-                <li><strong>Target Time:</strong> 12 to 13 hours</li>
-            </ul>
+    <header>
+        <div class="wrap">
+            <span class="eyebrow">You're Invited</span>
+            <h1>50 Miles for my <span class="accent">50th</span></h1>
+            <p class="tagline">Peter is running an all-day ultramarathon &mdash; and you're invited to be part of it.</p>
+            <div class="date-badge">🗓️ <span class="day">Saturday, September 5, 2026</span></div>
         </div>
-        <div class="card">
-            <h3>Athlete Profile</h3>
-            <ul>
-                <li><strong>Name:</strong> Peter</li>
-                <li><strong>Height:</strong> 6'0"</li>
-                <li><strong>Current Weight:</strong> 189 lbs</li>
-                <li><strong>Race Weight Target:</strong> 170 lbs (Dropping the "20lb backpack" via ~500 cal/day deficit)</li>
-            </ul>
+    </header>
+
+    <div class="wrap">
+        <div class="photo-frame">
+            <img src="Triathalon.jpeg" alt="Peter training for the 50-mile ultramarathon">
         </div>
-    </div>
 
-    <h2>The Current Fitness Base: "Engine vs. Chassis"</h2>
-    <div class="alert">
-        <strong>The Dilemma:</strong> A massive cardiovascular engine has been built from months of running 1 hour at 7mph on a 6% incline. Aerobic capacity is far ahead of structural readiness (tendons, joints, ligaments). The core focus is "hardening the chassis" to the pavement safely.
-    </div>
-
-    <h2>Training Regimen & Structure</h2>
-    <ul>
-        <li><span class="tag">Weekday Runs</span> <strong>Treadmill / Indoor Base:</strong> Strictly Zone 2. Mental engagement maintained via iPad (Magic: The Gathering). Low impact to preserve joints.</li>
-        <li><span class="tag">Weekend Long Runs</span> <strong>Outdoor / Pavement:</strong> Shifting to local pavement and trails (Los Gatos Creek Trail, Crescent Drive) to build structural armor. Practicing fueling, hydration, and pacing.</li>
-        <li><span class="tag">Strength & Prehab</span> <strong>Full-body Maintenance:</strong> Max 25lb dumbbells (to avoid heavy spinal compression). Squats, Deadlifts, Bent-over Rows, Overhead Press, Curls (12-15+ reps). Banded side-steps for gluteus medius/IT band health.</li>
-        <li><span class="tag">Therapy</span> <strong>Preventative Chiropractic:</strong> Weekly structural audits focusing on pelvic alignment, hip flexor mobility, and ankle/foot mechanics.</li>
-    </ul>
-
-    <h2>Official Master Training Schedule (Apr - Sept)</h2>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>Week (Starting)</th>
-                    <th>Phase / Focus</th>
-                    <th>Weekday Volume</th>
-                    <th>Weekend Long Run (Sat)</th>
-                    <th>Total Miles</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Apr 6</td>
-                    <td>Base Build</td>
-                    <td>3x 6 miles (Roads)</td>
-                    <td>10 miles</td>
-                    <td class="total-col">28 miles</td>
-                </tr>
-                <tr>
-                    <td>Apr 13</td>
-                    <td>Base Build</td>
-                    <td>3x 6 miles</td>
-                    <td>12 miles</td>
-                    <td class="total-col">30 miles</td>
-                </tr>
-                <tr>
-                    <td>Apr 20</td>
-                    <td>Recovery Week</td>
-                    <td>3x 5 miles</td>
-                    <td>8 miles</td>
-                    <td class="total-col">23 miles</td>
-                </tr>
-                <tr>
-                    <td>Apr 27</td>
-                    <td>Base Build</td>
-                    <td>3x 6 miles</td>
-                    <td>14 miles</td>
-                    <td class="total-col">32 miles</td>
-                </tr>
-                <tr>
-                    <td>May 4</td>
-                    <td>Base Build</td>
-                    <td>3x 7 miles</td>
-                    <td>16 miles</td>
-                    <td class="total-col">37 miles</td>
-                </tr>
-                <tr>
-                    <td>May 11</td>
-                    <td>Recovery Week</td>
-                    <td>3x 6 miles</td>
-                    <td>10 miles</td>
-                    <td class="total-col">28 miles</td>
-                </tr>
-                <tr>
-                    <td>May 18</td>
-                    <td>Volume Push</td>
-                    <td>3x 7 miles</td>
-                    <td>18 miles</td>
-                    <td class="total-col">39 miles</td>
-                </tr>
-                <tr>
-                    <td>May 25</td>
-                    <td>Volume Push</td>
-                    <td>3x 7 miles</td>
-                    <td>20 miles</td>
-                    <td class="total-col">41 miles</td>
-                </tr>
-                <tr>
-                    <td>Jun 1</td>
-                    <td>Peru Trip <span class="highlight-event">Machu Picchu Trekking</span></td>
-                    <td>N/A (Trekking)</td>
-                    <td>10 miles easy run</td>
-                    <td class="total-col">Active Travel</td>
-                </tr>
-                <tr>
-                    <td>Jun 8</td>
-                    <td>Peru Trip <span class="highlight-event">High-altitude walking</span></td>
-                    <td>N/A (Walking)</td>
-                    <td>10 miles easy run</td>
-                    <td class="total-col">Active Travel</td>
-                </tr>
-                <tr>
-                    <td>Jun 15</td>
-                    <td>Peru Trip <span class="highlight-event">Máncora Coast</span></td>
-                    <td>Coastal Runs</td>
-                    <td>12 miles</td>
-                    <td class="total-col">Active Travel</td>
-                </tr>
-                <tr>
-                    <td>Jun 22</td>
-                    <td>Back in San Jose</td>
-                    <td>3x 7 miles</td>
-                    <td>22 miles</td>
-                    <td class="total-col">43 miles</td>
-                </tr>
-                <tr>
-                    <td>Jun 29</td>
-                    <td>Volume Push</td>
-                    <td>3x 8 miles</td>
-                    <td>24 miles</td>
-                    <td class="total-col">48 miles</td>
-                </tr>
-                <tr>
-                    <td>Jul 6</td>
-                    <td>Recovery Week</td>
-                    <td>3x 6 miles</td>
-                    <td>15 miles</td>
-                    <td class="total-col">33 miles</td>
-                </tr>
-                <tr>
-                    <td>Jul 13</td>
-                    <td><span class="highlight-event">New Brighton Camping Week</span></td>
-                    <td>3x 8 miles</td>
-                    <td>26 miles</td>
-                    <td class="total-col">50 miles</td>
-                </tr>
-                <tr>
-                    <td>Jul 20</td>
-                    <td>Peak Build</td>
-                    <td>3x 8 miles</td>
-                    <td>28 miles</td>
-                    <td class="total-col">52 miles</td>
-                </tr>
-                <tr>
-                    <td>Jul 27</td>
-                    <td>Recovery Week</td>
-                    <td>3x 6 miles</td>
-                    <td>12 miles</td>
-                    <td class="total-col">30 miles</td>
-                </tr>
-                <tr>
-                    <td>Aug 3</td>
-                    <td><span class="highlight-event">Peak Long Run</span></td>
-                    <td>3x 8 miles</td>
-                    <td>32 miles</td>
-                    <td class="total-col">56 miles</td>
-                </tr>
-                <tr>
-                    <td>Aug 10</td>
-                    <td>Taper Phase 1</td>
-                    <td>3x 6 miles</td>
-                    <td>20 miles</td>
-                    <td class="total-col">38 miles</td>
-                </tr>
-                <tr>
-                    <td>Aug 17</td>
-                    <td>Taper Phase 2</td>
-                    <td>3x 5 miles</td>
-                    <td>12 miles</td>
-                    <td class="total-col">27 miles</td>
-                </tr>
-                <tr>
-                    <td>Aug 24</td>
-                    <td>Taper Phase 3</td>
-                    <td>3x 3 miles</td>
-                    <td>8 miles</td>
-                    <td class="total-col">17 miles</td>
-                </tr>
-                <tr>
-                    <td>Aug 31</td>
-                    <td><strong>RACE WEEK</strong></td>
-                    <td>2x 2 miles</td>
-                    <td><strong>50 MILES (Sat, Sept 5)</strong></td>
-                    <td class="total-col">54 miles</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <h2>Recent Benchmark Run Data</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Environment</th>
-                <th>Distance</th>
-                <th>Time</th>
-                <th>Pace</th>
-                <th>Avg HR</th>
-                <th>Takeaways</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Mon, May 11</td>
-                <td>Treadmill</td>
-                <td>5.76 mi</td>
-                <td>1:03:48</td>
-                <td>11'05"/mi</td>
-                <td>147 BPM</td>
-                <td>Cadence victory (161 SPM). Cardiac drift into Zone 3. Reminder to force speed down on recovery days.</td>
-            </tr>
-            <tr>
-                <td>Sat, May 9</td>
-                <td>Los Gatos Trail</td>
-                <td>9.92 mi</td>
-                <td>2:01:26</td>
-                <td>12'14"/mi</td>
-                <td>134 BPM</td>
-                <td>290ft elev. 150 SPM. Pacing spike corrected perfectly mid-run. Ran continuously.</td>
-            </tr>
-            <tr>
-                <td>Sun, Apr 26</td>
-                <td>Treadmill</td>
-                <td>7.68 mi</td>
-                <td>1:34:59</td>
-                <td>12'22"/mi</td>
-                <td>136 BPM</td>
-                <td>Back-to-back weekend. Hit the "heavy legs" trap in miles 2-6 (HR spiked to 153).</td>
-            </tr>
-            <tr>
-                <td>Sat, Apr 25</td>
-                <td>Outdoor / Road</td>
-                <td>11.13 mi</td>
-                <td>2:32:37</td>
-                <td>12'46"/mi</td>
-                <td>134 BPM</td>
-                <td>First major pavement volume. Excellent strict Zone 2 adherence. Used driveway aid station.</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="grid">
-        <div class="card">
-            <h3>Biomechanics & Pacing</h3>
-            <ul>
-                <li><strong>Cadence Shift:</strong> Consciously working to increase from 150 SPM to 160+ SPM to eliminate overstriding and braking forces on pavement. Hit 161 SPM successfully on 5/11.</li>
-                <li><strong>Interval Strategy:</strong> Transitioning from continuous running to a strict <strong>4-minute run / 1-minute walk</strong> interval to preserve leg muscles and practice "power hiking" transitions.</li>
-                <li><strong>Heart Rate Zones:</strong> Capable of passing the nasal breathing test into the 140s due to high-incline base. Will execute Joe Friel 30-min time trial to lock in precise LTHR zones.</li>
-            </ul>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="emoji">🌅</div>
+                <h3>Running All Day</h3>
+                <p>50 miles &mdash; 200 laps of Crescent Drive, dawn to dusk.</p>
+            </div>
+            <div class="info-card">
+                <div class="emoji">🏃</div>
+                <h3>Join Me Anytime</h3>
+                <p>Drop by whenever you like &mdash; walk, run, or cheer for a lap.</p>
+            </div>
+            <div class="info-card">
+                <div class="emoji">🎉</div>
+                <h3>Party at 6 PM</h3>
+                <p>Celebrate the finish line together to close out the day.</p>
+            </div>
         </div>
-        <div class="card">
-            <h3>Nutrition Strategy</h3>
-            <ul>
-                <li><strong>Deficit Math:</strong> Targeting 1 lb/week loss. Formula: 2,300 Base Calories + Run Calories - 500 Cal Deficit.</li>
-                <li><strong>Recovery Fueling:</strong> Emphasis on complex carbs (oatmeal for glycogen replenishment) and lean protein (rotisserie chicken breast) post-long run.</li>
-                <li><strong>Intra-Run:</strong> Actively fueling and hydrating (water + calories) during outdoor efforts to prevent thick blood, cramping, and cardiac drift.</li>
-            </ul>
-        </div>
+
+        <section class="story">
+            <h2>Here's the plan</h2>
+            <p>To mark turning 50, I'm running <span class="highlight">50 miles in a single day</span> &mdash; 200 quarter-mile loops around Crescent Drive, from early morning until evening.</p>
+            <p>You don't need to be a runner to join in. Come <span class="highlight">run or walk a lap</span> with me, stop by to cheer, or just show up for the <span class="highlight">party at 6 PM</span>. Every lap is better with company, so join me for any part of the day that works for you.</p>
+            <p>Let me know you're coming below &mdash; it helps me plan, and I'd love to see you there.</p>
+        </section>
+
+        <section class="rsvp" id="rsvp">
+            <h2>RSVP</h2>
+            <p class="sub">Count me in! 🎈</p>
+            <form action="https://formsubmit.co/handel@mac.com" method="POST">
+                <!-- FormSubmit settings -->
+                <input type="hidden" name="_subject" value="New Ultramarathon RSVP!">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+
+                <div>
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="Name" placeholder="Your name" required>
+                </div>
+                <div>
+                    <label for="coming"># Coming</label>
+                    <input type="number" id="coming" name="Number Coming" min="1" value="1" required>
+                </div>
+                <div>
+                    <label for="lap">Run a lap with me?</label>
+                    <select id="lap" name="Run A Lap?">
+                        <option>Yes &mdash; I'm running a lap! 🏃</option>
+                        <option>Maybe / a short one</option>
+                        <option>I'll cheer &amp; come to the party 🎉</option>
+                    </select>
+                </div>
+                <button type="submit">Send RSVP</button>
+            </form>
+        </section>
     </div>
 
-    <h2>Discussion Points for Expert Consultation</h2>
-    <div class="card" style="background-color: #21262d;">
-        <ol>
-            <li>Given the massive treadmill incline base and the schedule above, what is the safest way to aggressively adapt joints to pavement volume without triggering a stress fracture?</li>
-            <li>How do you recommend structuring hydration and fueling for a 50-mile race composed entirely of 0.25-mile loops? (Vest vs. 100% driveway aid station reliance).</li>
-            <li>Do you agree with the 4-min run / 1-min walk interval for a 12-13 hour finish time on flat pavement, or should a different ratio be considered?</li>
-            <li>Looking at the specific travel logic in June (Peru altitude/trekking) and July (New Brighton camping), are there any specific adjustments to make to the schedule to balance training load with trip fatigue?</li>
-            <li>What mental frameworks or hacks do you use to manage the psychological fatigue of loop-based ultra courses?</li>
-        </ol>
-    </div>
+    <footer>
+        <p>See you on September 5th! 🏅</p>
+    </footer>
 
 </body>
 </html>
