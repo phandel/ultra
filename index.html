@@ -127,6 +127,11 @@
             transition: filter 0.15s ease;
         }
         button:hover { filter: brightness(1.08); }
+        button.secondary { background: #fff; color: var(--accent); border: 2px solid var(--accent); }
+        button.secondary:hover { background: var(--accent-soft); filter: none; }
+        .btn-row { display: flex; gap: 0.75rem; }
+        .btn-row button { flex: 1; margin-top: 0; }
+        .req { color: var(--accent); }
 
         footer { text-align: center; color: var(--muted); font-size: 0.9rem; padding: 2rem 1.25rem 3rem; }
 
@@ -250,7 +255,6 @@
             <p>To mark turning 50, I'm running <span class="highlight">50 miles in a single day</span> &mdash; fifty 1-mile loops around my neighborhood, from early morning until evening.</p>
             <p>You don't need to be a runner to join in. Come <span class="highlight">run or walk a lap</span> with me, stop by to cheer, or just show up for the <span class="highlight">Oktoberfest at 6 PM</span>. Every lap is better with company, so join me for any part of the day that works for you.</p>
             <p>Let me know you're coming below &mdash; it helps me plan, and I'd love to see you there.</p>
-            <p>Curious how the prep is going? <a href="training.html">See every workout since April 1 &rarr;</a> &mdash; <strong>363 run/walk miles</strong> and counting.</p>
         </section>
 
         <section class="story" id="route">
@@ -293,7 +297,7 @@
 
         <section class="rsvp" id="rsvp">
             <h2>RSVP</h2>
-            <p class="sub">Count me in! 🎈</p>
+            <p class="sub">Hope you can make it &mdash; let me know below! 🎈</p>
             <form action="https://formsubmit.co/handel@mac.com" method="POST">
                 <!-- FormSubmit settings -->
                 <input type="hidden" name="_subject" value="New Ultramarathon RSVP!">
@@ -301,22 +305,21 @@
                 <input type="hidden" name="_template" value="table">
 
                 <div>
-                    <label for="name">Name</label>
+                    <label for="name">Name <span class="req">*</span></label>
                     <input type="text" id="name" name="Name" placeholder="Your name" required>
                 </div>
                 <div>
-                    <label for="coming"># Coming</label>
+                    <label for="coming"># Coming <span class="req">*</span></label>
                     <input type="number" id="coming" name="Number Coming" min="1" value="1" required>
                 </div>
                 <div>
-                    <label for="lap">Run a lap with me?</label>
-                    <select id="lap" name="Run A Lap?">
-                        <option>Yes &mdash; I'm running a lap! 🏃</option>
-                        <option>Maybe / a short one</option>
-                        <option>I'll cheer &amp; come to the party 🎉</option>
-                    </select>
+                    <label for="jointime">(Optional) What time do you want to walk/run a stretch with me? <span style="font-weight:400;color:var(--muted)">(I'm hoping to finish around 6&nbsp;PM)</span></label>
+                    <input type="text" id="jointime" name="Join Time" placeholder="e.g. around 2 PM &mdash; or 'not sure yet'">
                 </div>
-                <button type="submit">Send RSVP</button>
+                <div class="btn-row">
+                    <button type="submit" name="Attending" value="Yes">Yes, I'll be there! 🎉</button>
+                    <button type="submit" name="Attending" value="No" class="secondary" formnovalidate>Can't make it</button>
+                </div>
             </form>
         </section>
     </div>
