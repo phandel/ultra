@@ -128,6 +128,22 @@
 
         footer { text-align: center; color: var(--muted); font-size: 0.9rem; padding: 2rem 1.25rem 3rem; }
 
+        a { color: var(--accent); font-weight: 600; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Route map */
+        .map-wrap {
+            position: relative;
+            width: 100%;
+            padding-bottom: 66%;
+            height: 0;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            margin: 1.25rem 0 0.75rem;
+        }
+        .map-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
         @media (max-width: 480px) {
             header { padding-top: 2.5rem; }
         }
@@ -153,7 +169,7 @@
             <div class="info-card">
                 <div class="emoji">🌅</div>
                 <h3>Running All Day</h3>
-                <p>50 miles &mdash; 200 laps of Crescent Drive, dawn to dusk.</p>
+                <p>50 miles &mdash; fifty 1-mile loops of the neighborhood, dawn to dusk.</p>
             </div>
             <div class="info-card">
                 <div class="emoji">🏃</div>
@@ -169,9 +185,20 @@
 
         <section class="story">
             <h2>Here's the plan</h2>
-            <p>To mark turning 50, I'm running <span class="highlight">50 miles in a single day</span> &mdash; 200 quarter-mile loops around Crescent Drive, from early morning until evening.</p>
+            <p>To mark turning 50, I'm running <span class="highlight">50 miles in a single day</span> &mdash; fifty 1-mile loops around my neighborhood, from early morning until evening.</p>
             <p>You don't need to be a runner to join in. Come <span class="highlight">run or walk a lap</span> with me, stop by to cheer, or just show up for the <span class="highlight">party at 6 PM</span>. Every lap is better with company, so join me for any part of the day that works for you.</p>
             <p>Let me know you're coming below &mdash; it helps me plan, and I'd love to see you there.</p>
+        </section>
+
+        <section class="story" id="route">
+            <h2>The route</h2>
+            <p>The whole day runs on a simple <strong>1-mile loop</strong> right around the neighborhood &mdash; a 0.75-mile outer loop plus a 0.25-mile inner loop, both passing my driveway at <strong>1136 Crescent Dr</strong>. <span class="highlight">Come find me there anytime</span> &mdash; I roll past about every 15 minutes.</p>
+            <div class="map-wrap">
+                <iframe
+                    src="https://maps.google.com/maps?saddr=1136+Crescent+Dr,+San+Jose,+CA+95125&amp;daddr=1096+Carolyn+Ave,+San+Jose,+CA+95125+to:1061+Lincoln+Ave,+San+Jose,+CA+95125+to:1136+Crescent+Dr,+San+Jose,+CA+95125+to:1163+El+Abra+Way,+San+Jose,+CA+95125+to:1136+Crescent+Dr,+San+Jose,+CA+95125&amp;output=embed"
+                    loading="lazy" allowfullscreen title="Ultramarathon route map"></iframe>
+            </div>
+            <p><a href="https://www.google.com/maps/dir/1136+Crescent+Dr,+San+Jose,+CA+95125,+USA/1096+Carolyn+Ave,+San+Jose,+CA+95125/Rotten+Robbie,+1061+Lincoln+Ave,+San+Jose,+CA+95125/1136+Crescent+Dr,+San+Jose,+CA+95125,+USA/1163+El+Abra+Way,+San+Jose,+CA+95125/1136+Crescent+Dr,+San+Jose,+CA+95125,+USA/" target="_blank" rel="noopener">Open the full route in Google Maps &rarr;</a></p>
         </section>
 
         <section class="rsvp" id="rsvp">
