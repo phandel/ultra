@@ -149,6 +149,52 @@
         @media (max-width: 480px) {
             header { padding-top: 2.5rem; }
         }
+
+        /* Oktoberfest / Bavarian */
+        .okt {
+            margin: 3rem 0;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            background-color: #0a5cc2;
+            background-image:
+                repeating-linear-gradient(45deg, transparent 0 32px, rgba(255,255,255,.9) 32px 64px),
+                repeating-linear-gradient(-45deg, transparent 0 32px, rgba(255,255,255,.55) 32px 64px);
+        }
+        .okt-inner {
+            margin: 18px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 2.25rem 1.5rem 2.5rem;
+            text-align: center;
+        }
+        .okt-eyebrow {
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fff;
+            background: #0a5cc2;
+            padding: 0.4em 0.9em;
+            border-radius: 999px;
+            margin-bottom: 1rem;
+        }
+        .okt-inner h2 { color: #0a5cc2; border: none; font-size: clamp(1.8rem, 5vw, 2.6rem); margin: 0 0 0.3rem; padding: 0; }
+        .okt-when { font-weight: 700; font-size: 1.2rem; color: var(--ink); margin: 0 0 1.1rem; }
+        .okt-lead { font-size: 1.15rem; max-width: 48ch; margin: 0 auto 1.9rem; }
+        .okt-lead strong { color: #0a5cc2; }
+        .food-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+        .food { padding: 0.75rem 0.5rem; }
+        .food .badge {
+            width: 92px; height: 92px; margin: 0 auto 0.7rem;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.8rem; border-radius: 50%;
+            background: #eaf2fc; border: 3px solid #0a5cc2;
+        }
+        .food h3 { margin: 0 0 0.2rem; color: #0a5cc2; border: none; font-size: 1.15rem; padding: 0; }
+        .food p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+        .okt-prost { margin-top: 1.9rem; font-size: 1.25rem; font-weight: 700; color: #0a5cc2; }
     </style>
 </head>
 <body>
@@ -157,7 +203,7 @@
         <div class="wrap">
             <span class="eyebrow">You're Invited</span>
             <h1>50 Miles for my <span class="accent">50th</span></h1>
-            <p class="tagline">Peter is running an all-day ultramarathon &mdash; and you're invited to be part of it.</p>
+            <p class="tagline">Peter is running an all-day ultramarathon &mdash; come run, cheer, and celebrate at the Oktoberfest afterparty. 🍺</p>
             <div class="date-badge">🗓️ <span class="day">Saturday, September 5, 2026</span></div>
             <p class="location">📍 Our Willow Glen neighborhood &mdash; <strong>1136 Crescent Dr, 95125</strong></p>
         </div>
@@ -180,16 +226,16 @@
                 <p>Drop by whenever you like &mdash; walk, run, or cheer for a lap.</p>
             </div>
             <div class="info-card">
-                <div class="emoji">🎉</div>
-                <h3>Party at 6 PM</h3>
-                <p>Celebrate the finish line together to close out the day.</p>
+                <div class="emoji">🍺</div>
+                <h3>Oktoberfest at 6 PM</h3>
+                <p>Bratwurst, pretzels &amp; bier to celebrate the finish. Prost!</p>
             </div>
         </div>
 
         <section class="story">
             <h2>Here's the plan</h2>
             <p>To mark turning 50, I'm running <span class="highlight">50 miles in a single day</span> &mdash; fifty 1-mile loops around my neighborhood, from early morning until evening.</p>
-            <p>You don't need to be a runner to join in. Come <span class="highlight">run or walk a lap</span> with me, stop by to cheer, or just show up for the <span class="highlight">party at 6 PM</span>. Every lap is better with company, so join me for any part of the day that works for you.</p>
+            <p>You don't need to be a runner to join in. Come <span class="highlight">run or walk a lap</span> with me, stop by to cheer, or just show up for the <span class="highlight">Oktoberfest at 6 PM</span>. Every lap is better with company, so join me for any part of the day that works for you.</p>
             <p>Let me know you're coming below &mdash; it helps me plan, and I'd love to see you there.</p>
         </section>
 
@@ -202,6 +248,33 @@
                     loading="lazy" allowfullscreen title="Ultramarathon route map"></iframe>
             </div>
             <p><a href="https://www.google.com/maps/dir/1136+Crescent+Dr,+San+Jose,+CA+95125,+USA/1096+Carolyn+Ave,+San+Jose,+CA+95125/Rotten+Robbie,+1061+Lincoln+Ave,+San+Jose,+CA+95125/1136+Crescent+Dr,+San+Jose,+CA+95125,+USA/1163+El+Abra+Way,+San+Jose,+CA+95125/1136+Crescent+Dr,+San+Jose,+CA+95125,+USA/" target="_blank" rel="noopener">Open the full route in Google Maps &rarr;</a></p>
+        </section>
+
+        <section class="okt" id="oktoberfest">
+            <div class="okt-inner">
+                <span class="okt-eyebrow">🍺 The Afterparty 🍺</span>
+                <h2>Oktoberfest Celebration!</h2>
+                <p class="okt-when">6:00 PM &mdash; right here at 1136 Crescent Dr</p>
+                <p class="okt-lead">Once the 50th mile is done, we're rolling straight into a full-blown <strong>Bavarian Oktoberfest</strong>. Lederhosen optional, appetite mandatory &mdash; come hungry and thirsty!</p>
+                <div class="food-grid">
+                    <div class="food">
+                        <div class="badge">🌭</div>
+                        <h3>Bratwurst</h3>
+                        <p>Sizzling off the grill, all evening long.</p>
+                    </div>
+                    <div class="food">
+                        <div class="badge">🥨</div>
+                        <h3>Pretzels</h3>
+                        <p>Warm, salted, and impossibly big.</p>
+                    </div>
+                    <div class="food">
+                        <div class="badge">🍺</div>
+                        <h3>Bier</h3>
+                        <p>Ice-cold steins to toast the finish.</p>
+                    </div>
+                </div>
+                <p class="okt-prost">Ein Prosit &mdash; come raise a glass! 🍻</p>
+            </div>
         </section>
 
         <section class="rsvp" id="rsvp">
