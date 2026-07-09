@@ -337,7 +337,14 @@
                     <label for="count"># Coming <span class="req">*</span></label>
                     <input type="number" id="count" name="count" min="1" value="1" required>
                 </div>
-                <button type="submit" id="rsvpBtn">RSVP 🎉</button>
+                <div>
+                    <label for="jointime">(Optional) What time do you want to walk/run a stretch with me? <span style="font-weight:400;color:var(--muted)">(I'm hoping to finish around 6&nbsp;PM)</span></label>
+                    <input type="text" id="jointime" name="jointime" placeholder="e.g. around 2 PM - or 'not sure yet'">
+                </div>
+                <div class="btn-row">
+                    <button type="button" id="rsvpYes">Yes, I'll be there! 🎉</button>
+                    <button type="button" id="rsvpNo" class="secondary">Can't make it</button>
+                </div>
             </form>
         </section>
     </div>
@@ -503,9 +510,9 @@
 
     <div id="rsvpModal" class="modal-overlay" role="dialog" aria-modal="true">
         <div class="modal-box">
-            <div class="modal-emoji">🎉</div>
-            <h3>Thanks for your RSVP!</h3>
-            <p>See you on September 5th.</p>
+            <div class="modal-emoji" id="rsvpModalEmoji">🎉</div>
+            <h3 id="rsvpModalTitle">Thanks for your RSVP!</h3>
+            <p id="rsvpModalMsg">See you on September 5th.</p>
             <button type="button" class="modal-close" id="rsvpModalClose">Close</button>
         </div>
     </div>
@@ -513,19 +520,47 @@
     <script>
     (function () {
         var form = document.getElementById('rsvpForm');
-        var btn = document.getElementById('rsvpBtn');
+        var yesBtn = document.getElementById('rsvpYes');
+        var noBtn = document.getElementById('rsvpNo');
         var modal = document.getElementById('rsvpModal');
+        var mEmoji = document.getElementById('rsvpModalEmoji');
+        var mTitle = document.getElementById('rsvpModalTitle');
+        var mMsg = document.getElementById('rsvpModalMsg');
+        var nameEl = document.getElementById('name');
+        var contactEl = document.getElementById('contact');
+        var countEl = document.getElementById('count');
+        var jointimeEl = document.getElementById('jointime');
         var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwOIEtk4k425xgA2NRXw8hGHeqlTVFjGCyrC-XfiqbGy1ZeCO7gfEqb5lBgYdIf8Er2/exec';
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (!form.reportValidity()) return;
+
+        function send(isYes, btn) {
+            if (!nameEl.reportValidity() || !contactEl.reportValidity()) return;
+            if (isYes && !countEl.reportValidity()) return;
+            var params = new URLSearchParams();
+            params.set('name', nameEl.value);
+            params.set('contact', contactEl.value);
+            params.set('count', isYes ? countEl.value : '0');   // "Can't make it" -> count 0
+            params.set('jointime', jointimeEl.value);
             var original = btn.textContent;
-            btn.disabled = true; btn.textContent = 'Sending…';
-            fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form)) })
-                .then(function () { form.reset(); modal.classList.add('show'); })
+            yesBtn.disabled = noBtn.disabled = true; btn.textContent = 'Sending…';
+            fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', body: params })
+                .then(function () {
+                    form.reset();
+                    if (isYes) {
+                        mEmoji.textContent = '🎉';
+                        mTitle.textContent = 'Thanks for your RSVP!';
+                        mMsg.textContent = 'See you on September 5th.';
+                    } else {
+                        mEmoji.textContent = '💛';
+                        mTitle.textContent = 'Thanks for letting me know';
+                        mMsg.textContent = "Sorry you can't make it — you'll be missed!";
+                    }
+                    modal.classList.add('show');
+                })
                 .catch(function () { alert('Sorry, something went wrong sending your RSVP — please try again.'); })
-                .finally(function () { btn.disabled = false; btn.textContent = original; });
-        });
+                .finally(function () { yesBtn.disabled = noBtn.disabled = false; btn.textContent = original; });
+        }
+        yesBtn.addEventListener('click', function () { send(true, yesBtn); });
+        noBtn.addEventListener('click', function () { send(false, noBtn); });
         function closeModal() { modal.classList.remove('show'); }
         document.getElementById('rsvpModalClose').addEventListener('click', closeModal);
         modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
