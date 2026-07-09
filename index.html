@@ -142,6 +142,15 @@
         .btn-row { display: flex; gap: 0.75rem; }
         .btn-row button { flex: 1; margin-top: 0; }
         .req { color: var(--accent); }
+        /* RSVP thank-you modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background: #fff; border-radius: 16px; padding: 2rem 1.75rem; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+        .modal-emoji { font-size: 2.8rem; line-height: 1; }
+        .modal-box h3 { margin: 0.6rem 0 0.3rem; font-size: 1.5rem; color: var(--accent); border: none; }
+        .modal-box p { margin: 0 0 1.4rem; color: var(--muted); }
+        .modal-close { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 0.6em 1.5em; font-weight: 700; font-size: 1rem; cursor: pointer; }
+        .modal-close:hover { filter: brightness(1.08); }
 
         footer { text-align: center; color: var(--muted); font-size: 0.9rem; padding: 2rem 1.25rem 3rem; }
 
@@ -315,28 +324,20 @@
         <section class="rsvp" id="rsvp">
             <h2>RSVP</h2>
             <p class="sub">Hope you can make it - let me know below! 🎈</p>
-            <form action="https://formsubmit.co/handel@mac.com" method="POST">
-                <!-- FormSubmit settings -->
-                <input type="hidden" name="_subject" value="New Ultramarathon RSVP!">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_template" value="table">
-
+            <form id="rsvpForm">
                 <div>
                     <label for="name">Name <span class="req">*</span></label>
-                    <input type="text" id="name" name="Name" placeholder="Your name" required>
+                    <input type="text" id="name" name="name" placeholder="Your name" required>
                 </div>
                 <div>
-                    <label for="coming"># Coming <span class="req">*</span></label>
-                    <input type="number" id="coming" name="Number Coming" min="1" value="1" required>
+                    <label for="contact">Email or phone <span class="req">*</span></label>
+                    <input type="text" id="contact" name="contact" placeholder="So I can reach you" required>
                 </div>
                 <div>
-                    <label for="jointime">(Optional) What time do you want to walk/run a stretch with me? <span style="font-weight:400;color:var(--muted)">(I'm hoping to finish around 6&nbsp;PM)</span></label>
-                    <input type="text" id="jointime" name="Join Time" placeholder="e.g. around 2 PM - or 'not sure yet'">
+                    <label for="count"># Coming <span class="req">*</span></label>
+                    <input type="number" id="count" name="count" min="1" value="1" required>
                 </div>
-                <div class="btn-row">
-                    <button type="submit" name="Attending" value="Yes">Yes, I'll be there! 🎉</button>
-                    <button type="submit" name="Attending" value="No" class="secondary" formnovalidate>Can't make it</button>
-                </div>
+                <button type="submit" id="rsvpBtn">RSVP 🎉</button>
             </form>
         </section>
     </div>
@@ -500,5 +501,35 @@
         <p>See you on September 5th! 🏅</p>
     </footer>
 
+    <div id="rsvpModal" class="modal-overlay" role="dialog" aria-modal="true">
+        <div class="modal-box">
+            <div class="modal-emoji">🎉</div>
+            <h3>Thanks for your RSVP!</h3>
+            <p>See you on September 5th.</p>
+            <button type="button" class="modal-close" id="rsvpModalClose">Close</button>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        var form = document.getElementById('rsvpForm');
+        var btn = document.getElementById('rsvpBtn');
+        var modal = document.getElementById('rsvpModal');
+        var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwOIEtk4k425xgA2NRXw8hGHeqlTVFjGCyrC-XfiqbGy1ZeCO7gfEqb5lBgYdIf8Er2/exec';
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!form.reportValidity()) return;
+            var original = btn.textContent;
+            btn.disabled = true; btn.textContent = 'Sending…';
+            fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(new FormData(form)) })
+                .then(function () { form.reset(); modal.classList.add('show'); })
+                .catch(function () { alert('Sorry, something went wrong sending your RSVP — please try again.'); })
+                .finally(function () { btn.disabled = false; btn.textContent = original; });
+        });
+        function closeModal() { modal.classList.remove('show'); }
+        document.getElementById('rsvpModalClose').addEventListener('click', closeModal);
+        modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+    })();
+    </script>
 </body>
 </html>
