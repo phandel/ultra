@@ -48,17 +48,39 @@
         }
         h1 .accent { color: var(--accent); }
         .tagline { font-size: 1.2rem; color: var(--muted); margin: 0.5rem auto 1.75rem; max-width: 30ch; }
+        .date-row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; justify-content: center; }
         .date-badge {
             display: inline-block;
             font-size: 1.05rem;
             font-weight: 600;
+            color: var(--ink);
+            text-decoration: none;
             border: 2px solid var(--ink);
             border-radius: 12px;
             padding: 0.6em 1.1em;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
         }
+        .date-badge:hover { background: var(--ink); color: #fff; text-decoration: none; }
+        .date-badge:hover .day { color: #fff; }
         .date-badge .day { color: var(--accent); }
+        .cal-btn {
+            display: inline-block;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            background: var(--accent);
+            border-radius: 12px;
+            padding: 0.6em 1em;
+            text-decoration: none;
+            cursor: pointer;
+            transition: filter 0.15s ease;
+        }
+        .cal-btn:hover { filter: brightness(1.08); text-decoration: none; }
         .location { font-size: 1.1rem; margin: 1rem auto 0; }
         .location strong { color: var(--accent); }
+        .maplink { text-decoration: none; }
+        .maplink:hover strong { text-decoration: underline; }
 
         /* Photo */
         .photo-frame {
@@ -226,8 +248,11 @@
             <span class="eyebrow">You're Invited</span>
             <h1>50 Miles for my <span class="accent">50th</span></h1>
             <p class="tagline">Hey everyone!  I'm running an all-day ultramarathon - come run, cheer, and celebrate at the Oktoberfest afterparty🍺</p>
-            <div class="date-badge">🗓️ <span class="day">Saturday, September 5, 2026</span></div>
-            <p class="location">📍 Our Willow Glen neighborhood - <strong>1136 Crescent Dr, 95125</strong></p>
+            <div class="date-row">
+                <a class="date-badge" href="ultra50.ics" download title="Add to calendar">🗓️ <span class="day">Saturday, September 5, 2026</span></a>
+                <a class="cal-btn" href="ultra50.ics" download>📅 Add to calendar</a>
+            </div>
+            <p class="location">📍 Our Willow Glen neighborhood - <a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=1136+Crescent+Dr%2C+San+Jose%2C+CA+95125" target="_blank" rel="noopener"><strong>1136 Crescent Dr, 95125</strong></a></p>
         </div>
     </header>
 

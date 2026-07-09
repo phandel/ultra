@@ -1,0 +1,24 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//phandel.com//Ultra 50//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:ultra50-20260905@phandel.com
+DTSTAMP:20260705T000000Z
+DTSTART;VALUE=DATE:20260905
+DTEND;VALUE=DATE:20260906
+SUMMARY:Peter's 50-Mile Ultramarathon 🏃 + Oktoberfest 🍺
+LOCATION:1136 Crescent Dr\, San Jose\, CA 95125
+DESCRIPTION:Peter runs 50 miles for his 50th birthday — fifty 1-mile lo
+ ops around the neighborhood (1136 Crescent Dr). Come run or walk a lap a
+ nytime\, then celebrate at the Oktoberfest afterparty at 6 PM — bratwu
+ rst\, pretzels & bier! Details & RSVP: https://phandel.com
+URL:https://phandel.com/
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Peter's ultramarathon is tomorrow!
+END:VALARM
+END:VEVENT
+END:VCALENDAR
