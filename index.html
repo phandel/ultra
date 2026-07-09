@@ -64,23 +64,11 @@
         .date-badge:hover { background: var(--ink); color: #fff; text-decoration: none; }
         .date-badge:hover .day { color: #fff; }
         .date-badge .day { color: var(--accent); }
-        .cal-btn {
-            display: inline-block;
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #fff;
-            background: var(--accent);
-            border-radius: 12px;
-            padding: 0.6em 1em;
-            text-decoration: none;
-            cursor: pointer;
-            transition: filter 0.15s ease;
-        }
-        .cal-btn:hover { filter: brightness(1.08); text-decoration: none; }
+        .cal-hint { font-size: 0.8rem; color: var(--muted); margin: 0.5rem 0 0; }
         .location { font-size: 1.1rem; margin: 1rem auto 0; }
         .location strong { color: var(--accent); }
         .maplink { text-decoration: none; }
-        .maplink:hover strong { text-decoration: underline; }
+        .maplink:hover { text-decoration: underline; }
 
         /* Photo */
         .photo-frame {
@@ -247,12 +235,12 @@
         <div class="wrap">
             <span class="eyebrow">You're Invited</span>
             <h1>50 Miles for my <span class="accent">50th</span></h1>
-            <p class="tagline">Hey everyone!  I'm running an all-day ultramarathon - come run, cheer, and celebrate at the Oktoberfest afterparty🍺</p>
+            <p class="tagline">Hey everyone!  I'm running an all-day ultramarathon - come run, cheer, and celebrate at the Oktoberfest afterparty</p>
             <div class="date-row">
                 <a class="date-badge" href="ultra50.ics" download title="Add to calendar">🗓️ <span class="day">Saturday, September 5, 2026</span></a>
-                <a class="cal-btn" href="ultra50.ics" download>📅 Add to calendar</a>
             </div>
-            <p class="location">📍 Our Willow Glen neighborhood - <a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=1136+Crescent+Dr%2C+San+Jose%2C+CA+95125" target="_blank" rel="noopener"><strong>1136 Crescent Dr, 95125</strong></a></p>
+            <p class="cal-hint">📅 tap the date to add it to your calendar</p>
+            <p class="location"><a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=1136+Crescent+Dr%2C+San+Jose%2C+CA+95125" target="_blank" rel="noopener">📍 Our Willow Glen neighborhood - <strong>1136 Crescent Dr, 95125</strong></a></p>
         </div>
     </header>
 
@@ -288,7 +276,7 @@
 
         <section class="story" id="route">
             <h2>The route</h2>
-            <p>The whole day runs on a simple <strong>1-mile loop</strong> right around the neighborhood - a 0.75-mile outer loop plus a 0.25-mile inner loop, both passing my driveway at <strong>1136 Crescent Dr</strong>. <span class="highlight">Come find me there anytime</span> - I roll past about every 15 minutes.</p>
+            <p>The whole day runs on a simple <strong>1-mile loop</strong> right around the neighborhood - a 0.75-mile outer loop plus a 0.25-mile inner loop, both passing my driveway at <a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=1136+Crescent+Dr%2C+San+Jose%2C+CA+95125" target="_blank" rel="noopener"><strong>1136 Crescent Dr</strong></a>. <span class="highlight">Come find me there anytime</span> - I roll past about every 15 minutes.</p>
             <div class="map-wrap">
                 <iframe
                     src="https://maps.google.com/maps?saddr=1136+Crescent+Dr,+San+Jose,+CA+95125&amp;daddr=1096+Carolyn+Ave,+San+Jose,+CA+95125+to:1061+Lincoln+Ave,+San+Jose,+CA+95125+to:1136+Crescent+Dr,+San+Jose,+CA+95125+to:1163+El+Abra+Way,+San+Jose,+CA+95125+to:1136+Crescent+Dr,+San+Jose,+CA+95125&amp;dirflg=w&amp;t=k&amp;output=embed"
@@ -301,7 +289,7 @@
             <div class="okt-inner">
                 <span class="okt-eyebrow">🍺 The Afterparty 🍺</span>
                 <h2>Oktoberfest Celebration!</h2>
-                <p class="okt-when">6:00 PM - right here at 1136 Crescent Dr</p>
+                <p class="okt-when">6:00 PM - right here at <a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=1136+Crescent+Dr%2C+San+Jose%2C+CA+95125" target="_blank" rel="noopener">1136 Crescent Dr</a></p>
                 <p class="okt-lead">Once the 50th mile is done, we're rolling straight into a full-blown <strong>Bavarian Oktoberfest</strong>. Lederhosen optional, appetite mandatory - come hungry and thirsty!</p>
                 <div class="food-grid">
                     <div class="food">
