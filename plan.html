@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Training Plan · 50 Miles · Sept 5</title>
+<style>
+:root{--ink:#1a1a1a;--muted:#5c5c5c;--accent:#e8590c;--accent-soft:#fff1e8;--border:#ececec;--shadow:0 2px 16px rgba(0,0,0,.06);--green:#2f9e44;--blue:#1971c2}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.6;margin:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:940px;margin:0 auto;padding:0 1.25rem}
+header{text-align:center;padding:3.5rem 1.25rem 1rem}
+.eyebrow{display:inline-block;text-transform:uppercase;letter-spacing:.15em;font-size:.75rem;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:.4em .9em;border-radius:999px;margin-bottom:1rem}
+h1{font-size:clamp(2rem,5.5vw,3.1rem);line-height:1.1;margin:0 0 .4rem;letter-spacing:-.02em}
+h1 .accent{color:var(--accent)}
+.sub{color:var(--muted);font-size:1.05rem;margin:.3rem 0 0}
+.countdown{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin:1.6rem 0 .5rem}
+.cd{border:1px solid var(--border);border-radius:14px;padding:.8rem 1.2rem;box-shadow:var(--shadow);min-width:104px}
+.cd b{display:block;font-size:1.5rem;color:var(--accent);line-height:1.1}
+.cd span{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+nav.toc{position:sticky;top:0;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--border);z-index:50;padding:.6rem 0;margin-bottom:1.5rem}
+nav.toc .wrap{display:flex;gap:.4rem;overflow-x:auto;justify-content:center}
+nav.toc a{font-size:.82rem;font-weight:600;color:var(--muted);text-decoration:none;padding:.35em .7em;border-radius:8px;white-space:nowrap}
+nav.toc a:hover{background:var(--accent-soft);color:var(--accent)}
+h2{font-size:1.55rem;letter-spacing:-.01em;margin:2.6rem 0 .4rem;scroll-margin-top:60px}
+h2 .n{color:var(--accent)}
+.lede{color:var(--muted);margin:.2rem 0 1.1rem}
+.week{border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);margin:0 0 1.1rem;overflow:hidden}
+.week>.wk-h{padding:1.1rem 1.3rem;background:linear-gradient(180deg,#fff,#fcfcfc);border-bottom:1px solid var(--border)}
+.wk-h h3{margin:0;font-size:1.15rem} .wk-h .dates{color:var(--muted);font-size:.9rem}
+.wk-h p{margin:.5rem 0 0;font-size:.95rem;color:var(--muted)}
+.day{display:flex;align-items:center;gap:.8rem;padding:.7rem 1.3rem;font-size:.94rem;border-bottom:1px solid #f5f5f5}
+details.day{display:block!important;border-bottom:1px solid #f5f5f5;padding:0;margin:0;padding-inline-start:0}
+.dayrow{display:flex;align-items:center;gap:.8rem;padding:.7rem 1.3rem;font-size:.94rem;width:100%;box-sizing:border-box}
+details.day>summary>.dayrow{padding-left:1.3rem}
+details.day>summary{display:block;padding:0;margin:0;cursor:pointer;list-style:none}
+details.day>summary::marker{content:none}
+details.day>summary::-webkit-details-marker{display:none}
+.run{font-weight:700;color:var(--accent);white-space:nowrap;font-size:.9rem;margin-left:auto;text-align:right;flex-shrink:0}
+.chev{width:16px;text-align:center;flex-shrink:0;color:var(--muted);font-size:.85rem;transition:transform .15s}
+.chev.none{visibility:hidden}
+details.day[open]>summary .dayrow{background:var(--accent-soft)}
+details.day>summary:hover .dayrow{background:#fafafa}
+.dh{display:flex;align-items:center;gap:.6rem;flex:1;min-width:0}
+.dd{font-weight:700;min-width:74px;font-size:.86rem}
+.dl{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+details.day[open] .chev{transform:rotate(180deg)}
+.p{font-size:.66rem;font-weight:800;width:19px;height:19px;line-height:19px;text-align:center;border-radius:5px;flex-shrink:0}
+.p.n{background:#eef1f4;color:#556} .p.f{background:#ffe8d6;color:#c2410c}
+.p.r{background:#e6f4ea;color:#1e7e34} .p.c{background:#e7f0ff;color:#1656a8}
+.rd{padding:1.1rem 1.3rem 1.4rem;background:#fcfcfd;border-bottom:1px solid #f0f0f0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.6rem;margin-bottom:.9rem}
+.stats div{background:#fff;border:1px solid var(--border);border-radius:11px;padding:.6rem .7rem;text-align:center}
+.stats b{display:block;font-size:1.02rem;color:var(--accent)}
+.stats span{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.purpose{margin:.2rem 0 .8rem;font-size:.95rem}
+.tip{background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 9px 9px 0;padding:.65rem .85rem;font-size:.89rem;margin:.7rem 0}
+h5{margin:1.1rem 0 .5rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.tw{overflow-x:auto;border:1px solid var(--border);border-radius:11px;background:#fff}
+table.fuel{border-collapse:collapse;width:100%;font-size:.84rem;min-width:520px}
+table.fuel th{text-align:left;padding:.5rem .7rem;background:#fafafa;border-bottom:1px solid var(--border);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);position:sticky;top:0}
+table.fuel td{padding:.45rem .7rem;border-bottom:1px solid #f5f5f5;vertical-align:top}
+table.fuel tr:last-child td{border-bottom:none}
+table.fuel td.t{font-weight:700;color:var(--accent);white-space:nowrap}
+table.fuel .dim{color:var(--muted);font-size:.82em}
+table.fuel .drink{color:var(--blue);font-weight:600;white-space:nowrap}
+table.fuel tr.hl{background:#fffbea}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+.card{border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.2rem;box-shadow:var(--shadow)}
+.card h4{margin:0 0 .6rem;font-size:1rem}
+ul.chk{list-style:none;padding:0;margin:0}
+ul.chk li{padding:.4rem 0 .4rem 1.7rem;position:relative;border-bottom:1px solid #f7f7f7;font-size:.9rem}
+ul.chk li:last-child{border-bottom:none}
+ul.chk li::before{content:"☐";position:absolute;left:0;color:var(--accent);font-size:1.05rem;line-height:1.4}
+ul.chk .q{font-weight:700;color:var(--accent);font-size:.85rem}
+ul.chk .why{display:block;color:var(--muted);font-size:.8rem;margin-top:.1rem}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;background:#fafafa;border-radius:12px;padding:.8rem 1rem;font-size:.85rem;margin:.8rem 0 1.6rem;align-items:center}
+.legend span.k{display:inline-flex;align-items:center;gap:.4rem}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem}
+.metric{border:1px solid var(--border);border-radius:12px;padding:.8rem;text-align:center}
+.metric b{display:block;font-size:1.3rem;color:var(--accent)}
+.metric .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.metric .goal{font-size:.76rem;color:var(--green);font-weight:600;margin-top:.2rem}
+.rule{border-left:3px solid var(--accent);padding:.2rem 0 .2rem .9rem;margin:.9rem 0}
+.rule .rt{display:block;font-weight:700;margin-bottom:.15rem}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:2.5rem 1.25rem 3.5rem;border-top:1px solid var(--border);margin-top:3rem}
+code{background:#f4f4f5;padding:.1em .4em;border-radius:5px;font-size:.88em}
+@media print{nav.toc{display:none} details.day{page-break-inside:avoid} details.day>div{display:block!important} .week{page-break-inside:avoid}}
+@media(max-width:560px){.dd{min-width:62px;font-size:.8rem} .dl{font-size:.85rem} header{padding-top:2.2rem}}
+</style></head><body>
+
+<header>
+  <span class="eyebrow">Private training plan · not linked publicly</span>
+  <h1>50 Miles · <span class="accent">Sept 5</span></h1>
+  <p class="sub">Peter Handel · 1136 Crescent Dr · fifty 1-mile neighborhood loops</p>
+  <div class="countdown">
+    <div class="cd"><b id="days">—</b><span>days to go</span></div>
+    <div class="cd"><b>50</b><span>miles</span></div>
+    <div class="cd"><b>4:30 am</b><span>start</span></div>
+    <div class="cd"><b>5–6 pm</b><span>target finish</span></div>
+  </div>
+</header>
+
+<nav class="toc"><div class="wrap">
+  <a href="#overview">Overview</a><a href="#w1">Wk 1</a><a href="#w2">Wk 2</a><a href="#w3">Wk 3</a>
+  <a href="#w4">Wk 4</a><a href="#w5">Wk 5</a><a href="#race">Race Week</a><a href="#raceday">Race Day</a>
+  <a href="#shopping">Shopping</a><a href="#gear">Gear</a><a href="#rules">Rules</a>
+</div></nav>
+
+<div class="wrap">
+
+<h2 id="overview">Where you stand <span class="n">·</span> the data</h2>
+<p class="lede">Everything below is built from your actual training data, not generic tables.</p>
+<div class="metrics">
+  <div class="metric"><b>40.1</b><div class="lbl">longest run (mi)</div><div class="goal">Jul 25 ✓</div></div>
+  <div class="metric"><b>122</b><div class="lbl">avg HR that run</div><div class="goal">−14 vs. the 30-miler</div></div>
+  <div class="metric"><b>+6.3%</b><div class="lbl">decoupling</div><div class="goal">target &lt; 8%</div></div>
+  <div class="metric"><b>96%</b><div class="lbl">time in Z1–Z2</div><div class="goal">excellent</div></div>
+  <div class="metric"><b>157</b><div class="lbl">cadence (spm)</div><div class="goal">→ nudge to 165</div></div>
+  <div class="metric"><b>274</b><div class="lbl">ground contact (ms)</div><div class="goal">→ under 250</div></div>
+  <div class="metric"><b>10.4%</b><div class="lbl">vertical ratio</div><div class="goal">→ under 8%</div></div>
+  <div class="metric"><b>−0.8%</b><div class="lbl">weight change</div><div class="goal">hydration dialed ✓</div></div>
+</div>
+<div class="rule" style="margin-top:1.2rem"><span class="rt">The one-line summary</span>
+Cardiovascularly you are already ready for 50 miles. Your limiter is <b>mechanical durability</b>, not fitness —
+your heart rate stayed flat for 10.4 hours while your power dropped 11%. The remaining gains come from
+<b>cadence, calories, and cooling</b> — not from more hard miles.</div>
+
+<h2>The 5½ weeks at a glance</h2>
+<div class="legend">
+  <span class="k"><span class="p n" title="Normal balanced meals">N</span> normal meals</span><span class="k"><span class="p f" title="Full race-fueling rehearsal">F</span> full fuel rehearsal</span>
+  <span class="k"><span class="p r" title="Recovery-focused meal">R</span> recovery meal</span><span class="k"><span class="p c" title="Carb-forward">C</span> carb-forward</span>
+  <span class="k" style="color:var(--muted)">▾ tap any run for full detail</span>
+</div>
+<div class="week" id="w1"><div class="wk-h"><h3>Week 1 — Recovery + Yosemite</h3><div class="dates">Jul 27 – Aug 2</div><p>You ran 40 miles on 7/25. This week is <b>absorption, not building</b> — the Nevada Fall hike is the week's hard effort.</p></div><div class="day"><div class="dh"><span class="dd">Mon 7/27</span><span class="dl">Rest / easy walk</span><span class="p r" title="Recovery-focused meal">R</span></div><span class="run">—</span><span class="chev none">▾</span></div><div class="day"><div class="dh"><span class="dd">Tue 7/28</span><span class="dl">Rest / easy walk</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">—</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Wed 7/29</span><span class="dl">Easy shakeout</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">3 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>3 mi</b><span>distance</span></div>
+        <div><b>~40 min</b><span>est. time</span></div>
+        <div><b>14:00–15:00/mi</b><span>target pace</span></div>
+        <div><b>≤ 135 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Only run this if the creakiness is gone and it feels like normal soreness. Skipping it costs you nothing this week.</p><p class='tip'>Conversational effort the whole way. If you can't speak a full sentence, slow down.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Thu 7/30</span><span class="dl">🥾 Nevada Fall hike</span><span class="p f" title="Full race-fueling rehearsal">F</span></div><span class="run">5.4 mi · 2,000 ft</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>5.4 mi RT</b><span>distance</span></div>
+        <div><b>3.5–4.5 hr</b><span>est. time</span></div>
+        <div><b>hiking effort</b><span>target pace</span></div>
+        <div><b>≤ 145 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Treat this as a training day, not a rest day. The <b>descent</b> is the real stress — wet granite steps, big eccentric quad load. Excellent dress rehearsal for race fueling.</p><p class='tip'><b>Before you go:</b> trim toenails, heel-lock lacing, pre-tape any hot spots, trekking poles if you have them (saves the quads coming down). Carry the 3 L bladder with 2 LMNT.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Clock</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td class='dim'>8:00am</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td class='dim'>8:30am</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:00</td><td class='dim'>9:00am</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:30</td><td class='dim'>9:30am</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>2:00</td><td class='dim'>10:00am</td><td>Mott's ×2 pouches</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>2:30</td><td class='dim'>10:30am</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>3:00</td><td class='dim'>11:00am</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr><tr><td class='t'>3:30</td><td class='dim'>11:30am</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr><tr><td class='t'>4:00</td><td class='dim'>12:00pm</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr></tbody></table></div>
+    </div></details><div class="day"><div class="dh"><span class="dd">Fri 7/31</span><span class="dl">Easy walk (hike recovery)</span><span class="p r" title="Recovery-focused meal">R</span></div><span class="run">—</span><span class="chev none">▾</span></div><div class="day"><div class="dh"><span class="dd">Sat 8/1</span><span class="dl">Easy walk / optional jog</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">0–3 mi</span><span class="chev none">▾</span></div><div class="day"><div class="dh"><span class="dd">Sun 8/2</span><span class="dl">Travel home, rest</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">—</span><span class="chev none">▾</span></div></div><div class="week" id="w2"><div class="wk-h"><h3>Week 2 — Travel week — one quality long run</h3><div class="dates">Aug 3 – Aug 9</div><p>You're away. Keep it light-touch: <b>one good long run</b>, everything else optional. A well-rested week has real training value.</p></div><div class="day"><div class="dh"><span class="dd">Mon 8/3</span><span class="dl">Rest or easy</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">0–3 mi</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Tue 8/4</span><span class="dl">Easy + cadence</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">4–5 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>4–5 mi</b><span>distance</span></div>
+        <div><b>~65 min</b><span>est. time</span></div>
+        <div><b>13:30–14:30/mi</b><span>target pace</span></div>
+        <div><b>≤ 140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Aerobic maintenance with the first real cadence work of the block.</p><p class='tip'><b>Cadence drill:</b> 2 × 8 min at ~165 spm inside the run (metronome or 165-bpm playlist). Same pace — just quicker, shorter steps. This is the #1 lever on your ground-contact time and blister risk.</p><p class='tip'>Conversational effort the whole way. If you can't speak a full sentence, slow down.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>1:00</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Wed 8/5</span><span class="dl">Rest + strength</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">0–3 mi</span><span class="chev">▾</span></div></summary><div class='rd'><p class='tip'><b>Strength (15–20 min):</b> 3×15 slow-lowering calf raises · 3×30s single-leg balance · 3×12 glute bridges · 3×10 step-downs per leg.</p></div></details><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Thu 8/6</span><span class="dl">Easy</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">4–5 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>4–5 mi</b><span>distance</span></div>
+        <div><b>~65 min</b><span>est. time</span></div>
+        <div><b>13:30–14:30/mi</b><span>target pace</span></div>
+        <div><b>≤ 140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Keep it genuinely easy.</p><p class='tip'>Conversational effort the whole way. If you can't speak a full sentence, slow down.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>1:00</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><div class="day"><div class="dh"><span class="dd">Fri 8/7</span><span class="dl">Rest</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">—</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Sat 8/8</span><span class="dl">🏃 Long run</span><span class="p f" title="Full race-fueling rehearsal">F</span></div><span class="run">20–25 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>22 mi</b><span>distance</span></div>
+        <div><b>~5.5 hr</b><span>est. time</span></div>
+        <div><b>14:00–15:00/mi</b><span>target pace</span></div>
+        <div><b>120–140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">First long run since the 40. Not a test — a <b>full fueling rehearsal</b> at a comfortable effort. Practice the exact food rotation you'll use on 9/5.</p><p class='tip'><b>Hydration:</b> 3 L bladder, <b>2 LMNT packets</b> per fill. Refill + re-dose at the halfway point. Never 1 packet per 3 L — that's the hyponatremia setup.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Clock</th><th>Mile</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td class='dim'>6:00am</td><td class='dim'>~0</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td class='dim'>6:30am</td><td class='dim'>~2</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:00</td><td class='dim'>7:00am</td><td class='dim'>~4</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:30</td><td class='dim'>7:30am</td><td class='dim'>~6</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>2:00</td><td class='dim'>8:00am</td><td class='dim'>~8</td><td>Mott's ×2 pouches</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>2:30</td><td class='dim'>8:30am</td><td class='dim'>~10</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>3:00</td><td class='dim'>9:00am</td><td class='dim'>~12</td><td>Welch's ×2 pouches</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>3:30</td><td class='dim'>9:30am</td><td class='dim'>~14</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>4:00</td><td class='dim'>10:00am</td><td class='dim'>~16</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr><tr><td class='t'>4:30</td><td class='dim'>10:30am</td><td class='dim'>~18</td><td>🧂 Pretzels / chips (savory)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr><tr><td class='t'>5:00</td><td class='dim'>11:00am</td><td class='dim'>~20</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr><tr><td class='t'>5:30</td><td class='dim'>11:30am</td><td class='dim'>~22</td><td>🧂 Pretzels / chips (savory)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr></tbody></table></div>
+    </div></details><div class="day"><div class="dh"><span class="dd">Sun 8/9</span><span class="dl">Rest / easy walk</span><span class="p r" title="Recovery-focused meal">R</span></div><span class="run">—</span><span class="chev none">▾</span></div></div><div class="week" id="w3"><div class="wk-h"><h3>Week 3 — ⭐ Peak week — back-to-back long runs</h3><div class="dates">Aug 10 – Aug 16</div><p>The most important week of the block. Saturday+Sunday back-to-back teaches your legs to run <b>already fatigued</b> — exactly what miles 35–50 feel like — without the joint pounding of another single 40.</p></div><div class="day"><div class="dh"><span class="dd">Mon 8/10</span><span class="dl">Rest or easy</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">0–3 mi</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Tue 8/11</span><span class="dl">Easy + cadence</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">5 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>5 mi</b><span>distance</span></div>
+        <div><b>~70 min</b><span>est. time</span></div>
+        <div><b>13:30–14:30/mi</b><span>target pace</span></div>
+        <div><b>≤ 140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Cadence is the focus.</p><p class='tip'><b>Cadence drill:</b> 2 × 8 min at ~165 spm inside the run (metronome or 165-bpm playlist). Same pace — just quicker, shorter steps. This is the #1 lever on your ground-contact time and blister risk.</p><p class='tip'>Conversational effort the whole way. If you can't speak a full sentence, slow down.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>1:00</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Wed 8/12</span><span class="dl">Rest + strength</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">—</span><span class="chev">▾</span></div></summary><div class='rd'><p class='tip'><b>Strength (15–20 min):</b> 3×15 slow-lowering calf raises · 3×30s single-leg balance · 3×12 glute bridges · 3×10 step-downs per leg.</p></div></details><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Thu 8/13</span><span class="dl">Easy</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">4–5 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>4–5 mi</b><span>distance</span></div>
+        <div><b>~65 min</b><span>est. time</span></div>
+        <div><b>13:30–14:30/mi</b><span>target pace</span></div>
+        <div><b>≤ 140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Last easy run before the big weekend. Keep it short and light.</p><p class='tip'>Conversational effort the whole way. If you can't speak a full sentence, slow down.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>1:00</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Fri 8/14</span><span class="dl">Rest — carb load</span><span class="p c" title="Carb-forward">C</span></div><span class="run">—</span><span class="chev">▾</span></div></summary><div class='rd'><p class='tip'>Eat carb-forward today and hydrate well. Lay out both days' food tonight so Saturday morning is automatic.</p></div></details><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Sat 8/15</span><span class="dl">🏃 Long run — day 1</span><span class="p f" title="Full race-fueling rehearsal">F</span></div><span class="run">~20 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>20 mi</b><span>distance</span></div>
+        <div><b>~5 hr</b><span>est. time</span></div>
+        <div><b>14:00–15:00/mi</b><span>target pace</span></div>
+        <div><b>120–140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Run this <b>conservatively</b>. The point isn't today — it's being able to run well tomorrow on tired legs. Leave something in the tank.</p><p class='tip'><b>Tonight matters as much as the run:</b> 30–40 g protein + big carbs within an hour of finishing, extra sodium, and get to bed early. Tomorrow's quality depends on tonight's refuel.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Clock</th><th>Mile</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td class='dim'>6:00am</td><td class='dim'>~0</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td class='dim'>6:30am</td><td class='dim'>~2</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:00</td><td class='dim'>7:00am</td><td class='dim'>~4</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:30</td><td class='dim'>7:30am</td><td class='dim'>~6</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>2:00</td><td class='dim'>8:00am</td><td class='dim'>~8</td><td>Mott's ×2 pouches</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>2:30</td><td class='dim'>8:30am</td><td class='dim'>~10</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>3:00</td><td class='dim'>9:00am</td><td class='dim'>~12</td><td>Welch's ×2 pouches</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>3:30</td><td class='dim'>9:30am</td><td class='dim'>~14</td><td>🧂 Pretzels / chips (savory)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr><tr><td class='t'>4:00</td><td class='dim'>10:00am</td><td class='dim'>~16</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr><tr><td class='t'>4:30</td><td class='dim'>10:30am</td><td class='dim'>~18</td><td>🧂 Pretzels / chips (savory)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr><tr><td class='t'>5:00</td><td class='dim'>11:00am</td><td class='dim'>~20</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr></tbody></table></div>
+    </div></details><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Sun 8/16</span><span class="dl">🏃 Long run — day 2 (tired legs)</span><span class="p f" title="Full race-fueling rehearsal">F</span></div><span class="run">~15 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>15 mi</b><span>distance</span></div>
+        <div><b>~3.75 hr</b><span>est. time</span></div>
+        <div><b>14:30–15:30/mi</b><span>target pace</span></div>
+        <div><b>120–140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose"><b>The single most race-specific session of the plan.</b> Legs will feel heavy from the start — that's the entire point. Expect a slower pace at the same heart rate; don't fight it.</p><p class='tip'><b>Watch for:</b> decoupling (HR:pace drift). Under 8% is good. If it's ugly, that's useful information about fueling, not a failure. Run <code>run-analyze.py</code> after.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Clock</th><th>Mile</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td class='dim'>6:30am</td><td class='dim'>~0</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td class='dim'>7:00am</td><td class='dim'>~2</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:00</td><td class='dim'>7:30am</td><td class='dim'>~4</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:30</td><td class='dim'>8:00am</td><td class='dim'>~6</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>2:00</td><td class='dim'>8:30am</td><td class='dim'>~8</td><td>Mott's ×2 pouches</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>2:30</td><td class='dim'>9:00am</td><td class='dim'>~10</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>3:00</td><td class='dim'>9:30am</td><td class='dim'>~12</td><td>Welch's ×2 pouches</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>3:30</td><td class='dim'>10:00am</td><td class='dim'>~14</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details></div><div class="week" id="w4"><div class="wk-h"><h3>Week 4 — Taper begins — volume −25%</h3><div class="dates">Aug 17 – Aug 23</div><p>Fitness is banked. From here the job is <b>arriving fresh</b>. Keep frequency, cut volume.</p></div><div class="day"><div class="dh"><span class="dd">Mon 8/17</span><span class="dl">Rest or easy</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">0–3 mi</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Tue 8/18</span><span class="dl">Easy + cadence</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">4 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>4 mi</b><span>distance</span></div>
+        <div><b>~55 min</b><span>est. time</span></div>
+        <div><b>13:30–14:30/mi</b><span>target pace</span></div>
+        <div><b>≤ 140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Cadence work consolidates during the taper — keep it up.</p><p class='tip'><b>Cadence drill:</b> 2 × 8 min at ~165 spm inside the run (metronome or 165-bpm playlist). Same pace — just quicker, shorter steps. This is the #1 lever on your ground-contact time and blister risk.</p><p class='tip'>Conversational effort the whole way. If you can't speak a full sentence, slow down.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>1:00</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Wed 8/19</span><span class="dl">Rest + light strength</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">—</span><span class="chev">▾</span></div></summary><div class='rd'><p class='tip'><b>Strength (15–20 min):</b> 3×15 slow-lowering calf raises · 3×30s single-leg balance · 3×12 glute bridges · 3×10 step-downs per leg.</p></div></details><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Thu 8/20</span><span class="dl">Easy</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">4 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>4 mi</b><span>distance</span></div>
+        <div><b>~55 min</b><span>est. time</span></div>
+        <div><b>13:30–14:30/mi</b><span>target pace</span></div>
+        <div><b>≤ 140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Short and comfortable.</p><p class='tip'>Conversational effort the whole way. If you can't speak a full sentence, slow down.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>1:00</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><div class="day"><div class="dh"><span class="dd">Fri 8/21</span><span class="dl">Rest</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">—</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Sat 8/22</span><span class="dl">🏃 Long run — race simulation</span><span class="p f" title="Full race-fueling rehearsal">F</span></div><span class="run">15–18 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>16 mi</b><span>distance</span></div>
+        <div><b>~4 hr</b><span>est. time</span></div>
+        <div><b>15:00–15:30/mi</b><span>target pace</span></div>
+        <div><b>≤ 140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Run this at <b>exact race pace and race fueling</b> — including the loop-style stops. Last chance to find problems while there's still time to fix them.</p><p class='tip'><b>Test everything:</b> race-day shoes, race-day socks, the anti-chafe, the exact foods. Anything that annoys you today will be unbearable at mile 40.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Clock</th><th>Mile</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td class='dim'>6:00am</td><td class='dim'>~0</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td class='dim'>6:30am</td><td class='dim'>~2</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:00</td><td class='dim'>7:00am</td><td class='dim'>~4</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:30</td><td class='dim'>7:30am</td><td class='dim'>~6</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>2:00</td><td class='dim'>8:00am</td><td class='dim'>~8</td><td>Mott's ×2 pouches</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>2:30</td><td class='dim'>8:30am</td><td class='dim'>~10</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>3:00</td><td class='dim'>9:00am</td><td class='dim'>~12</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr><tr><td class='t'>3:30</td><td class='dim'>9:30am</td><td class='dim'>~14</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr><tr><td class='t'>4:00</td><td class='dim'>10:00am</td><td class='dim'>~16</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Heat/fatigue window — douse head, shorten stride, keep cadence up.</span></td></tr></tbody></table></div>
+    </div></details><div class="day"><div class="dh"><span class="dd">Sun 8/23</span><span class="dl">Rest / easy walk</span><span class="p r" title="Recovery-focused meal">R</span></div><span class="run">—</span><span class="chev none">▾</span></div></div><div class="week" id="w5"><div class="wk-h"><h3>Week 5 — Deep taper — volume −50%</h3><div class="dates">Aug 24 – Aug 30</div><p>Legs should start feeling <b>springy and restless</b>. That's the taper working. Resist the urge to add miles.</p></div><div class="day"><div class="dh"><span class="dd">Mon 8/24</span><span class="dl">Rest or easy</span><span class="p c" title="Carb-forward">C</span></div><span class="run">0–3 mi</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Tue 8/25</span><span class="dl">Easy, light cadence</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">3–4 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>3–4 mi</b><span>distance</span></div>
+        <div><b>~50 min</b><span>est. time</span></div>
+        <div><b>13:30–14:30/mi</b><span>target pace</span></div>
+        <div><b>≤ 140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Light touch on cadence — one 5-min block, no more.</p><p class='tip'>Conversational effort the whole way. If you can't speak a full sentence, slow down.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>1:00</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><div class="day"><div class="dh"><span class="dd">Wed 8/26</span><span class="dl">Rest</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">—</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Thu 8/27</span><span class="dl">Easy</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">3 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>3 mi</b><span>distance</span></div>
+        <div><b>~40 min</b><span>est. time</span></div>
+        <div><b>13:30–14:30/mi</b><span>target pace</span></div>
+        <div><b>≤ 140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Just turning the legs over.</p><p class='tip'>Conversational effort the whole way. If you can't speak a full sentence, slow down.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><div class="day"><div class="dh"><span class="dd">Fri 8/28</span><span class="dl">Rest</span><span class="p n" title="Normal balanced meals">N</span></div><span class="run">—</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Sat 8/29</span><span class="dl">🏃 Final long run</span><span class="p f" title="Full race-fueling rehearsal">F</span></div><span class="run">8–10 mi</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>9 mi</b><span>distance</span></div>
+        <div><b>~2.25 hr</b><span>est. time</span></div>
+        <div><b>14:30–15:30/mi</b><span>target pace</span></div>
+        <div><b>≤ 140 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Final dress rehearsal. Short, easy, and a last check that the fuel plan sits well.</p><p class='tip'>After this run: <b>nothing new</b>. No new shoes, no new foods, no new anything until race day.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Clock</th><th>Mile</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td class='dim'>7:00am</td><td class='dim'>~0</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td class='dim'>7:30am</td><td class='dim'>~2</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Easy. Bank the cool miles.</span></td></tr><tr><td class='t'>1:00</td><td class='dim'>8:00am</td><td class='dim'>~4</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>1:30</td><td class='dim'>8:30am</td><td class='dim'>~6</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr><tr><td class='t'>2:00</td><td class='dim'>9:00am</td><td class='dim'>~8</td><td>Mott's ×2 pouches</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><div class="day"><div class="dh"><span class="dd">Sun 8/30</span><span class="dl">Rest / easy walk</span><span class="p r" title="Recovery-focused meal">R</span></div><span class="run">—</span><span class="chev none">▾</span></div></div><div class="week" id="race"><div class="wk-h"><h3>Race Week — 🏁 Sharpen &amp; rest</h3><div class="dates">Aug 31 – Sep 5</div><p>Nothing you do this week makes you fitter. Everything you do can make you <b>fresher</b> — or tireder. Choose fresh.</p></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Mon 8/31</span><span class="dl">Easy + strides</span><span class="p c" title="Carb-forward">C</span></div><span class="run">20–30 min</span><span class="chev">▾</span></div></summary><div class="rd">
+      <div class="stats">
+        <div><b>~2.5 mi</b><span>distance</span></div>
+        <div><b>20–30 min</b><span>est. time</span></div>
+        <div><b>easy</b><span>target pace</span></div>
+        <div><b>≤ 135 bpm</b><span>heart rate</span></div>
+      </div>
+      <p class="purpose">Easy jog, then 4 × 20-second relaxed strides (not sprints) to keep the legs sharp.</p>
+      <h5>Fuel &amp; hydration — every 30 min</h5>
+      <div class="tw"><table class="fuel"><thead><tr><th>T+</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td>— (fueled before start)</td><td><span class='drink'>—</span> <span class='dim'>Sip to start. Ease in — first mile slow.</span></td></tr><tr><td class='t'>0:30</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz from bladder</span> <span class='dim'>Settle into rhythm. Check HR ≤140.</span></td></tr></tbody></table></div>
+    </div></details><div class="day"><div class="dh"><span class="dd">Tue 9/1</span><span class="dl">Easy jog or rest</span><span class="p c" title="Carb-forward">C</span></div><span class="run">0–2 mi</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Wed 9/2</span><span class="dl">Rest — gear &amp; food shakedown</span><span class="p c" title="Carb-forward">C</span></div><span class="run">—</span><span class="chev">▾</span></div></summary><div class='rd'><p class='tip'>Lay out <b>everything</b> today. Shop for any gaps. Charge the watch. Confirm the aid-station table is stocked. Full checklist below.</p></div></details><div class="day"><div class="dh"><span class="dd">Thu 9/3</span><span class="dl">Full rest</span><span class="p c" title="Carb-forward">C</span></div><span class="run">—</span><span class="chev none">▾</span></div><details class="day big"><summary><div class="dayrow"><div class="dh"><span class="dd">Fri 9/4</span><span class="dl">Full rest — early bed</span><span class="p c" title="Carb-forward">C</span></div><span class="run">—</span><span class="chev">▾</span></div></summary><div class='rd'><p class='tip'>Set out aid-station food on the porch table tonight. Alarm for 2:30 am. Sleep is the last training session.</p></div></details><div class="day"><div class="dh"><span class="dd">Sat 9/5</span><span class="dl">🏁 RACE DAY — 50 miles</span><span class="p f" title="Full race-fueling rehearsal">F</span></div><span class="run">50 mi</span><span class="chev none">▾</span></div></div>
+<h2 id="raceday">🏁 Race day <span class="n">·</span> Saturday, Sept 5</h2>
+<p class="lede">Fifty 1-mile loops past your own front door. Every logistics problem from the 40-miler disappears here —
+water, ice, food, and dry socks are available <b>every single mile</b>.</p>
+<div class="rule"><span class="rt">The one tradeoff of a 4:30 am start</span>
+Finishing at 5–6 pm means the hottest hours (11 am–4 pm) fall in your <b>back half</b>, when you're most fatigued —
+the opposite of ideal. That's a deliberate trade for finishing as the party starts. Manage it with aggressive
+cooling from 11 am on: ice in the hat every lap, cold water over the head, and accept a slower pace in that window
+rather than fighting it.</div>
+
+<div class="grid2" style="margin-bottom:1.2rem">
+  <div class="card"><h4>⏱ The timeline</h4>
+    <ul class="chk">
+      <li><span class="q">3:45 am</span> Breakfast + coffee<span class="why">Oatmeal, banana, toast. Nothing new.</span></li>
+      <li><span class="q">4:30 am</span> Start — headlamp on<span class="why">First 3 laps deliberately slow. ~90 min of cool dark to bank.</span></li>
+      <li><span class="q">6:30 am</span> Sunrise — sunscreen<span class="why">Ditch headlamp and layer. Mile ~8.</span></li>
+      <li><span class="q">10:30 am</span> Sock change #1 + foot check<span class="why">Mile ~23. Preempt the blister before it forms.</span></li>
+      <li><span class="q">11 am – 4 pm</span> The furnace<span class="why">Hottest 5 hours land in your back half. Ice in hat every lap, douse head.</span></li>
+      <li><span class="q">1:30 pm</span> Sock change #2 if wet<span class="why">Mile ~35.</span></li>
+      <li><span class="q">5:00–6:00 pm</span> 🏁 Finish (50 mi)<span class="why">~13 hrs. Guests arriving as you come in — the best possible finish line.</span></li>
+      <li><span class="q">Post-finish</span> 🍺 Oktoberfest<span class="why">Rehydrate, salt, protein — then celebrate.</span></li>
+    </ul>
+  </div>
+  <div class="card"><h4>🎯 Pacing &amp; targets</h4>
+    <ul class="chk">
+      <li><span class="q">15:00–15:30/mi</span> elapsed, including stops<span class="why">Your 40-miler ran 15:39 — this is realistic.</span></li>
+      <li><span class="q">HR ≤ 140</span> all day<span class="why">If you're above it before mile 20, you're going too hard.</span></li>
+      <li><span class="q">~65 g carbs/hr</span> ≈ 780 g total<span class="why">You ran 49 g/hr on the 40 — that shortfall showed up late.</span></li>
+      <li><span class="q">~700 mg sodium/hr</span> ≈ 9 LMNT<span class="why">2 packets per 3 L. Never 1.</span></li>
+      <li><span class="q">~800 mL fluid/hr</span> ≈ 10 L total<span class="why">Less early when it's cool, more from 10 am.</span></li>
+      <li><span class="q">≤ 2% weight loss</span><span class="why">Weigh before and after. You hit −0.8% on the 40 — perfect.</span></li>
+      <li><span class="q">Caffeine after 9 am</span> ~200 mg total<span class="why">Save it for when it actually helps.</span></li>
+    </ul>
+  </div>
+</div>
+
+<h5>Race-day fuel &amp; hydration — every 30 minutes</h5>
+<div class="tw"><table class="fuel race"><thead><tr><th>T+</th><th>Clock</th><th>Mile</th><th>Eat</th><th>Drink &amp; notes</th></tr></thead><tbody><tr><td class='t'>0:00</td><td class='dim'>4:30am</td><td class='dim'>~0</td><td>— (breakfast done by 3:45am)</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Headlamp on. First 3 laps deliberately slow.</span></td></tr><tr><td class='t'>0:30</td><td class='dim'>5:00am</td><td class='dim'>~2</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Dark + cool. Bank easy miles. Sip less than you think.</span></td></tr><tr><td class='t'>1:00</td><td class='dim'>5:30am</td><td class='dim'>~4</td><td>Mott's ×2</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Dark + cool. Bank easy miles. Sip less than you think.</span></td></tr><tr><td class='t'>1:30</td><td class='dim'>6:00am</td><td class='dim'>~6</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Dark + cool. Bank easy miles. Sip less than you think.</span></td></tr><tr><td class='t'>2:00</td><td class='dim'>6:30am</td><td class='dim'>~8</td><td>Welch's ×2</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Sunrise ~6:30am — sunscreen. Settle into rhythm, HR ≤140.</span></td></tr><tr><td class='t'>2:30</td><td class='dim'>7:00am</td><td class='dim'>~10</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Sunrise ~6:30am — sunscreen. Settle into rhythm, HR ≤140.</span></td></tr><tr><td class='t'>3:00</td><td class='dim'>7:30am</td><td class='dim'>~12</td><td>🧂 Salted Watermelon BLOKS</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Sunrise ~6:30am — sunscreen. Settle into rhythm, HR ≤140.</span></td></tr><tr><td class='t'>3:30</td><td class='dim'>8:00am</td><td class='dim'>~13</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Sunrise ~6:30am — sunscreen. Settle into rhythm, HR ≤140.</span></td></tr><tr><td class='t'>4:00</td><td class='dim'>8:30am</td><td class='dim'>~15</td><td>Honey Stinger chews</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Sunrise ~6:30am — sunscreen. Settle into rhythm, HR ≤140.</span></td></tr><tr><td class='t'>4:30</td><td class='dim'>9:00am</td><td class='dim'>~17</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Sunrise ~6:30am — sunscreen. Settle into rhythm, HR ≤140.</span></td></tr><tr><td class='t'>5:00</td><td class='dim'>9:30am</td><td class='dim'>~19</td><td>Mott's ×2</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Sunrise ~6:30am — sunscreen. Settle into rhythm, HR ≤140.</span></td></tr><tr><td class='t'>5:30</td><td class='dim'>10:00am</td><td class='dim'>~21</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Sunrise ~6:30am — sunscreen. Settle into rhythm, HR ≤140.</span></td></tr><tr class='hl'><td class='t'>6:00</td><td class='dim'>10:30am</td><td class='dim'>~23</td><td>Welch's ×2</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Sunrise ~6:30am — sunscreen. Settle into rhythm, HR ≤140. · 🧦 <b>SOCK CHANGE</b> + foot check</span></td></tr><tr><td class='t'>6:30</td><td class='dim'>11:00am</td><td class='dim'>~25</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz</span> <span class='dim'>🔥 Heat window — ice in hat every lap, douse head, slow down on purpose.</span></td></tr><tr><td class='t'>7:00</td><td class='dim'>11:30am</td><td class='dim'>~27</td><td>🧂 Salted Watermelon BLOKS</td><td><span class='drink'>6–8 oz</span> <span class='dim'>🔥 Heat window — ice in hat every lap, douse head, slow down on purpose.</span></td></tr><tr><td class='t'>7:30</td><td class='dim'>12:00pm</td><td class='dim'>~29</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz</span> <span class='dim'>🔥 Heat window — ice in hat every lap, douse head, slow down on purpose.</span></td></tr><tr><td class='t'>8:00</td><td class='dim'>12:30pm</td><td class='dim'>~31</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz</span> <span class='dim'>🔥 Heat window — ice in hat every lap, douse head, slow down on purpose.</span></td></tr><tr><td class='t'>8:30</td><td class='dim'>1:00pm</td><td class='dim'>~33</td><td>½ PB&J w/ cream cheese</td><td><span class='drink'>6–8 oz</span> <span class='dim'>🔥 Heat window — ice in hat every lap, douse head, slow down on purpose.</span></td></tr><tr><td class='t'>9:00</td><td class='dim'>1:30pm</td><td class='dim'>~35</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz</span> <span class='dim'>🔥 Heat window — ice in hat every lap, douse head, slow down on purpose. · 🧦 second sock change if wet</span></td></tr><tr><td class='t'>9:30</td><td class='dim'>2:00pm</td><td class='dim'>~37</td><td>🧂 Pretzels / chips / broth</td><td><span class='drink'>6–8 oz</span> <span class='dim'>🔥 Heat window — ice in hat every lap, douse head, slow down on purpose.</span></td></tr><tr><td class='t'>10:00</td><td class='dim'>2:30pm</td><td class='dim'>~38</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz</span> <span class='dim'>🔥 Heat window — ice in hat every lap, douse head, slow down on purpose.</span></td></tr><tr><td class='t'>10:30</td><td class='dim'>3:00pm</td><td class='dim'>~40</td><td>🧂 Pretzels / chips / broth</td><td><span class='drink'>6–8 oz</span> <span class='dim'>🔥 Heat window — ice in hat every lap, douse head, slow down on purpose.</span></td></tr><tr><td class='t'>11:00</td><td class='dim'>3:30pm</td><td class='dim'>~42</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Survival shuffle is fine. Keep eating. Walk the hills if needed.</span></td></tr><tr><td class='t'>11:30</td><td class='dim'>4:00pm</td><td class='dim'>~44</td><td>🧂 Pretzels / chips / broth</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Survival shuffle is fine. Keep eating. Walk the hills if needed.</span></td></tr><tr><td class='t'>12:00</td><td class='dim'>4:30pm</td><td class='dim'>~46</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Survival shuffle is fine. Keep eating. Walk the hills if needed.</span></td></tr><tr><td class='t'>12:30</td><td class='dim'>5:00pm</td><td class='dim'>~48</td><td>🧂 Pretzels / chips / broth</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Survival shuffle is fine. Keep eating. Walk the hills if needed.</span></td></tr><tr><td class='t'>13:00</td><td class='dim'>5:30pm</td><td class='dim'>~50</td><td>☕ CLIF SOURS — 3 blocks (caffeine)</td><td><span class='drink'>6–8 oz</span> <span class='dim'>Survival shuffle is fine. Keep eating. Walk the hills if needed.</span></td></tr></tbody></table></div>
+
+<h2 id="shopping">🛒 Shopping list</h2>
+<p class="lede">Covers all five remaining long runs plus race day. Two items are flagged — you only had a single packet of each.</p>
+<div class="grid2">
+<div class="card"><h4>Fuel — long runs (Aug) + race day</h4><ul class="chk"><li><span class="q">~14 sandwiches total</span> — PB&J w/ cream cheese<span class="why">6 halves per long run × 5 runs, plus 6 for race day. Make fresh the night before each.</span></li><li><span class="q">2 boxes (8 packs)</span> — Honey Stinger chews<span class="why">Caffeine-free. Early-run staple.</span></li><li><span class="q">1 × 40-pack</span> — Mott's fruit snacks<span class="why">~2 pouches per feed.</span></li><li><span class="q">1 × 22-count</span> — Welch's fruit snacks<span class="why">~2 pouches per feed.</span></li><li><span class="q"><b>6 packets</b></span> — CLIF BLOKS SOURS (caffeine)<span class="why">⚠️ You only had 1. Back-third caffeine for 5 long runs + race (2 for race day).</span></li><li><span class="q"><b>6 packets</b></span> — CLIF BLOKS Salted Watermelon (2× sodium)<span class="why">⚠️ You only had 1. Hot-weather sodium + late-race.</span></li><li><span class="q">2 large bags</span> — Pretzels / salted chips<span class="why">Savory craving in the back third — real ultra staple.</span></li><li><span class="q"><b>~40 packets</b></span> — LMNT electrolyte packets<span class="why">2 per 3 L fill. ~4/long run × 5 runs, ~9 for race day, plus buffer.</span></li><li><span class="q">2</span> — Chicken broth (cartons)<span class="why">Warm savory calories late in the race. Big morale boost at mile 35+.</span></li></ul></div><div class="card"><h4>Race-day extras</h4><ul class="chk"><li><span class="q">2 large bags</span> — Ice<span class="why">Cooler at the aid table. Ice in hat every lap once it's hot.</span></li><li><span class="q">1 bunch</span> — Bananas<span class="why">Easy carbs + potassium when the palate turns.</span></li><li><span class="q">~10</span> — Boiled + salted potatoes<span class="why">The classic ultra savory food. Boil the night before.</span></li><li><span class="q">6</span> — Coca-Cola (small cans)<span class="why">Sugar + caffeine + carbonation. Save for the last quarter.</span></li><li><span class="q">4 pairs</span> — Spare socks<span class="why">Sock change at hour 6 and hour 9. Non-negotiable.</span></li></ul></div><div class="card"><h4>Gear check / replace</h4><ul class="chk"><li><span class="q">1 pair</span> — Race shoes<span class="why">Must have 50–150 mi on them by 9/5 — never brand new.</span></li><li><span class="q">2 sticks</span> — Anti-chafe (Body Glide)<span class="why">One at home, one on the aid table.</span></li><li><span class="q">1 large</span> — Sunscreen<span class="why">Reapply at 6:30 am and every ~3 hrs.</span></li><li><span class="q">1</span> — Toe tape / blister kit<span class="why">⚠️ You blistered at mile 40. Solve this in training, not on race day.</span></li><li><span class="q">1 pair</span> — Trekking poles (optional)<span class="why">For the Nevada Fall descent on 7/30.</span></li></ul></div></div>
+
+<h2 id="gear">🎒 Race-day gear &amp; aid station</h2>
+<div class="grid2">
+  <div class="card"><h4>On body</h4><ul class="chk">
+    <li>Race shoes (broken in, 50–150 mi)</li><li>Socks — the pair you tested on 8/22</li>
+    <li>Body Glide everywhere that rubs</li><li>Hat / visor + sunglasses</li>
+    <li>Headlamp (charged) + reflective vest</li><li>Throwaway layer for the 3 am start</li>
+    <li>Apple Watch — <b>fully charged, Low Power Mode OFF</b><span class="why">LPM silently drops cadence / ground-contact / vertical-oscillation data.</span></li>
+    <li>Handheld bottle (loops mean no 3 L bladder needed)</li>
+  </ul></div>
+  <div class="card"><h4>Aid table on the porch</h4><ul class="chk">
+    <li>Cooler with ice — refill hat every lap once hot</li>
+    <li>All food pre-portioned by hour in labeled bags</li>
+    <li>LMNT packets + pitcher for refills</li>
+    <li>4 pairs spare socks + towel</li>
+    <li>Blister kit, extra Body Glide, sunscreen</li>
+    <li>Watch charger + battery pack</li>
+    <li>Broth in a thermos (afternoon)</li>
+    <li>Camp chair — for sock changes only, not for lingering</li>
+  </ul></div>
+</div>
+
+<h2 id="rules">📋 The rules that matter</h2>
+<div class="rule" id="cadence"><span class="rt">1. Cadence is the single biggest lever — and it's trainable in 5 weeks</span>
+157 spm with 274 ms ground contact and a 10.4% vertical ratio is one coherent problem: you're over-striding
+slightly, braking on each step, and bouncing. <b>Quicker + shorter steps at the same pace fixes all three</b> —
+and reduces the foot shear that blistered you at mile 40.
+<br><br><b>How to actually do it:</b> set a metronome or 165-bpm playlist and match your footfalls. Don't try to run
+faster — keep the identical pace and just take smaller, quicker steps. It will feel unnatural for about 3 runs, then
+click. Aim for 162–166 by race day; chasing 170+ this late is not worth it.
+<br><br><b>Why it matters for the 50:</b> your power dropped 11% over the 40-miler while your heart rate stayed flat.
+That's mechanical fatigue, and lower-impact mechanics is the direct fix. Every cadence drill in this plan is
+pointed at the last 15 miles of Sept 5.</div>
+<div class="rule"><span class="rt">2. Never 1 LMNT per 3 L</span>
+That's ~220 mg sodium/hr — the hyponatremia setup, especially since you drink freely.
+<b>Two packets per fill, three if it's hot.</b></div>
+<div class="rule"><span class="rt">3. Front-load less fluid than feels natural</span>
+On the 40-miler you drank ~750 mL/hr in the cool pre-9 am hours, then needed ~1.45 L/hr in the heat and ran dry.
+Same total, better distribution: sip lightly early, drink hard from 10 am.</div>
+<div class="rule"><span class="rt">4. Eat more than you did on the 40</span>
+49 g/hr against 429 kcal/hr burned. Get to <b>65 g/hr</b> — this is the most likely fix for the late-race power fade.</div>
+<div class="rule"><span class="rt">5. Nothing new after Aug 29</span>
+No new shoes, socks, foods, gels, or gear. Race day is execution, not experimentation.</div>
+<div class="rule"><b>6. After every long run: <code>run-analyze.py</code></b>
+Watch cadence trending toward 165, ground contact under 250 ms, and decoupling under 8%. The data tells you
+whether the plan is working before race day does.</div>
+
+</div>
+<footer>
+  Private page · not linked from phandel.com · <span id="upd"></span><br>
+  Built from your HealthKit data — 40.1 mi (Jul 25), 30.0 mi (Jul 18), and 11 years of training history.
+</footer>
+<script>
+const race=new Date('2026-09-05T03:00:00-07:00');
+const d=Math.max(0,Math.ceil((race-new Date())/864e5));
+document.getElementById('days').textContent=d;
+document.getElementById('upd').textContent='Updated '+new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+</script>
+</body></html>
