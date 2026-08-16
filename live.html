@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live &middot; 50 Miles for my 50th</title>
+<!-- Leaflet: renders OpenStreetMap tiles with no API key and no account, and unlike a
+     plain OSM iframe it can draw the 5-minute trail polyline. Pinned + SRI-checked. -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<meta name="description" content="Live race-day tracking: distance, heart rate and pace, straight from the course.">
+<style>
+  :root{ --ink:#f2f2f7; --muted:#8e8e93; --accent:#ff9f0a; --hr:#ff453a; --pace:#0a84ff; --eta:#30d158; --cad:#bf5af2; --card:#1c1c1e; }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;}
+  body{background:#0a0a0b;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  .wrap{max-width:1600px;margin:0 auto;padding:3vh 3vw;}
+  .top{display:flex;justify-content:space-between;align-items:baseline;gap:2vw;flex-wrap:wrap;}
+  h1{font-size:clamp(1.1rem,2.6vw,2.1rem);margin:0;letter-spacing:-.02em;font-weight:700;}
+  h1 em{color:var(--accent);font-style:normal;}
+  .status{font-size:clamp(.7rem,1.2vw,1rem);color:var(--muted);}
+  .dot{display:inline-block;width:.62em;height:.62em;border-radius:50%;background:var(--muted);margin-right:.45em;vertical-align:baseline;}
+  .dot.live{background:var(--eta);box-shadow:0 0 12px var(--eta);animation:p 2s infinite;}
+  .dot.stale{background:var(--hr);}
+  @keyframes p{0%,100%{opacity:1}50%{opacity:.35}}
+  .hero{display:flex;align-items:flex-end;gap:2.5vw;margin:3vh 0 1vh;flex-wrap:wrap;}
+  .miles{font-size:clamp(4rem,17vw,15rem);font-weight:800;line-height:.8;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.04em;}
+  .of{font-size:clamp(1rem,3vw,2.4rem);color:var(--muted);padding-bottom:.7em;}
+  .bar{height:clamp(16px,2.6vh,30px);background:var(--card);border-radius:999px;overflow:hidden;margin:2vh 0 1vh;}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ff6a00);border-radius:999px;transition:width .8s ease;}
+  .laps{color:var(--muted);font-size:clamp(.75rem,1.4vw,1.15rem);}
+  .laps b{color:var(--ink);font-weight:600;}
+  .split{display:grid;grid-template-columns:minmax(280px,1fr) minmax(320px,1.4fr);gap:1.6vw;margin-top:2.5vh;align-items:start;}
+  @media(max-width:900px){.split{grid-template-columns:1fr;}}
+  .mapwrap{background:var(--card);border-radius:18px;overflow:hidden;}
+  .map{width:100%;aspect-ratio:4/3;min-height:220px;background:#141416;}
+  .mapnote{padding:.8em 1em;color:var(--muted);font-size:clamp(.6rem,1vw,.8rem);}
+  .of b{color:var(--accent);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.2vw;margin-top:0;}
+  .c{background:var(--card);border-radius:18px;padding:2vh 1.6vw;}
+  .c b{display:block;font-size:clamp(1.7rem,4.6vw,3.4rem);line-height:1.02;font-variant-numeric:tabular-nums;font-weight:700;}
+  .c span{display:block;font-size:clamp(.6rem,1vw,.82rem);color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-top:.5em;}
+  .c.hr b{color:var(--hr);} .c.pace b{color:var(--pace);} .c.eta b{color:var(--eta);} .c.cad b{color:var(--cad);}
+  .c.hr b.stale{color:var(--muted);}
+  .hrcard{grid-column:1/-1;position:relative;}
+  .spark{display:block;width:100%;height:70px;margin-top:.6em;}
+  @media(max-width:900px){.spark{height:56px;}}
+  .foot{margin-top:3vh;color:#48484a;font-size:clamp(.6rem,1vw,.8rem);line-height:1.7;}
+  .foot a{color:var(--accent);text-decoration:none;}
+  .setup{background:var(--card);border-radius:18px;padding:2.4vh 2vw;margin-top:3vh;color:var(--muted);font-size:clamp(.72rem,1.2vw,.95rem);line-height:1.75;}
+  .setup code{color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
+  .setup h2{color:var(--ink);font-size:clamp(.9rem,1.6vw,1.2rem);margin:0 0 .6em;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <h1>Running <em>50 miles</em> for my 50th</h1>
+    <div class="status"><span class="dot" id="dot"></span><span id="status">connecting&hellip;</span></div>
+  </div>
+
+  <div class="hero">
+    <div class="miles" id="miles">0.00</div>
+    <div class="of" id="of">of 50 miles &middot; <b id="pctbig">0.0%</b></div>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="laps" id="lapline">&nbsp;</div>
+
+  <div class="split">
+    <div class="mapwrap">
+      <div id="map" class="map"></div>
+      <div class="mapnote" id="mapnote">location unavailable</div>
+    </div>
+    <div class="grid" id="metrics">
+      <div class="c hr hrcard"><b id="hr">&ndash;</b><span id="hrlab">heart rate</span><canvas id="hrspark" class="spark"></canvas></div>
+      <div class="c pace"><b id="pace">&ndash;</b><span>min / mile</span></div>
+      <div class="c"><b id="el">&ndash;</b><span>elapsed</span></div>
+      <div class="c eta"><b id="eta">&ndash;</b><span>est. remaining</span></div>
+      <div class="c cad"><b id="cad">&ndash;</b><span>steps / min</span></div>
+      <div class="c"><b id="kcal">&ndash;</b><span>calories</span></div>
+      <div class="c"><b id="steps2">&ndash;</b><span>steps</span></div>
+      <div class="c"><b id="hrv">&ndash;</b><span>avg hr &middot; 60s</span></div>
+    </div>
+  </div>
+
+
+  <div class="setup hidden" id="setup">
+    <h2>No data source configured</h2>
+    Point this page at a feed with <code>?tb=&lt;public-device-id&gt;</code> for
+    ThingsBoard Cloud, or <code>?src=&lt;json-url&gt;</code> for any plain JSON
+    endpoint. Defaults live at the top of the script in <code>live.html</code>.
+    <br><br>
+    The feed is the JSON that <code>racecollect.sh</code> writes on the phone and
+    <code>racepush.sh</code> publishes. The ThingsBoard <b>access token</b> is a write
+    credential and belongs only in <code>push.conf</code> on the phone &mdash; this page
+    reads with anonymous public auth and needs no secret.
+    <br><br>
+    Note this page is served over HTTPS, so it <b>cannot</b> read a plain-HTTP address on
+    the local network &mdash; for the on-the-same-Wi-Fi case, open the phone's own
+    dashboard on port 8081 directly instead.
+  </div>
+
+  <div class="foot" id="foot"></div>
+  <div class="foot"><a href="index.html">&larr; Back to the invitation</a></div>
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// Data source. Two ways to point this page at a feed:
+//
+//   ?tb=<publicDeviceId>          read from ThingsBoard Cloud (preferred)
+//   ?src=<json-url>               read any plain JSON endpoint
+//
+// ThingsBoard path uses ANONYMOUS public auth: POST /api/auth/login/public with the
+// device's public id returns a short-lived JWT, so no secret is ever shipped in this
+// page. That requires the device to be made public in ThingsBoard
+// (device -> Manage credentials / "Make public"). The device ACCESS TOKEN is the write
+// credential and must stay on the phone only -- never put it in this file.
+const DEFAULT_SRC = '';
+const DEFAULT_TB  = '91e6d070-9937-11f1-a3bc-95bc3f4b3917';  // ultra50 device id
+const TB_PUBLIC_ID = '49f60990-993a-11f1-bb5b-f59caa77e86d';  // Public customer (auth as)
+const TB_HOST     = 'https://thingsboard.cloud';
+// ---------------------------------------------------------------------------
+const qs  = new URLSearchParams(location.search);
+const SRC = qs.get('src') || DEFAULT_SRC;
+const TB  = qs.get('tb')  || DEFAULT_TB;
+const TB_KEYS = ['hr','hr_src','hr_age_s','dist_mi','target_mi','pct','pace_min_mi',
+                 'eta_s','elapsed_s','cadence_spm','kcal','steps','artifacts_60s','t',
+                 'workout_mi','workout_pct','hr_mean_60s','lat','lon','loc_age_s',
+                 'hr_hist','trail'];
+const $ = id => document.getElementById(id);
+const RACE_DAY = new Date('2026-09-05T06:00:00-07:00');
+
+// NOTE the two ids are different things and are easy to confuse:
+//   TB_PUBLIC_ID -> the "Public" CUSTOMER, used to authenticate anonymously
+//   TB           -> the DEVICE whose telemetry we read
+// Posting the device id to /api/auth/login/public returns 401 (verified 2026-08-15).
+// Public access on thingsboard.cloud (Professional Edition) also requires the device to
+// sit in a non-"All" ENTITY GROUP that has been made public -- the Community-Edition
+// /api/customer/public/* endpoints simply 404 here.
+// ThingsBoard public JWT, refreshed on demand. Tokens are short-lived, so any 401
+// simply clears it and the next tick re-authenticates.
+let tbTok = null;
+async function tbAuth(){
+  const r = await fetch(TB_HOST + '/api/auth/login/public', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({publicId: qs.get('pub') || TB_PUBLIC_ID})
+  });
+  if (!r.ok) throw new Error('public auth failed: http ' + r.status);
+  tbTok = (await r.json()).token;
+}
+async function tbFetch(){
+  if (!tbTok) await tbAuth();
+  const url = TB_HOST + '/api/plugins/telemetry/DEVICE/' + TB +
+              '/values/timeseries?keys=' + TB_KEYS.join(',');
+  let r = await fetch(url, {headers:{'X-Authorization':'Bearer ' + tbTok}});
+  if (r.status === 401) { await tbAuth();
+    r = await fetch(url, {headers:{'X-Authorization':'Bearer ' + tbTok}}); }
+  if (!r.ok) throw new Error('telemetry http ' + r.status);
+  // ThingsBoard returns {key:[{ts,value}]} with every value stringified -- flatten it
+  // back to the same shape state.json has, so the render path below is identical.
+  const raw = await r.json(), out = {};
+  for (const k of Object.keys(raw)) {
+    const v = raw[k][0].value;
+    out[k] = (k === 'hr_src') ? v : (isNaN(parseFloat(v)) ? v : parseFloat(v));
+  }
+  // Prefer ThingsBoard's own server-side timestamp for staleness; it is authoritative
+  // even if the phone's clock drifts.
+  if (raw.hr && raw.hr[0]) out.t = Math.round(raw.hr[0].ts / 1000);
+  return out;
+}
+
+function hms(s){
+  s = Math.max(0, Math.round(s));
+  const h = Math.floor(s/3600), m = Math.floor(s%3600/60);
+  if (h) return h + 'h' + String(m).padStart(2,'0');
+  if (m) return m + 'm';
+  return s + 's';
+}
+function mmss(x){
+  if (!x || !isFinite(x) || x <= 0) return '–';
+  const m = Math.floor(x), s = Math.round((x-m)*60);
+  return s === 60 ? (m+1) + ":00" : m + ':' + String(s).padStart(2,'0');
+}
+
+function countdown(){
+  const d = RACE_DAY - new Date();
+  if (d <= 0) { $('status').textContent = 'waiting for the first data…'; return; }
+  const days = Math.floor(d/86400000), hrs = Math.floor(d%86400000/3600000);
+  $('status').textContent = days + ' days ' + hrs + 'h until race day';
+  $('of').textContent = 'of 50 miles · September 5';
+}
+
+// Firebase REST returns the stored object directly, so a plain fetch covers both
+// Firebase and any generic JSON endpoint. Gists nest the payload one level deeper.
+function unwrap(j){
+  if (j && j.files && j.files['state.json']) {
+    try { return JSON.parse(j.files['state.json'].content); } catch(e) { return null; }
+  }
+  return j;
+}
+
+let lastGood = 0;
+
+// Map. Deliberately OpenStreetMap in a plain iframe rather than the Google Maps
+// JavaScript API: Google now requires a billing-enabled API key, and any key shipped in
+// a public page is world-readable and abusable. OSM's embed needs no key and no
+// account. If lat/lon never arrive the map stays hidden rather than showing a
+// misleading default location.
+// hr_hist and trail arrive as JSON-encoded STRINGS because ThingsBoard telemetry
+// values are scalars. Parse defensively: a malformed series must not take the page down.
+function parseSeries(v){
+  if (Array.isArray(v)) return v;
+  if (typeof v !== 'string' || !v) return [];
+  try { const a = JSON.parse(v); return Array.isArray(a) ? a : []; } catch(e) { return []; }
+}
+
+// 5-minute heart-rate sparkline. Hand-drawn on a canvas rather than pulling in a chart
+// library: it is a few dozen lines, has no supply chain, and stays readable on a TV.
+function drawSpark(pts){
+  const cv = $('hrspark'); if (!cv) return;
+  const cssW = cv.clientWidth || 300, cssH = cv.clientHeight || 70;
+  const dpr = window.devicePixelRatio || 1;
+  if (cv.width !== cssW*dpr || cv.height !== cssH*dpr) {
+    cv.width = cssW*dpr; cv.height = cssH*dpr;
+  }
+  const g = cv.getContext('2d');
+  g.setTransform(dpr,0,0,dpr,0,0);
+  g.clearRect(0,0,cssW,cssH);
+  if (pts.length < 2) {
+    g.fillStyle = '#48484a'; g.font = '12px -apple-system,sans-serif';
+    g.fillText('waiting for heart-rate history\u2026', 2, cssH/2);
+    return;
+  }
+  const xs = pts.map(p=>p[0]), ys = pts.map(p=>p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs);
+  // Pad the y-range so a flat resting trace is not drawn as a single edge-hugging line.
+  let y0 = Math.min(...ys), y1 = Math.max(...ys);
+  if (y1 - y0 < 10) { const m=(y0+y1)/2; y0=m-5; y1=m+5; }
+  const pad = 4, W = cssW-pad*2, H = cssH-pad*2;
+  const sx = t => pad + (x1===x0 ? W : (t-x0)/(x1-x0)*W);
+  const sy = v => pad + H - (v-y0)/(y1-y0)*H;
+
+  // filled area under the curve
+  g.beginPath(); g.moveTo(sx(xs[0]), cssH-pad);
+  pts.forEach(p=>g.lineTo(sx(p[0]), sy(p[1])));
+  g.lineTo(sx(xs[xs.length-1]), cssH-pad); g.closePath();
+  const grad = g.createLinearGradient(0,pad,0,cssH);
+  grad.addColorStop(0,'rgba(255,69,58,.35)'); grad.addColorStop(1,'rgba(255,69,58,0)');
+  g.fillStyle = grad; g.fill();
+
+  g.beginPath(); pts.forEach((p,i)=> i?g.lineTo(sx(p[0]),sy(p[1])):g.moveTo(sx(p[0]),sy(p[1])));
+  g.strokeStyle = '#ff453a'; g.lineWidth = 2; g.lineJoin='round'; g.stroke();
+
+  // current point + min/max labels
+  const last = pts[pts.length-1];
+  g.beginPath(); g.arc(sx(last[0]), sy(last[1]), 3.5, 0, Math.PI*2);
+  g.fillStyle = '#ff453a'; g.fill();
+  g.fillStyle = '#8e8e93'; g.font = '10px -apple-system,sans-serif';
+  g.fillText(Math.round(Math.max(...ys)) + '', 2, 10);
+  g.fillText(Math.round(Math.min(...ys)) + '', 2, cssH-2);
+  const mins = Math.max(1, Math.round((x1-x0)/60));
+  const lbl = 'last ' + mins + ' min \u00b7 ' + pts.length + ' pts';
+  g.fillText(lbl, cssW - g.measureText(lbl).width - 2, cssH-2);
+}
+
+let lastLat = null, lastLon = null;
+let lmap = null, lmark = null, lline = null;
+// Run a programmatic map move without it counting as a user gesture. The flag is
+// cleared on a timeout because Leaflet's move events are asynchronous.
+function progMove(fn){
+  lmap._prog = true;
+  try { fn(); } finally { setTimeout(() => { lmap._prog = false; }, 350); }
+}
+function updateMap(d){
+  const hasFix = typeof d.lat === 'number' && typeof d.lon === 'number'
+              && d.lat !== 0 && d.lon !== 0;
+  const trail = parseSeries(d.trail);
+
+  if (!hasFix && trail.length === 0) {
+    $('mapnote').textContent = 'live location not available';
+    return;
+  }
+  if (typeof L === 'undefined') {   // Leaflet blocked or offline
+    $('mapnote').textContent = 'map library unavailable';
+    return;
+  }
+  const lat = hasFix ? d.lat : trail[trail.length-1][0];
+  const lon = hasFix ? d.lon : trail[trail.length-1][1];
+
+  if (!lmap) {
+    lmap = L.map('map', {zoomControl:true, attributionControl:true,
+                         scrollWheelZoom:false}).setView([lat,lon], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {maxZoom:19, attribution:'&copy; OpenStreetMap'}).addTo(lmap);
+    lline = L.polyline([], {color:'#ff9f0a', weight:4, opacity:.85}).addTo(lmap);
+    lmark = L.circleMarker([lat,lon],
+      {radius:7, color:'#fff', weight:2, fillColor:'#ff453a', fillOpacity:1}).addTo(lmap);
+    // Stop auto-recentring once a viewer pans or zooms, so someone inspecting the route
+    // is not yanked back every poll. Only user gestures set this -- our own fitBounds
+    // and setView calls are programmatic and do not fire dragstart/zoomstart.
+    // NOTE zoomstart also fires for OUR fitBounds/setView, so a naive handler would
+    // latch on the very first auto-fit and never follow again. Flag programmatic moves
+    // and ignore events raised during them.
+    lmap.on('dragstart zoomstart', () => { if (!lmap._prog) lmap._userMoved = true; });
+  }
+  // 5-minute breadcrumb trail.
+  if (trail.length > 1) {
+    lline.setLatLngs(trail);
+    // Keep the whole trail in view, but do not fight the user if they panned/zoomed.
+    if (!lmap._userMoved) progMove(() => lmap.fitBounds(lline.getBounds(), {padding:[24,24], maxZoom:17}));
+  }
+  lmark.setLatLng([lat,lon]);
+  if (trail.length <= 1 && !lmap._userMoved) progMove(() => lmap.setView([lat,lon], lmap.getZoom()));
+
+  const age = (typeof d.loc_age_s === 'number' && d.loc_age_s >= 0)
+            ? ' \u00b7 ' + d.loc_age_s + 's ago' : '';
+  const tn  = trail.length > 1 ? ' \u00b7 ' + trail.length + '-pt trail' : '';
+  $('mapnote').innerHTML = lat.toFixed(5) + ', ' + lon.toFixed(5) + age + tn +
+    ' \u00b7 <a href="https://www.google.com/maps?q=' + lat + ',' + lon +
+    '" target="_blank" rel="noopener">open in Google Maps</a>';
+}
+
+async function tick(){
+  if (!SRC && !TB) { $('setup').classList.remove('hidden'); countdown(); return; }
+  try {
+    let d;
+    if (TB) {
+      d = await tbFetch();
+    } else {
+      // Cache-buster: CDNs in front of these feeds will happily serve a stale body.
+      const sep = SRC.includes('?') ? '&' : '?';
+      const r = await fetch(SRC + sep + '_=' + Date.now(), {cache:'no-store'});
+      if (!r.ok) throw new Error('http ' + r.status);
+      d = unwrap(await r.json());
+    }
+    if (!d || typeof d.dist_mi !== 'number') throw new Error('unrecognised payload');
+    lastGood = Date.now();
+
+    // Headline = total WORKOUT distance. Falls back to the day-total walking figure
+    // only if workout_mi is absent, so an older feed still renders something sane.
+    const wmi  = (typeof d.workout_mi  === 'number') ? d.workout_mi  : d.dist_mi;
+    const wpct = (typeof d.workout_pct === 'number') ? d.workout_pct
+                                                     : (wmi / d.target_mi * 100);
+    $('miles').textContent = wmi.toFixed(2);
+    $('pctbig').textContent = wpct.toFixed(1) + '%';
+    $('bar').style.width   = Math.min(100, wpct) + '%';
+
+    // Distance-only: no lap counting. Show steps here instead, since HealthKit
+    // distance advances in watch-synced batches and a second readout reassures a
+    // watching room that the feed is alive between those jumps.
+    $('lapline').innerHTML = '<b>' + (d.target_mi - wmi).toFixed(2) + '</b> miles to go';
+    $('steps2').textContent = d.steps > 0 ? d.steps.toLocaleString() : '-';
+    $('hrv').textContent    = d.hr_mean_60s > 0 ? Math.round(d.hr_mean_60s) : '-';
+    drawSpark(parseSeries(d.hr_hist));
+    updateMap(d);
+
+    // Which HR source is actually feeding the number right now.
+    const hrStale = d.hr_src === 'none' || !(d.hr > 0);
+    $('hr').textContent = hrStale ? '–' : d.hr;
+    $('hr').className   = hrStale ? 'stale' : '';
+    $('hrlab').textContent =
+      d.hr_src === 'polar'     ? 'heart rate · chest strap' :
+      d.hr_src === 'healthkit' ? 'heart rate · watch'       :
+                                 'heart rate · no signal';
+
+    // Plausibility gate. Before the start (and during any long aid-station stop) the
+    // raw arithmetic is correct but absurd -- standing still for 16 min reads as
+    // 164:34/mi and "136h remaining". Only show these once they mean something.
+    const moving = d.dist_mi > 0.25 && d.pace_min_mi >= 5 && d.pace_min_mi <= 30;
+    $('pace').textContent = moving ? mmss(d.pace_min_mi) : '–';
+    $('el').textContent   = hms(d.elapsed_s);
+    $('eta').textContent  = (moving && d.eta_s > 0) ? hms(d.eta_s) : '–';
+    $('cad').textContent  = d.cadence_spm >= 50 ? d.cadence_spm : '–';
+    $('kcal').textContent = d.kcal > 0 ? d.kcal : '–';
+
+    const age = Math.round(Date.now()/1000 - d.t);
+    const dead = age > 60;
+    $('dot').className = 'dot ' + (dead ? 'stale' : 'live');
+    $('status').textContent = dead
+      ? 'feed ' + hms(age) + ' stale'
+      : 'live · updated ' + new Date(d.t*1000).toLocaleTimeString();
+    $('foot').textContent =
+      'HR ' + (d.hr_age_s < 0 ? 'no strap signal' : d.hr_age_s + 's old') +
+      ' · source ' + d.hr_src +
+      ' · ' + d.artifacts_60s + ' artifacts/min' +
+      ' · ' + d.steps + ' steps' +
+      ' · feed age ' + age + 's';
+  } catch (e) {
+    $('dot').className = 'dot stale';
+    const since = lastGood ? ' (last good ' + hms((Date.now()-lastGood)/1000) + ' ago)' : '';
+    $('status').textContent = 'no data' + since;
+    if (!lastGood) { $('setup').classList.remove('hidden'); countdown(); }
+  }
+}
+tick();
+setInterval(tick, 5000);
+</script>
+</body>
+</html>
