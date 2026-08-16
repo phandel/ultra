@@ -366,22 +366,22 @@ function drawMapKit(lat, lon, trail){
 
 // Tile styles, all usable without an API key or account (verified reachable 2026-08-16;
 // Stadia returns 401 without a key, so it is deliberately absent).
-// Default is CARTO dark: standard OSM "mapnik" tiles are bright and cluttered, which looks
-// wrong on a dark page -- that was the actual complaint, not the map library.
+// First entry is the default. CARTO "voyager" (Streets) is the default: it is a clean,
+// labelled street map, unlike standard OSM mapnik which is bright and cluttered. Satellite
+// and Dark stay one tap away in the layer switcher.
 const TILE_STYLES = {
+  'Streets': {
+    url:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    opts:{maxZoom:20, subdomains:'abcd', detectRetina:true,
+          attribution:'&copy; OpenStreetMap &copy; CARTO'}
+  },
   'Satellite': {
-    // Esri tiles are {z}/{y}/{x} -- the row/col order differs from OSM/CARTO. Default
-    // because imagery reads better for a running route than any flat basemap.
+    // Esri tiles are {z}/{y}/{x} -- the row/col order differs from OSM/CARTO.
     url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     opts:{maxZoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}
   },
   'Dark': {
     url:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    opts:{maxZoom:20, subdomains:'abcd', detectRetina:true,
-          attribution:'&copy; OpenStreetMap &copy; CARTO'}
-  },
-  'Streets': {
-    url:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
     opts:{maxZoom:20, subdomains:'abcd', detectRetina:true,
           attribution:'&copy; OpenStreetMap &copy; CARTO'}
   }
