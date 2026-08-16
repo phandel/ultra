@@ -131,7 +131,7 @@ const TB  = qs.get('tb')  || DEFAULT_TB;
 const TB_KEYS = ['hr','hr_src','hr_age_s','dist_mi','target_mi','pct','pace_min_mi',
                  'eta_s','elapsed_s','cadence_spm','kcal','steps','artifacts_60s','t',
                  'workout_mi','workout_pct','hr_mean_60s','lat','lon','loc_age_s',
-                 'hr_hist','trail'];
+                 'hr_hist','trail','hr_win_min'];
 const $ = id => document.getElementById(id);
 const RACE_DAY = new Date('2026-09-05T06:00:00-07:00');
 
@@ -221,7 +221,7 @@ function parseSeries(v){
 
 // 5-minute heart-rate sparkline. Hand-drawn on a canvas rather than pulling in a chart
 // library: it is a few dozen lines, has no supply chain, and stays readable on a TV.
-function drawSpark(pts){
+function drawSpark(pts, winMin){
   const cv = $('hrspark'); if (!cv) return;
   const cssW = cv.clientWidth || 300, cssH = cv.clientHeight || 70;
   const dpr = window.devicePixelRatio || 1;
@@ -233,7 +233,7 @@ function drawSpark(pts){
   g.clearRect(0,0,cssW,cssH);
   if (pts.length < 2) {
     g.fillStyle = '#48484a'; g.font = '12px -apple-system,sans-serif';
-    g.fillText('waiting for heart-rate history\u2026', 2, cssH/2);
+    g.fillText('waiting for heart-rate data\u2026', 2, cssH/2);
     return;
   }
   const xs = pts.map(p=>p[0]), ys = pts.map(p=>p[1]);
@@ -263,7 +263,11 @@ function drawSpark(pts){
   g.fillStyle = '#8e8e93'; g.font = '10px -apple-system,sans-serif';
   g.fillText(Math.round(Math.max(...ys)) + '', 2, 10);
   g.fillText(Math.round(Math.min(...ys)) + '', 2, cssH-2);
-  const mins = Math.max(1, Math.round((x1-x0)/60));
+  // Prefer the window the collector actually used. It widens past 5 min when samples
+  // are sparse (watch at rest writes HR only every ~5 min), so labelling it honestly
+  // matters -- otherwise a 60-min trace silently reads as if it were the last 5.
+  const mins = (typeof winMin === 'number' && winMin > 0)
+             ? winMin : Math.max(1, Math.round((x1-x0)/60));
   const lbl = 'last ' + mins + ' min \u00b7 ' + pts.length + ' pts';
   g.fillText(lbl, cssW - g.measureText(lbl).width - 2, cssH-2);
 }
@@ -356,7 +360,7 @@ async function tick(){
     $('lapline').innerHTML = '<b>' + (d.target_mi - wmi).toFixed(2) + '</b> miles to go';
     $('steps2').textContent = d.steps > 0 ? d.steps.toLocaleString() : '-';
     $('hrv').textContent    = d.hr_mean_60s > 0 ? Math.round(d.hr_mean_60s) : '-';
-    drawSpark(parseSeries(d.hr_hist));
+    drawSpark(parseSeries(d.hr_hist), d.hr_win_min);
     updateMap(d);
 
     // Which HR source is actually feeding the number right now.
