@@ -44,10 +44,11 @@
   .of b{color:var(--accent);}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.2vw;margin-top:0;}
   .c{background:var(--card);border-radius:18px;padding:2vh 1.6vw;}
-  .c b{display:block;font-size:clamp(1.7rem,4.6vw,3.4rem);line-height:1.02;font-variant-numeric:tabular-nums;font-weight:700;}
+  .c b{display:block;font-size:clamp(1.25rem,2.7vw,2rem);line-height:1.05;font-variant-numeric:tabular-nums;font-weight:700;
+        white-space:nowrap;overflow:hidden;}
   .c span{display:block;font-size:clamp(.6rem,1vw,.82rem);color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-top:.5em;}
   .c.hr b{color:var(--hr);} .c.pace b{color:var(--pace);} .c.eta b{color:var(--eta);} .c.cad b{color:var(--cad);}
-  .c.hr b.stale{color:var(--muted);}
+  .c.hr b.stale{color:#6b6b70;}
   .hrcard{grid-column:1/-1;position:relative;}
   .spark{display:block;width:100%;height:70px;margin-top:.6em;}
   @media(max-width:900px){.spark{height:56px;}}
@@ -506,21 +507,32 @@ async function tick(){
     drawSpark(parseSeries(d.hr_hist), d.hr_win_min);
     updateMap(d);
 
-    // Which HR source is actually feeding the number right now.
-    const hrStale = d.hr_src === 'none' || !(d.hr > 0);
-    $('hr').textContent = hrStale ? '–' : d.hr;
-    $('hr').className   = hrStale ? 'stale' : '';
-    $('hrlab').textContent =
-      d.hr_src === 'polar'     ? 'heart rate · chest strap' :
-      d.hr_src === 'healthkit' ? 'heart rate · watch'       :
-                                 'heart rate · no signal';
+    // Which HR source is feeding the number, and how old it is. The watch samples only
+    // every few minutes at rest, so a value can be legitimately stale -- show it, but
+    // never styled as if it were live.
+    const hrNone  = d.hr_src === 'none' || !(d.hr > 0);
+    const hrAge   = typeof d.hr_age_s === 'number' ? d.hr_age_s : -1;
+    const hrFresh = !hrNone && hrAge >= 0 && hrAge <= 30;
+    $('hr').textContent = hrNone ? '–' : d.hr;
+    $('hr').className   = hrFresh ? '' : 'stale';
+    const srcName = d.hr_src === 'polar'     ? 'chest strap'
+                  : d.hr_src === 'healthkit' ? 'watch'
+                                             : 'no signal';
+    let ageTxt = '';
+    if (!hrNone && !hrFresh && hrAge >= 0) {
+      ageTxt = hrAge >= 3600 ? ' · ' + Math.floor(hrAge/3600) + 'h old'
+             : hrAge >= 60   ? ' · ' + Math.floor(hrAge/60)   + 'm old'
+                             : ' · ' + hrAge + 's old';
+    }
+    $('hrlab').textContent = 'heart rate · ' + srcName + ageTxt;
 
     // Plausibility gate. Before the start (and during any long aid-station stop) the
     // raw arithmetic is correct but absurd -- standing still for 16 min reads as
     // 164:34/mi and "136h remaining". Only show these once they mean something.
     const moving = d.dist_mi > 0.25 && d.pace_min_mi >= 5 && d.pace_min_mi <= 30;
+    const started = wmi > 0.05 || d.dist_mi > 0.05;
     $('pace').textContent = moving ? mmss(d.pace_min_mi) : '–';
-    $('el').textContent   = hms(d.elapsed_s);
+    $('el').textContent   = started ? hms(d.elapsed_s) : '–';
     $('eta').textContent  = (moving && d.eta_s > 0) ? hms(d.eta_s) : '–';
     $('cad').textContent  = d.cadence_spm >= 50 ? d.cadence_spm : '–';
     $('kcal').textContent = d.kcal > 0 ? d.kcal : '–';
