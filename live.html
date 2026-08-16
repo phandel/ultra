@@ -206,96 +206,101 @@ function unwrap(j){
 
 let lastGood = 0;
 
-// Map. Deliberately OpenStreetMap in a plain iframe rather than the Google Maps
-// JavaScript API: Google now requires a billing-enabled API key, and any key shipped in
-// a public page is world-readable and abusable. OSM's embed needs no key and no
-// account. If lat/lon never arrive the map stays hidden rather than showing a
-// misleading default location.
-// hr_hist and trail arrive as JSON-encoded STRINGS because ThingsBoard telemetry
-// values are scalars. Parse defensively: a malformed series must not take the page down.
-function parseSeries(v){
-  if (Array.isArray(v)) return v;
-  if (typeof v !== 'string' || !v) return [];
-  try { const a = JSON.parse(v); return Array.isArray(a) ? a : []; } catch(e) { return []; }
-}
+// --- map -------------------------------------------------------------------
+// Apple Maps (MapKit JS) when a token is available, OpenStreetMap/Leaflet otherwise.
+//
+// MapKit JS requires a signed JWT -- there is no anonymous tier. This site is static
+// (GitHub Pages) so there is no server to mint short-lived tokens; the token is therefore
+// a long-lived one restricted to this origin, which is Apple's documented approach for
+// static sites. An origin-restricted token cannot be used from another domain.
+//
+// Leaflet is retained as an automatic fallback: if the token is absent, expired or
+// rejected, the map degrades to OSM instead of vanishing on race day.
+const MAPKIT_TOKEN = (new URLSearchParams(location.search)).get('mkt') || '';
 
-// 5-minute heart-rate sparkline. Hand-drawn on a canvas rather than pulling in a chart
-// library: it is a few dozen lines, has no supply chain, and stays readable on a TV.
-function drawSpark(pts, winMin){
-  const cv = $('hrspark'); if (!cv) return;
-  const cssW = cv.clientWidth || 300, cssH = cv.clientHeight || 70;
-  const dpr = window.devicePixelRatio || 1;
-  if (cv.width !== cssW*dpr || cv.height !== cssH*dpr) {
-    cv.width = cssW*dpr; cv.height = cssH*dpr;
-  }
-  const g = cv.getContext('2d');
-  g.setTransform(dpr,0,0,dpr,0,0);
-  g.clearRect(0,0,cssW,cssH);
-  if (pts.length < 2) {
-    g.fillStyle = '#48484a'; g.font = '12px -apple-system,sans-serif';
-    g.fillText('waiting for heart-rate data\u2026', 2, cssH/2);
-    return;
-  }
-  const xs = pts.map(p=>p[0]), ys = pts.map(p=>p[1]);
-  const x0 = Math.min(...xs), x1 = Math.max(...xs);
-  // Pad the y-range so a flat resting trace is not drawn as a single edge-hugging line.
-  let y0 = Math.min(...ys), y1 = Math.max(...ys);
-  if (y1 - y0 < 10) { const m=(y0+y1)/2; y0=m-5; y1=m+5; }
-  const pad = 4, W = cssW-pad*2, H = cssH-pad*2;
-  const sx = t => pad + (x1===x0 ? W : (t-x0)/(x1-x0)*W);
-  const sy = v => pad + H - (v-y0)/(y1-y0)*H;
-
-  // filled area under the curve
-  g.beginPath(); g.moveTo(sx(xs[0]), cssH-pad);
-  pts.forEach(p=>g.lineTo(sx(p[0]), sy(p[1])));
-  g.lineTo(sx(xs[xs.length-1]), cssH-pad); g.closePath();
-  const grad = g.createLinearGradient(0,pad,0,cssH);
-  grad.addColorStop(0,'rgba(255,69,58,.35)'); grad.addColorStop(1,'rgba(255,69,58,0)');
-  g.fillStyle = grad; g.fill();
-
-  g.beginPath(); pts.forEach((p,i)=> i?g.lineTo(sx(p[0]),sy(p[1])):g.moveTo(sx(p[0]),sy(p[1])));
-  g.strokeStyle = '#ff453a'; g.lineWidth = 2; g.lineJoin='round'; g.stroke();
-
-  // current point + min/max labels
-  const last = pts[pts.length-1];
-  g.beginPath(); g.arc(sx(last[0]), sy(last[1]), 3.5, 0, Math.PI*2);
-  g.fillStyle = '#ff453a'; g.fill();
-  g.fillStyle = '#8e8e93'; g.font = '10px -apple-system,sans-serif';
-  g.fillText(Math.round(Math.max(...ys)) + '', 2, 10);
-  g.fillText(Math.round(Math.min(...ys)) + '', 2, cssH-2);
-  // Prefer the window the collector actually used. It widens past 5 min when samples
-  // are sparse (watch at rest writes HR only every ~5 min), so labelling it honestly
-  // matters -- otherwise a 60-min trace silently reads as if it were the last 5.
-  const mins = (typeof winMin === 'number' && winMin > 0)
-             ? winMin : Math.max(1, Math.round((x1-x0)/60));
-  const lbl = 'last ' + mins + ' min \u00b7 ' + pts.length + ' pts';
-  g.fillText(lbl, cssW - g.measureText(lbl).width - 2, cssH-2);
-}
-
-let lastLat = null, lastLon = null;
+let mapMode = null;                        // null -> 'init' -> 'mapkit' | 'leaflet' | 'none'
+let mkMap = null, mkLine = null, mkMark = null;
 let lmap = null, lmark = null, lline = null;
-// Run a programmatic map move without it counting as a user gesture. The flag is
-// cleared on a timeout because Leaflet's move events are asynchronous.
-function progMove(fn){
-  lmap._prog = true;
-  try { fn(); } finally { setTimeout(() => { lmap._prog = false; }, 350); }
+let mapProg = false, mapUserMoved = false;
+
+// Run a programmatic camera move without it counting as a user gesture. Both map engines
+// raise their region-change events for our own moves too, so without this flag the first
+// auto-fit would immediately disable auto-follow.
+function markProg(fn){
+  mapProg = true;
+  try { fn(); } finally { setTimeout(() => { mapProg = false; }, 400); }
 }
-function updateMap(d){
-  const hasFix = typeof d.lat === 'number' && typeof d.lon === 'number'
-              && d.lat !== 0 && d.lon !== 0;
-  const trail = parseSeries(d.trail);
 
-  if (!hasFix && trail.length === 0) {
-    $('mapnote').textContent = 'live location not available';
-    return;
-  }
-  if (typeof L === 'undefined') {   // Leaflet blocked or offline
-    $('mapnote').textContent = 'map library unavailable';
-    return;
-  }
-  const lat = hasFix ? d.lat : trail[trail.length-1][0];
-  const lon = hasFix ? d.lon : trail[trail.length-1][1];
+function initMapKit(cb){
+  if (!MAPKIT_TOKEN) return cb(false);
+  const s = document.createElement('script');
+  s.src = 'https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js';
+  s.crossOrigin = 'anonymous';
+  s.onerror = () => cb(false);
+  s.onload = () => {
+    try {
+      let failed = false;
+      mapkit.init({ authorizationCallback: done => done(MAPKIT_TOKEN), language: 'en' });
+      // A rejected token surfaces asynchronously as an error event, not as a throw.
+      mapkit.addEventListener('error', () => {
+        if (failed) return;
+        failed = true;
+        mkMap = null; mkLine = null; mkMark = null;
+        const el = $('map'); if (el) el.innerHTML = '';
+        mapMode = (typeof L !== 'undefined') ? 'leaflet' : 'none';
+      });
+      cb(true);
+    } catch (e) { cb(false); }
+  };
+  document.head.appendChild(s);
+}
 
+function drawMapKit(lat, lon, trail){
+  if (!mkMap) {
+    mkMap = new mapkit.Map('map', {
+      colorScheme: mapkit.Map.ColorSchemes.Dark,
+      showsCompass: mapkit.FeatureVisibility.Hidden,
+      showsScale: mapkit.FeatureVisibility.Adaptive,
+      showsUserLocation: false,
+      isRotationEnabled: false
+    });
+    mkMap.addEventListener('region-change-start', () => { if (!mapProg) mapUserMoved = true; });
+  }
+  if (trail.length > 1) {
+    const coords = trail.map(p => new mapkit.Coordinate(p[0], p[1]));
+    if (mkLine) mkMap.removeOverlay(mkLine);
+    mkLine = new mapkit.PolylineOverlay(coords, {
+      style: new mapkit.Style({ lineWidth: 4, lineJoin: 'round',
+                                strokeColor: '#ff9f0a', strokeOpacity: 0.9 })
+    });
+    mkMap.addOverlay(mkLine);
+  }
+  if (!mkMark) {
+    mkMark = new mapkit.MarkerAnnotation(new mapkit.Coordinate(lat, lon), { color: '#ff453a' });
+    mkMap.addAnnotation(mkMark);
+  } else {
+    mkMark.coordinate = new mapkit.Coordinate(lat, lon);
+  }
+  if (mapUserMoved) return;
+  markProg(() => {
+    if (trail.length > 1) {
+      let n=-90,s=90,e=-180,w=180;
+      for (const p of trail) { n=Math.max(n,p[0]); s=Math.min(s,p[0]);
+                               e=Math.max(e,p[1]); w=Math.min(w,p[1]); }
+      // Minimum span keeps a tight cluster of fixes from zooming to maximum.
+      const dLat=Math.max((n-s)*1.7, 0.0025), dLon=Math.max((e-w)*1.7, 0.0025);
+      mkMap.setRegionAnimated(new mapkit.CoordinateRegion(
+        new mapkit.Coordinate((n+s)/2, (e+w)/2),
+        new mapkit.CoordinateSpan(dLat, dLon)));
+    } else {
+      mkMap.setRegionAnimated(new mapkit.CoordinateRegion(
+        new mapkit.Coordinate(lat, lon), new mapkit.CoordinateSpan(0.006, 0.006)));
+    }
+  });
+}
+
+function drawLeaflet(lat, lon, trail){
+  if (typeof L === 'undefined') { $('mapnote').textContent='map library unavailable'; return; }
   if (!lmap) {
     lmap = L.map('map', {zoomControl:true, attributionControl:true,
                          scrollWheelZoom:false}).setView([lat,lon], 16);
@@ -304,29 +309,47 @@ function updateMap(d){
     lline = L.polyline([], {color:'#ff9f0a', weight:4, opacity:.85}).addTo(lmap);
     lmark = L.circleMarker([lat,lon],
       {radius:7, color:'#fff', weight:2, fillColor:'#ff453a', fillOpacity:1}).addTo(lmap);
-    // Stop auto-recentring once a viewer pans or zooms, so someone inspecting the route
-    // is not yanked back every poll. Only user gestures set this -- our own fitBounds
-    // and setView calls are programmatic and do not fire dragstart/zoomstart.
-    // NOTE zoomstart also fires for OUR fitBounds/setView, so a naive handler would
-    // latch on the very first auto-fit and never follow again. Flag programmatic moves
-    // and ignore events raised during them.
-    lmap.on('dragstart zoomstart', () => { if (!lmap._prog) lmap._userMoved = true; });
+    lmap.on('dragstart zoomstart', () => { if (!mapProg) mapUserMoved = true; });
   }
-  // 5-minute breadcrumb trail.
   if (trail.length > 1) {
     lline.setLatLngs(trail);
-    // Keep the whole trail in view, but do not fight the user if they panned/zoomed.
-    if (!lmap._userMoved) progMove(() => lmap.fitBounds(lline.getBounds(), {padding:[24,24], maxZoom:17}));
+    if (!mapUserMoved) markProg(() =>
+      lmap.fitBounds(lline.getBounds(), {padding:[24,24], maxZoom:17}));
   }
   lmark.setLatLng([lat,lon]);
-  if (trail.length <= 1 && !lmap._userMoved) progMove(() => lmap.setView([lat,lon], lmap.getZoom()));
+  if (trail.length <= 1 && !mapUserMoved)
+    markProg(() => lmap.setView([lat,lon], lmap.getZoom()));
+}
+
+function updateMap(d){
+  const trail = parseSeries(d.trail).filter(p => Array.isArray(p) && p.length >= 2);
+  const hasFix = typeof d.lat === 'number' && typeof d.lon === 'number'
+              && d.lat !== 0 && d.lon !== 0;
+  if (!hasFix && trail.length === 0) {
+    $('mapnote').textContent = 'live location not available';
+    return;
+  }
+  const lat = hasFix ? d.lat : trail[trail.length-1][0];
+  const lon = hasFix ? d.lon : trail[trail.length-1][1];
+
+  if (mapMode === null) {
+    mapMode = 'init';
+    initMapKit(ok => {
+      mapMode = ok ? 'mapkit' : ((typeof L !== 'undefined') ? 'leaflet' : 'none');
+    });
+    return;                       // draw on the next poll, once a mode has been chosen
+  }
+  if (mapMode === 'init') return;
+  if (mapMode === 'mapkit') drawMapKit(lat, lon, trail);
+  else if (mapMode === 'leaflet') drawLeaflet(lat, lon, trail);
 
   const age = (typeof d.loc_age_s === 'number' && d.loc_age_s >= 0)
             ? ' \u00b7 ' + d.loc_age_s + 's ago' : '';
   const tn  = trail.length > 1 ? ' \u00b7 ' + trail.length + '-pt trail' : '';
-  $('mapnote').innerHTML = lat.toFixed(5) + ', ' + lon.toFixed(5) + age + tn +
-    ' \u00b7 <a href="https://www.google.com/maps?q=' + lat + ',' + lon +
-    '" target="_blank" rel="noopener">open in Google Maps</a>';
+  const via = mapMode === 'mapkit' ? '' : ' \u00b7 osm';
+  $('mapnote').innerHTML = lat.toFixed(5) + ', ' + lon.toFixed(5) + age + tn + via +
+    ' \u00b7 <a href="https://maps.apple.com/?ll=' + lat + ',' + lon +
+    '" target="_blank" rel="noopener">open in Maps</a>';
 }
 
 async function tick(){
