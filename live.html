@@ -42,6 +42,7 @@
   .leaflet-control-attribution{background:rgba(0,0,0,.6)!important;color:#8e8e93!important;}
   .leaflet-control-attribution a{color:#8e8e93!important;}
   .of b{color:var(--accent);}
+  .ovrflag{display:block;font-size:.5em;color:#ff6a33;letter-spacing:.08em;text-transform:uppercase;}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1.2vw;margin-top:0;}
   .c{background:var(--card);border-radius:18px;padding:2vh 1.6vw;}
   .c b{display:block;font-size:clamp(1.25rem,2.7vw,2rem);line-height:1.05;font-variant-numeric:tabular-nums;font-weight:700;
@@ -70,7 +71,8 @@
 
   <div class="hero">
     <div class="miles" id="miles">0.00</div>
-    <div class="of" id="of">of 50 miles &middot; <b id="pctbig">0.0%</b></div>
+    <div class="of" id="of">of 50 miles &middot; <b id="pctbig">0.0%</b>
+      <span id="ovrflag" class="ovrflag"></span></div>
   </div>
   <div class="bar"><i id="bar"></i></div>
   <div class="laps" id="lapline">&nbsp;</div>
@@ -136,7 +138,7 @@ const TB  = qs.get('tb')  || DEFAULT_TB;
 const TB_KEYS = ['hr','hr_src','hr_age_s','dist_mi','target_mi','pct','pace_min_mi',
                  'eta_s','elapsed_s','cadence_spm','kcal','steps','artifacts_60s','t',
                  'workout_mi','workout_pct','hr_mean_60s','lat','lon','loc_age_s',
-                 'hr_hist','trail','hr_win_min'];
+                 'hr_hist','trail','hr_win_min','dist_src'];
 const $ = id => document.getElementById(id);
 const RACE_DAY = new Date('2026-09-05T06:00:00-07:00');
 
@@ -496,6 +498,10 @@ async function tick(){
                                                      : (wmi / d.target_mi * 100);
     $('miles').textContent = wmi.toFixed(2);
     $('pctbig').textContent = wpct.toFixed(1) + '%';
+    // A hand-entered distance must never look measured, on the public page either.
+    const isOvr = d.dist_src === 'override';
+    $('miles').style.color = isOvr ? '#ff6a33' : '';
+    $('ovrflag').textContent = isOvr ? 'manually entered' : '';
     $('bar').style.width   = Math.min(100, wpct) + '%';
 
     // Distance-only: no lap counting. Show steps here instead, since HealthKit
