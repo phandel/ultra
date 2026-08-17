@@ -128,7 +128,7 @@
 // carrying Peter's own race telemetry: a write token embedded in a public page is readable
 // by anyone, so it must not be able to overwrite the headline race data. Worst case here is
 // junk in the friends feed, which is recoverable by rotating this token.
-const FRIENDS_TOKEN = '';                        // set once the friends device exists
+const FRIENDS_TOKEN = 'fSmStSbu2QzkrenAqZgR';    // ultra50-friends device (NOT the race device)
 const TB_HOST = 'https://thingsboard.cloud';
 const PUBLISH_MS = 10000;                        // 10 s: readable on the map, easy on battery
 // ---------------------------------------------------------------------------
@@ -141,7 +141,7 @@ let watchId = null, timer = null, wakeLock = null;
 let me = { id:null, name:'', mode:'run' };
 let started = 0, distM = 0, lastFix = null, fixes = 0, lastPub = 0;
 let gaps = 0, gapS = 0;
-let sendMode = 'json';     // downgrades to 'simple' if CORS blocks the JSON POST
+let sendMode = 'simple';   // see publish(): JSON is preflight-blocked by ThingsBoard
 let lastErr = '';
 
 // Stable identity across reloads, so a mid-run refresh doesn't create a second person.
@@ -272,7 +272,11 @@ function setStatus() {
   let g = '';
   if (gaps > 0) g = gaps + ' pause' + (gaps>1?'s':'') + ' (' + fmtT(gapS) +
                     ' not counted — screen was locked or app switched). ';
-  $('diag').textContent = (wakeLock ? 'screen kept awake. ' : 'screen may lock — keep this page open. ')
+  const pub = confirmed === true  ? 'on the leaderboard. '
+            : confirmed === false ? 'not reaching the leaderboard yet. '
+                                  : '';
+  $('diag').textContent = pub +
+    (wakeLock ? 'screen kept awake. ' : 'screen may lock — keep this page open. ')
     + g + (lastErr ? '(' + lastErr + ')' : '');
 }
 
@@ -331,7 +335,7 @@ $('stop').addEventListener('click', async () => {
 // --- leaderboard -----------------------------------------------------------
 // Read back everyone's f_* keys from the friends device using anonymous public auth, so
 // the join page needs no read credential either.
-const FRIENDS_DEVICE = '';        // set alongside FRIENDS_TOKEN
+const FRIENDS_DEVICE = '424d8160-99fc-11f1-b480-1301d0f2616d';
 const TB_PUBLIC_ID   = '49f60990-993a-11f1-bb5b-f59caa77e86d';
 const MODE_IC = { run:'🏃', walk:'🚶', bike:'🚴', scoot:'🛴' };
 let bTok = null;
@@ -394,8 +398,20 @@ function renderBoard(list){
       '</div>';
   }).join('');
 }
+let confirmed = null;      // null = unknown, true/false once we have read back
+async function confirmPublish(list){
+  if (!Array.isArray(list)) { confirmed = null; return; }
+  const mine = list.find(f => f.key === 'f_' + me.id);
+  // Our own record present and recently stamped == the opaque no-cors POST is landing.
+  confirmed = !!(mine && (Date.now()/1000 - (mine.t||0)) < 60);
+}
+
 async function tickBoard(){
-  try { renderBoard(await fetchBoard()); }
+  try {
+    const list = await fetchBoard();
+    await confirmPublish(list);
+    renderBoard(list);
+  }
   catch (e) { $('board').innerHTML = '<div class="bempty">leaderboard unavailable (' +
               (e.message||'error') + ')</div>'; }
 }
