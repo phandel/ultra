@@ -144,14 +144,22 @@ let gaps = 0, gapS = 0;
 let sendMode = 'simple';   // see publish(): JSON is preflight-blocked by ThingsBoard
 let lastErr = '';
 
-// Stable identity across reloads, so a mid-run refresh doesn't create a second person.
+// Identity lives in sessionStorage, NOT localStorage.
+// localStorage is shared by every window/tab of a browser on the same origin, so two
+// windows both adopted the same id, published to the same f_<id> key and overwrote each
+// other -- last writer won and the other participant vanished (verified 2026-08-16: two
+// windows produced exactly one key on the device).
+// sessionStorage is per-tab and survives a reload of that tab, which is precisely the
+// behaviour wanted: refreshing keeps you the same person, a second window is a new person.
+// Name and mode stay in localStorage since sharing those across tabs is only convenient.
 try {
-  const saved = JSON.parse(localStorage.getItem(LS) || '{}');
-  if (saved.id) me.id = saved.id;
-  if (saved.name) $('nm').value = saved.name;
-  if (saved.mode) mode = saved.mode;
+  const prefs = JSON.parse(localStorage.getItem(LS) || '{}');
+  if (prefs.name) $('nm').value = prefs.name;
+  if (prefs.mode) mode = prefs.mode;
 } catch (e) {}
-if (!me.id) me.id = Math.random().toString(36).slice(2, 8);
+try { me.id = sessionStorage.getItem(LS + '.id') || null; } catch (e) {}
+function newId(){ return Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-2); }
+if (!me.id) { me.id = newId(); try { sessionStorage.setItem(LS + '.id', me.id); } catch(e){} }
 
 for (const el of document.querySelectorAll('.mode')) {
   if (el.dataset.m === mode) { document.querySelectorAll('.mode').forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); }
@@ -298,7 +306,23 @@ $('go').addEventListener('click', async () => {
   if (!nm) { $('nm').focus(); $('nm').style.borderColor = '#ff453a'; return; }
   me.name = nm.slice(0,24);
   me.mode = mode;
-  try { localStorage.setItem(LS, JSON.stringify({id:me.id, name:me.name, mode:me.mode})); } catch(e){}
+  try { localStorage.setItem(LS, JSON.stringify({name:me.name, mode:me.mode})); } catch(e){}
+  try { sessionStorage.setItem(LS + '.id', me.id); } catch(e){}
+
+  // Belt and braces: Safari copies sessionStorage when a tab is duplicated, which would
+  // recreate the collision. If our key is already held by a DIFFERENT, recently-active
+  // name, take a new id rather than stomping on them.
+  try {
+    const existing = await fetchBoard();
+    if (Array.isArray(existing)) {
+      const clash = existing.find(f => f.key === 'f_' + me.id
+        && (f.n||'') !== me.name && (Date.now()/1000 - (f.t||0)) < 90);
+      if (clash) {
+        me.id = newId();
+        try { sessionStorage.setItem(LS + '.id', me.id); } catch(e){}
+      }
+    }
+  } catch (e) { /* the guard is optional; never block starting a run on it */ }
 
   if (!('geolocation' in navigator)) {
     alert('This browser cannot share location.'); return;
