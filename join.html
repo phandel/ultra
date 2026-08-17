@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Join Peter &middot; 50 Miles for my 50th</title>
+<meta name="description" content="Join Peter on his 50-mile birthday run — share your location and appear on the live map.">
+<style>
+  :root{ --ink:#f2f2f7; --muted:#8e8e93; --accent:#ff9f0a; --go:#30d158; --stop:#ff453a;
+         --card:#1c1c1e; }
+  *{box-sizing:border-box;}
+  html,body{margin:0;min-height:100%;}
+  body{background:#0a0a0b;color:var(--ink);
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+       -webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
+  .wrap{max-width:560px;margin:0 auto;padding:6vh 1.25rem 4rem;}
+  h1{font-size:clamp(1.5rem,6vw,2.1rem);margin:0 0 .3em;letter-spacing:-.02em;}
+  h1 em{color:var(--accent);font-style:normal;}
+  .sub{color:var(--muted);font-size:.95rem;margin:0 0 1.8rem;line-height:1.6;}
+  label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;
+        color:var(--muted);margin:1.4rem 0 .5rem;font-weight:700;}
+  input[type=text]{width:100%;background:var(--card);border:1px solid #333;border-radius:12px;
+        color:var(--ink);font-size:1.1rem;padding:.85em 1em;-webkit-appearance:none;}
+  input[type=text]:focus{outline:none;border-color:var(--accent);}
+  .modes{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;}
+  .mode{background:var(--card);border:1px solid #333;border-radius:12px;padding:.8em .2em;
+        text-align:center;font-size:.8rem;cursor:pointer;user-select:none;}
+  .mode .ic{display:block;font-size:1.5rem;margin-bottom:.15em;}
+  .mode.sel{border-color:var(--accent);background:#2a2118;color:var(--accent);}
+  button.big{width:100%;border:0;border-radius:14px;padding:1.15em;font-size:1.15rem;
+        font-weight:700;margin-top:1.8rem;color:#000;background:var(--go);}
+  button.big:disabled{opacity:.45;}
+  button.big.stop{background:var(--stop);color:#fff;}
+  .note{color:#6b6b70;font-size:.78rem;line-height:1.65;margin-top:1.4rem;}
+  .note b{color:var(--muted);}
+  .live{background:var(--card);border-radius:16px;padding:1.2rem;margin-top:1.5rem;}
+  .live .row{display:flex;justify-content:space-between;align-items:baseline;
+        padding:.45em 0;border-bottom:1px solid #2a2a2c;}
+  .live .row:last-child{border-bottom:0;}
+  .live .k{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;}
+  .live .v{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums;}
+  .dot{display:inline-block;width:.6em;height:.6em;border-radius:50%;background:var(--muted);
+       margin-right:.4em;}
+  .dot.on{background:var(--go);box-shadow:0 0 10px var(--go);animation:p 2s infinite;}
+  .dot.warn{background:var(--accent);}
+  @keyframes p{0%,100%{opacity:1}50%{opacity:.35}}
+  .status{font-size:.85rem;color:var(--muted);margin-top:1rem;line-height:1.6;}
+  .err{color:var(--stop);}
+  .hidden{display:none;}
+  a{color:var(--accent);}
+  .board{background:var(--card);border-radius:16px;overflow:hidden;}
+  .brow{display:flex;align-items:center;gap:.6rem;padding:.7em .9em;border-bottom:1px solid #2a2a2c;font-size:.92rem;}
+  .brow:last-child{border-bottom:0;}
+  .brow.self{background:#2a2118;}
+  .brow .rk{color:var(--muted);font-size:.75rem;width:1.4em;text-align:right;font-variant-numeric:tabular-nums;}
+  .brow .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .brow .mi{font-weight:700;font-variant-numeric:tabular-nums;}
+  .brow .pc{color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums;min-width:5.2em;text-align:right;}
+  .brow.off{opacity:.45;}
+  .bempty{padding:.9em;color:#6b6b70;font-size:.82rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Run <em>with Peter</em></h1>
+  <p class="sub">He&rsquo;s running <b>50 miles for his 50th</b> on September&nbsp;5. Join for a
+  lap or ten &mdash; you&rsquo;ll show up live on the map at
+  <a href="live.html">phandel.com/live.html</a>, and your miles get counted.</p>
+
+  <div id="setup">
+    <label for="nm">Your name</label>
+    <input type="text" id="nm" placeholder="e.g. Bob S." autocomplete="name"
+           autocapitalize="words" maxlength="24">
+
+    <label>How are you moving?</label>
+    <div class="modes" id="modes">
+      <div class="mode sel" data-m="run"><span class="ic">🏃</span>Run</div>
+      <div class="mode" data-m="walk"><span class="ic">🚶</span>Walk</div>
+      <div class="mode" data-m="bike"><span class="ic">🚴</span>Bike</div>
+      <div class="mode" data-m="scoot"><span class="ic">🛴</span>Scooter</div>
+    </div>
+
+    <button class="big" id="go">Start &amp; share my location</button>
+
+    <p class="note">
+      <b>Temporarily share your location with the leaderboard, while your web browser is
+      up &mdash; if you lock your screen, exit the browser, or close this page you will
+      disappear, so keep your phone open!</b>
+      <br><br>
+      Your first name, position and distance appear publicly on the live map. Nothing is
+      recorded before you tap start.
+      <br><br>
+      <b>This only tracks while the page is open and the screen is on.</b> Phones stop
+      giving location to a website the moment you lock the screen or switch apps &mdash;
+      that is an iOS/Android rule, not something a website can opt out of. This page asks
+      to keep your screen awake, so in practice: start it, keep the phone in your hand or
+      an armband, and don&rsquo;t lock it. Time while it&rsquo;s paused simply isn&rsquo;t
+      counted.
+      <br><br>
+      Want to just put your phone in your pocket? Record the run however you normally do
+      (Watch, Strava, whatever) and tell Peter your distance &mdash; he&rsquo;ll add it.
+    </p>
+  </div>
+
+  <div id="running" class="hidden">
+    <div class="live">
+      <div class="row"><span class="k"><span class="dot" id="dot"></span><span id="who">you</span></span>
+        <span class="v" id="mode">🏃</span></div>
+      <div class="row"><span class="k">Distance</span><span class="v" id="dist">0.00 mi</span></div>
+      <div class="row"><span class="k">Time</span><span class="v" id="time">0m</span></div>
+      <div class="row"><span class="k">Pace</span><span class="v" id="pace">&ndash;</span></div>
+    </div>
+    <button class="big stop" id="stop">Stop sharing</button>
+    <p class="status" id="status">starting&hellip;</p>
+    <p class="note" id="diag"></p>
+
+    <label>Everyone out there</label>
+    <div id="board" class="board"><div class="bempty">waiting for the leaderboard&hellip;</div></div>
+    <p class="note">Full map at <a href="live.html">phandel.com/live.html</a>.</p>
+  </div>
+
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// Where friends publish. This is a DEDICATED ThingsBoard device, deliberately not the one
+// carrying Peter's own race telemetry: a write token embedded in a public page is readable
+// by anyone, so it must not be able to overwrite the headline race data. Worst case here is
+// junk in the friends feed, which is recoverable by rotating this token.
+const FRIENDS_TOKEN = '';                        // set once the friends device exists
+const TB_HOST = 'https://thingsboard.cloud';
+const PUBLISH_MS = 10000;                        // 10 s: readable on the map, easy on battery
+// ---------------------------------------------------------------------------
+
+const $ = id => document.getElementById(id);
+const LS = 'phandel.join.v1';
+
+let mode = 'run';
+let watchId = null, timer = null, wakeLock = null;
+let me = { id:null, name:'', mode:'run' };
+let started = 0, distM = 0, lastFix = null, fixes = 0, lastPub = 0;
+let gaps = 0, gapS = 0;
+let sendMode = 'json';     // downgrades to 'simple' if CORS blocks the JSON POST
+let lastErr = '';
+
+// Stable identity across reloads, so a mid-run refresh doesn't create a second person.
+try {
+  const saved = JSON.parse(localStorage.getItem(LS) || '{}');
+  if (saved.id) me.id = saved.id;
+  if (saved.name) $('nm').value = saved.name;
+  if (saved.mode) mode = saved.mode;
+} catch (e) {}
+if (!me.id) me.id = Math.random().toString(36).slice(2, 8);
+
+for (const el of document.querySelectorAll('.mode')) {
+  if (el.dataset.m === mode) { document.querySelectorAll('.mode').forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); }
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.mode').forEach(x => x.classList.remove('sel'));
+    el.classList.add('sel');
+    mode = el.dataset.m;
+  });
+}
+
+const MODE_ICON = { run:'🏃', walk:'🚶', bike:'🚴', scoot:'🛴' };
+// Upper speed bound per mode, used to reject GPS jumps. Generous on purpose -- rejecting a
+// real burst is worse than accepting a slightly noisy one.
+const MODE_MAXMS = { run:8, walk:6, bike:22, scoot:22 };
+// Any gap longer than this is treated as "tracking was paused", not as travel. Without it,
+// locking the phone for 20 minutes and unlocking somewhere else would credit the whole
+// straight-line jump -- potentially a drive home.
+const MAX_GAP_S = 120;
+
+function hav(a, b) {
+  const R = 6371000, t = Math.PI/180;
+  const dLat = (b.lat-a.lat)*t, dLon = (b.lon-a.lon)*t;
+  const la1 = a.lat*t, la2 = b.lat*t;
+  const x = Math.sin(dLat/2)**2 + Math.cos(la1)*Math.cos(la2)*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(x));
+}
+function fmtT(s){
+  s = Math.max(0, Math.round(s));
+  const h = Math.floor(s/3600), m = Math.floor(s%3600/60);
+  return h ? h+'h'+String(m).padStart(2,'0') : (m ? m+'m' : s+'s');
+}
+
+async function publish(active) {
+  if (!FRIENDS_TOKEN) { lastErr = 'no publish token configured'; return; }
+  const payload = {};
+  payload['f_' + me.id] = JSON.stringify({
+    n: me.name, m: me.mode, a: active ? 1 : 0,
+    lat: lastFix ? +lastFix.lat.toFixed(6) : 0,
+    lon: lastFix ? +lastFix.lon.toFixed(6) : 0,
+    mi: +(distM/1609.34).toFixed(3),
+    gp: Math.round(gapS),        // seconds not counted, so totals are honest
+    // Active seconds = wall clock minus paused stretches. Pace computed from this rather
+    // than from wall clock, otherwise a 10-minute screen lock makes everyone look slow.
+    el: Math.max(0, Math.round((Date.now()-started)/1000 - gapS)),
+    t: Math.round(Date.now()/1000),
+  });
+  const url = TB_HOST + '/api/v1/' + FRIENDS_TOKEN + '/telemetry';
+  const body = JSON.stringify(payload);
+  try {
+    if (sendMode === 'json') {
+      const r = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body});
+      if (!r.ok) throw new Error('http ' + r.status);
+    } else {
+      // CORS "simple request": text/plain triggers no preflight, so this goes out even if
+      // the server sends no CORS headers. We cannot read the response, which is fine --
+      // this is fire-and-forget telemetry.
+      await fetch(url, {method:'POST', mode:'no-cors',
+                        headers:{'Content-Type':'text/plain'}, body});
+    }
+    lastErr = '';
+  } catch (e) {
+    if (sendMode === 'json') { sendMode = 'simple'; lastErr = 'switched to no-cors send'; }
+    else lastErr = 'send failed: ' + (e.message || 'unknown');
+  }
+}
+
+function onFix(pos) {
+  const c = pos.coords;
+  const fix = { lat:c.latitude, lon:c.longitude, acc:c.accuracy||99, t:pos.timestamp||Date.now() };
+  fixes++;
+  if (fix.acc > 50) { setStatus(); return; }        // too vague to trust
+
+  if (lastFix) {
+    const d  = hav(lastFix, fix);
+    const dt = Math.max(0.001, (fix.t - lastFix.t)/1000);
+    const ms = d/dt;
+    // Two filters that matter far more than they look:
+    //  - a minimum step, because GPS jitter while standing still otherwise accumulates
+    //    hundreds of metres over an hour
+    //  - a per-mode speed ceiling, to drop teleport-style fixes
+    const minStep = Math.max(5, fix.acc/2);
+    if (dt > MAX_GAP_S) { gaps++; gapS += dt; }        // paused: credit nothing
+    else if (d >= minStep && ms <= (MODE_MAXMS[me.mode]||8)) distM += d;
+  }
+  lastFix = fix;
+
+  const now = Date.now();
+  if (now - lastPub >= PUBLISH_MS) { lastPub = now; publish(true); }
+  render();
+}
+
+function onFixErr(e) {
+  const msg = e.code === 1 ? 'location permission denied — allow it in Settings › Safari'
+            : e.code === 2 ? 'position unavailable'
+            : e.code === 3 ? 'location timed out'
+            : 'location error';
+  $('status').innerHTML = '<span class="err">' + msg + '</span>';
+}
+
+function render() {
+  const mi = distM/1609.34;
+  const secs = (Date.now()-started)/1000;
+  $('dist').textContent = mi.toFixed(2) + ' mi';
+  $('time').textContent = fmtT(secs);
+  const p = mi > 0.05 ? (secs/60)/mi : 0;
+  $('pace').textContent = (p >= 3 && p <= 60)
+    ? Math.floor(p) + ':' + String(Math.round((p-Math.floor(p))*60)).padStart(2,'0') + ' /mi'
+    : '–';
+  setStatus();
+}
+
+function setStatus() {
+  const fresh = lastFix && (Date.now()-lastFix.t) < 30000;
+  $('dot').className = 'dot ' + (fresh ? 'on' : 'warn');
+  const acc = lastFix ? ' · ±' + Math.round(lastFix.acc) + 'm' : '';
+  $('status').textContent = (fresh ? 'live on the map' : 'waiting for GPS') + acc +
+    ' · ' + fixes + ' fixes';
+  let g = '';
+  if (gaps > 0) g = gaps + ' pause' + (gaps>1?'s':'') + ' (' + fmtT(gapS) +
+                    ' not counted — screen was locked or app switched). ';
+  $('diag').textContent = (wakeLock ? 'screen kept awake. ' : 'screen may lock — keep this page open. ')
+    + g + (lastErr ? '(' + lastErr + ')' : '');
+}
+
+async function keepAwake() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    }
+  } catch (e) { wakeLock = null; }
+}
+// Safari drops the wake lock when the tab is hidden; re-acquire on return.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && watchId !== null && !wakeLock) keepAwake();
+});
+
+$('go').addEventListener('click', async () => {
+  const nm = $('nm').value.trim();
+  if (!nm) { $('nm').focus(); $('nm').style.borderColor = '#ff453a'; return; }
+  me.name = nm.slice(0,24);
+  me.mode = mode;
+  try { localStorage.setItem(LS, JSON.stringify({id:me.id, name:me.name, mode:me.mode})); } catch(e){}
+
+  if (!('geolocation' in navigator)) {
+    alert('This browser cannot share location.'); return;
+  }
+  $('setup').classList.add('hidden');
+  $('running').classList.remove('hidden');
+  $('who').textContent = me.name;
+  $('mode').textContent = MODE_ICON[me.mode] || '🏃';
+  started = Date.now(); distM = 0; lastFix = null; fixes = 0; lastPub = 0;
+  gaps = 0; gapS = 0;
+
+  keepAwake();
+  // enableHighAccuracy is essential; without it iOS returns coarse network fixes that make
+  // distance meaningless.
+  watchId = navigator.geolocation.watchPosition(onFix, onFixErr,
+              {enableHighAccuracy:true, maximumAge:5000, timeout:20000});
+  timer = setInterval(render, 1000);
+  tickBoard(); setInterval(tickBoard, 15000);
+  publish(true);
+});
+
+$('stop').addEventListener('click', async () => {
+  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+  watchId = null;
+  if (timer) clearInterval(timer);
+  if (wakeLock) { try { await wakeLock.release(); } catch(e){} wakeLock = null; }
+  await publish(false);                 // mark inactive so the map can drop the pin
+  $('status').textContent = 'stopped — thanks for running! ' +
+    (distM/1609.34).toFixed(2) + ' mi counted.';
+  $('dot').className = 'dot';
+  $('stop').disabled = true;
+});
+
+// --- leaderboard -----------------------------------------------------------
+// Read back everyone's f_* keys from the friends device using anonymous public auth, so
+// the join page needs no read credential either.
+const FRIENDS_DEVICE = '';        // set alongside FRIENDS_TOKEN
+const TB_PUBLIC_ID   = '49f60990-993a-11f1-bb5b-f59caa77e86d';
+const MODE_IC = { run:'🏃', walk:'🚶', bike:'🚴', scoot:'🛴' };
+let bTok = null;
+
+async function bAuth(){
+  const r = await fetch(TB_HOST + '/api/auth/login/public', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({publicId: TB_PUBLIC_ID})});
+  if (!r.ok) throw new Error('public auth ' + r.status);
+  bTok = (await r.json()).token;
+}
+async function bGet(path){
+  if (!bTok) await bAuth();
+  const h = () => ({'X-Authorization':'Bearer ' + bTok});
+  let r = await fetch(TB_HOST + path, {headers:h()});
+  if (r.status === 401) { await bAuth(); r = await fetch(TB_HOST + path, {headers:h()}); }
+  if (!r.ok) throw new Error('http ' + r.status);
+  return r.json();
+}
+async function fetchBoard(){
+  if (!FRIENDS_DEVICE) return null;
+  const base = '/api/plugins/telemetry/DEVICE/' + FRIENDS_DEVICE;
+  const keys = (await bGet(base + '/keys/timeseries')).filter(k => k.indexOf('f_') === 0);
+  if (!keys.length) return [];
+  const raw = await bGet(base + '/values/timeseries?keys=' + keys.join(','));
+  const out = [];
+  for (const k of keys) {
+    if (!raw[k] || !raw[k][0]) continue;
+    try {
+      const o = JSON.parse(raw[k][0].value);
+      o.key = k; o.ts = raw[k][0].ts;
+      out.push(o);
+    } catch (e) { /* one malformed entry must not sink the board */ }
+  }
+  return out;
+}
+function paceStr(mi, el){
+  if (!(mi > 0.05) || !(el > 0)) return '–';
+  const p = (el/60)/mi;
+  if (p < 3 || p > 60) return '–';
+  return Math.floor(p) + ':' + String(Math.round((p-Math.floor(p))*60)).padStart(2,'0');
+}
+function renderBoard(list){
+  const el = $('board');
+  if (!list) { el.innerHTML = '<div class="bempty">leaderboard not enabled yet</div>'; return; }
+  if (!list.length) { el.innerHTML = '<div class="bempty">nobody else out there yet — you\u2019re first!</div>'; return; }
+  const now = Date.now()/1000;
+  list.sort((a,b) => (b.mi||0) - (a.mi||0));
+  el.innerHTML = list.map((f,i) => {
+    // "Active" is judged from the last publish, not the a-flag: a page closed abruptly
+    // never gets to send a=0, so staleness is the only reliable signal.
+    const age = now - (f.t || 0);
+    const live = f.a === 1 && age < 90;
+    return '<div class="brow' + (live?'':' off') + (f.key === 'f_'+me.id ? ' self':'') + '">' +
+      '<span class="rk">' + (i+1) + '</span>' +
+      '<span>' + (MODE_IC[f.m] || '•') + '</span>' +
+      '<span class="nm">' + String(f.n||'someone').replace(/[<>&]/g,'') + '</span>' +
+      '<span class="mi">' + (f.mi||0).toFixed(2) + ' mi</span>' +
+      '<span class="pc">' + paceStr(f.mi, f.el) + ' /mi</span>' +
+      '</div>';
+  }).join('');
+}
+async function tickBoard(){
+  try { renderBoard(await fetchBoard()); }
+  catch (e) { $('board').innerHTML = '<div class="bempty">leaderboard unavailable (' +
+              (e.message||'error') + ')</div>'; }
+}
+
+// Best-effort "I'm gone" on close. Not guaranteed to be delivered, which is why the map
+// also ages friends out on its own.
+window.addEventListener('pagehide', () => { if (watchId !== null) publish(false); });
+</script>
+</body>
+</html>

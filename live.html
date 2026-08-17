@@ -59,6 +59,24 @@
   .setup code{color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
   .setup h2{color:var(--ink);font-size:clamp(.9rem,1.6vw,1.2rem);margin:0 0 .6em;}
   .hidden{display:none;}
+  .bt{font-size:clamp(.95rem,1.8vw,1.25rem);margin:3vh 0 .8rem;color:var(--ink);font-weight:700;}
+  .board{background:var(--card);border-radius:16px;overflow:hidden;}
+  .brow{display:flex;align-items:center;gap:.7rem;padding:.75em 1em;border-bottom:1px solid #2a2a2c;
+        font-size:clamp(.8rem,1.4vw,1.05rem);}
+  .brow:last-child{border-bottom:0;}
+  .brow.host{background:#20180d;}
+  .brow .rk{color:var(--muted);width:1.6em;text-align:right;font-variant-numeric:tabular-nums;font-size:.8em;}
+  .brow .ic{width:1.4em;text-align:center;}
+  .brow .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .brow .mi{font-weight:700;font-variant-numeric:tabular-nums;min-width:4.6em;text-align:right;}
+  .brow .pc{color:var(--muted);font-variant-numeric:tabular-nums;min-width:6em;text-align:right;font-size:.86em;}
+  .brow .st{width:.6em;height:.6em;border-radius:50%;background:#3a3a3c;}
+  .brow .st.on{background:var(--eta);box-shadow:0 0 8px var(--eta);}
+  .brow.off{opacity:.5;}
+  .bempty{padding:1em;color:#6b6b70;font-size:.85rem;}
+  .ftip{background:rgba(0,0,0,.75)!important;border:0!important;color:#fff!important;
+        font-size:11px!important;box-shadow:none!important;}
+  .ftip::before{display:none!important;}
 </style>
 </head>
 <body>
@@ -112,6 +130,10 @@
     dashboard on port 8081 directly instead.
   </div>
 
+  <h2 class="bt" id="btitle">Running with Peter</h2>
+  <div class="board" id="board"><div class="bempty">nobody has joined yet &mdash; share
+    <a href="join.html">phandel.com/join.html</a></div></div>
+
   <div class="foot" id="foot"></div>
   <div class="foot"><a href="index.html">&larr; Back to the invitation</a></div>
 </div>
@@ -132,6 +154,9 @@ const DEFAULT_SRC = '';
 const DEFAULT_TB  = '91e6d070-9937-11f1-a3bc-95bc3f4b3917';  // ultra50 device id
 const TB_PUBLIC_ID = '49f60990-993a-11f1-bb5b-f59caa77e86d';  // Public customer (auth as)
 const TB_HOST     = 'https://thingsboard.cloud';
+// Friends publish to their OWN device (see join.html): its write token is embedded in a
+// public page, so it must never be able to touch the race telemetry above.
+const FRIENDS_DEVICE = '';
 // ---------------------------------------------------------------------------
 const qs  = new URLSearchParams(location.search);
 const SRC = qs.get('src') || DEFAULT_SRC;
@@ -162,6 +187,15 @@ async function tbAuth(){
   if (!r.ok) throw new Error('public auth failed: http ' + r.status);
   tbTok = (await r.json()).token;
 }
+async function tbGet(path){
+  if (!tbTok) await tbAuth();
+  const hdr = () => ({'X-Authorization':'Bearer ' + tbTok});
+  let r = await fetch(TB_HOST + path, {headers:hdr()});
+  if (r.status === 401) { await tbAuth(); r = await fetch(TB_HOST + path, {headers:hdr()}); }
+  if (!r.ok) throw new Error('http ' + r.status);
+  return r.json();
+}
+
 async function tbFetch(){
   if (!tbTok) await tbAuth();
   const url = TB_HOST + '/api/plugins/telemetry/DEVICE/' + TB +
@@ -459,6 +493,99 @@ function drawIframe(lat, lon){
     '&amp;layer=mapnik&amp;marker=' + lat + '%2C' + lon + '"></iframe>';
 }
 
+// --- friends ---------------------------------------------------------------
+let friends = [];
+let fMarkers = {};        // key -> leaflet marker
+// Distinct-ish colours so several friends are tellable apart without a legend.
+const F_COLORS = ['#5ac8fa','#30d158','#bf5af2','#ffd60a','#ff9f0a','#64d2ff','#ff6482','#a2845e'];
+function fColor(key){
+  let s = 0; for (let i=0;i<key.length;i++) s = (s*31 + key.charCodeAt(i)) & 0xffff;
+  return F_COLORS[s % F_COLORS.length];
+}
+const F_IC = { run:'\ud83c\udfc3', walk:'\ud83d\udeb6', bike:'\ud83d\udeb4', scoot:'\ud83d\udef4' };
+
+async function fetchFriends(){
+  if (!FRIENDS_DEVICE) return null;
+  const base = '/api/plugins/telemetry/DEVICE/' + FRIENDS_DEVICE;
+  const keys = (await tbGet(base + '/keys/timeseries')).filter(k => k.indexOf('f_') === 0);
+  if (!keys.length) return [];
+  const raw = await tbGet(base + '/values/timeseries?keys=' + keys.join(','));
+  const out = [];
+  for (const k of keys) {
+    if (!raw[k] || !raw[k][0]) continue;
+    try { const o = JSON.parse(raw[k][0].value); o.key = k; out.push(o); }
+    catch (e) { /* skip one bad entry rather than lose the board */ }
+  }
+  return out;
+}
+function fPace(mi, el){
+  if (!(mi > 0.05) || !(el > 0)) return '\u2013';
+  const p = (el/60)/mi;
+  if (p < 3 || p > 60) return '\u2013';
+  return Math.floor(p) + ':' + String(Math.round((p-Math.floor(p))*60)).padStart(2,'0');
+}
+function esc(s){ return String(s==null?'':s).replace(/[<>&"]/g, c =>
+  ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+
+function renderBoard(host){
+  const el = $('board');
+  if (friends === null) {
+    el.innerHTML = '<div class="bempty">friend tracking not enabled yet</div>'; return;
+  }
+  const now = Date.now()/1000;
+  const rows = [];
+  // Host first, always, regardless of mileage -- it is his run.
+  if (host && host.mi > 0) rows.push({host:true, n:'Peter', m:'run', mi:host.mi, el:host.el, live:true});
+  const fs = friends.slice().sort((a,b) => (b.mi||0) - (a.mi||0));
+  for (const f of fs) rows.push({n:f.n, m:f.m, mi:f.mi||0, el:f.el,
+                                 live: f.a === 1 && (now - (f.t||0)) < 90});
+  if (!rows.length) {
+    el.innerHTML = '<div class="bempty">nobody has joined yet &mdash; share ' +
+                   '<a href="join.html">phandel.com/join.html</a></div>';
+    return;
+  }
+  let n = 0;
+  el.innerHTML = rows.map(r => {
+    n++;
+    return '<div class="brow' + (r.host?' host':'') + (r.live?'':' off') + '">' +
+      '<span class="st' + (r.live?' on':'') + '"></span>' +
+      '<span class="rk">' + n + '</span>' +
+      '<span class="ic">' + (F_IC[r.m] || '\u2022') + '</span>' +
+      '<span class="nm">' + esc(r.n) + (r.host?' \u00b7 host':'') + '</span>' +
+      '<span class="mi">' + (r.mi||0).toFixed(2) + ' mi</span>' +
+      '<span class="pc">' + fPace(r.mi, r.el) + ' /mi</span>' +
+      '</div>';
+  }).join('');
+  const live = rows.filter(r => r.live).length;
+  const total = rows.reduce((s,r) => s + (r.mi||0), 0);
+  $('btitle').textContent = 'Running with Peter \u2014 ' + live + ' live \u00b7 ' +
+                            total.toFixed(1) + ' mi together';
+}
+
+// Friend pins. Leaflet only: the iframe tier cannot draw overlays, and MapKit stays inert
+// without a paid-developer token.
+function drawFriends(){
+  if (mapMode !== 'leaflet' || !lmap || typeof L === 'undefined' || !friends) return;
+  const now = Date.now()/1000;
+  const seen = {};
+  for (const f of friends) {
+    if (!(f.lat) || !(f.lon)) continue;
+    if (now - (f.t||0) > 300) continue;          // drop long-stale pins from the map
+    seen[f.key] = 1;
+    const col = fColor(f.key);
+    if (!fMarkers[f.key]) {
+      fMarkers[f.key] = L.circleMarker([f.lat, f.lon],
+        {radius:6, color:'#000', weight:2, fillColor:col, fillOpacity:.95})
+        .addTo(lmap).bindTooltip('', {permanent:true, direction:'right', className:'ftip'});
+    }
+    fMarkers[f.key].setLatLng([f.lat, f.lon]);
+    fMarkers[f.key].setTooltipContent(esc(f.n) + ' ' + (f.mi||0).toFixed(1) + 'mi');
+  }
+  for (const k of Object.keys(fMarkers)) {
+    if (!seen[k]) { lmap.removeLayer(fMarkers[k]); delete fMarkers[k]; }
+  }
+}
+
 function updateMap(d){
   const trail = parseSeries(d.trail).filter(p => Array.isArray(p) && p.length >= 2);
   const hasFix = typeof d.lat === 'number' && typeof d.lon === 'number'
@@ -532,6 +659,17 @@ async function tick(){
     $('hrv').textContent    = d.hr_mean_60s > 0 ? Math.round(d.hr_mean_60s) : '-';
     drawSpark(parseSeries(d.hr_hist), d.hr_win_min, d.hr_avg_run);
     updateMap(d);
+    // Friends are a separate, best-effort concern: a failure here must never take down
+    // the race numbers, so it is caught locally rather than by the outer handler.
+    try {
+      const f = await fetchFriends();
+      if (f !== null) friends = f;
+      renderBoard({mi: wmi, el: d.elapsed_s});
+      drawFriends();
+    } catch (e) {
+      $('board').innerHTML = '<div class="bempty">leaderboard unavailable (' +
+                             (e.message||'error') + ')</div>';
+    }
 
     // Which HR source is feeding the number, and how old it is. The watch samples only
     // every few minutes at rest, so a value can be legitimately stale -- show it, but
