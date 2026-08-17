@@ -109,7 +109,10 @@
         <span class="v" id="mode">🏃</span></div>
       <div class="row"><span class="k">Distance</span><span class="v" id="dist">0.00 mi</span></div>
       <div class="row"><span class="k">Time</span><span class="v" id="time">0m</span></div>
-      <div class="row"><span class="k">Pace</span><span class="v" id="pace">&ndash;</span></div>
+      <div class="row"><span class="k">Avg pace</span><span class="v" id="pace">&ndash;</span></div>
+      <div class="row"><span class="k">Current pace</span><span class="v" id="cpace">&ndash;</span></div>
+      <div class="row"><span class="k">Climb</span><span class="v" id="climb">0 ft</span></div>
+      <div class="row"><span class="k">Top speed</span><span class="v" id="top">&ndash;</span></div>
     </div>
     <button class="big stop" id="stop">Stop sharing</button>
     <p class="status" id="status">starting&hellip;</p>
@@ -141,6 +144,8 @@ let watchId = null, timer = null, wakeLock = null;
 let me = { id:null, name:'', mode:'run' };
 let started = 0, distM = 0, lastFix = null, fixes = 0, lastPub = 0;
 let gaps = 0, gapS = 0;
+let gainM = 0, lastAlt = null, vmax = 0;
+let recent = [];        // rolling window of fixes, for a current (not average) pace
 let sendMode = 'simple';   // see publish(): JSON is preflight-blocked by ThingsBoard
 let lastErr = '';
 
@@ -204,6 +209,10 @@ async function publish(active) {
     // Active seconds = wall clock minus paused stretches. Pace computed from this rather
     // than from wall clock, otherwise a 10-minute screen lock makes everyone look slow.
     el: Math.max(0, Math.round((Date.now()-started)/1000 - gapS)),
+    s:  Math.round(started/1000),
+    up: Math.round(gainM),                       // metres climbed
+    vx: +(vmax*2.23694).toFixed(1),              // top speed, mph
+    cp: +curPace().toFixed(2),                   // current pace, min/mi (0 if unknown)
     t: Math.round(Date.now()/1000),
   });
   const url = TB_HOST + '/api/v1/' + FRIENDS_TOKEN + '/telemetry';
@@ -242,8 +251,25 @@ function onFix(pos) {
     //  - a per-mode speed ceiling, to drop teleport-style fixes
     const minStep = Math.max(5, fix.acc/2);
     if (dt > MAX_GAP_S) { gaps++; gapS += dt; }        // paused: credit nothing
-    else if (d >= minStep && ms <= (MODE_MAXMS[me.mode]||8)) distM += d;
+    else if (d >= minStep && ms <= (MODE_MAXMS[me.mode]||8)) {
+      distM += d;
+      if (ms > vmax) vmax = ms;                       // fastest sustained sample
+    }
   }
+  // Elevation gain. Barometric/GPS altitude is noisy, so only count rises above a
+  // threshold and ignore fixes whose own altitude accuracy is poor -- otherwise a flat
+  // street accumulates hundreds of feet of imaginary climb.
+  const alt = (typeof c.altitude === 'number') ? c.altitude : null;
+  const altOk = alt !== null && (c.altitudeAccuracy == null || c.altitudeAccuracy <= 20);
+  if (altOk) {
+    if (lastAlt !== null && alt - lastAlt >= 2) gainM += (alt - lastAlt);
+    if (lastAlt === null || Math.abs(alt - lastAlt) >= 2) lastAlt = alt;
+  }
+
+  // Current pace over a trailing 60 s of movement, distinct from the run average.
+  recent.push({t:fix.t, d:distM});
+  while (recent.length > 2 && (fix.t - recent[0].t) > 60000) recent.shift();
+
   lastFix = fix;
 
   const now = Date.now();
@@ -259,15 +285,28 @@ function onFixErr(e) {
   $('status').innerHTML = '<span class="err">' + msg + '</span>';
 }
 
+// Pace over the trailing window, in min/mile. 0 when there is not enough to say.
+function curPace(){
+  if (recent.length < 2) return 0;
+  const a = recent[0], b = recent[recent.length-1];
+  const dmi = (b.d - a.d)/1609.34, dts = (b.t - a.t)/1000;
+  if (dmi < 0.01 || dts < 10) return 0;
+  const p = (dts/60)/dmi;
+  return (p >= 3 && p <= 60) ? p : 0;
+}
+
 function render() {
   const mi = distM/1609.34;
   const secs = (Date.now()-started)/1000;
   $('dist').textContent = mi.toFixed(2) + ' mi';
   $('time').textContent = fmtT(secs);
   const p = mi > 0.05 ? (secs/60)/mi : 0;
-  $('pace').textContent = (p >= 3 && p <= 60)
-    ? Math.floor(p) + ':' + String(Math.round((p-Math.floor(p))*60)).padStart(2,'0') + ' /mi'
-    : '–';
+  const fmtP = x => Math.floor(x) + ':' + String(Math.round((x-Math.floor(x))*60)).padStart(2,'0') + ' /mi';
+  $('pace').textContent  = (p >= 3 && p <= 60) ? fmtP(p) : '–';
+  const cp = curPace();
+  $('cpace').textContent = cp > 0 ? fmtP(cp) : '–';
+  $('climb').textContent = Math.round(gainM*3.28084) + ' ft';
+  $('top').textContent   = vmax > 0 ? (vmax*2.23694).toFixed(1) + ' mph' : '–';
   setStatus();
 }
 
@@ -332,7 +371,7 @@ $('go').addEventListener('click', async () => {
   $('who').textContent = me.name;
   $('mode').textContent = MODE_ICON[me.mode] || '🏃';
   started = Date.now(); distM = 0; lastFix = null; fixes = 0; lastPub = 0;
-  gaps = 0; gapS = 0;
+  gaps = 0; gapS = 0; gainM = 0; lastAlt = null; vmax = 0; recent = [];
 
   keepAwake();
   // enableHighAccuracy is essential; without it iOS returns coarse network fixes that make
