@@ -48,7 +48,7 @@
   .c b{display:block;font-size:clamp(1.25rem,2.7vw,2rem);line-height:1.05;font-variant-numeric:tabular-nums;font-weight:700;
         white-space:nowrap;overflow:hidden;}
   .c span{display:block;font-size:clamp(.6rem,1vw,.82rem);color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-top:.5em;}
-  .c.hr b{color:var(--hr);} .c.pace b{color:var(--pace);} .c.eta b{color:var(--eta);} .c.cad b{color:var(--cad);}
+  .c.hr b{color:var(--hr);} .c.pace b{color:var(--pace);} .c.last b{color:#5ac8fa;} .c.eta b{color:var(--eta);} .c.cad b{color:var(--cad);}
   .c.hr b.stale{color:#6b6b70;}
   .hrcard{grid-column:1/-1;position:relative;}
   .spark{display:block;width:100%;height:70px;margin-top:.6em;}
@@ -84,7 +84,8 @@
     </div>
     <div class="grid" id="metrics">
       <div class="c hr hrcard"><b id="hr">&ndash;</b><span id="hrlab">heart rate</span><canvas id="hrspark" class="spark"></canvas></div>
-      <div class="c pace"><b id="pace">&ndash;</b><span>min / mile</span></div>
+      <div class="c last"><b id="lastmi">&ndash;</b><span>last mile</span></div>
+      <div class="c pace"><b id="pace">&ndash;</b><span id="pacelab">avg pace</span></div>
       <div class="c"><b id="el">&ndash;</b><span>elapsed</span></div>
       <div class="c eta"><b id="eta">&ndash;</b><span>est. remaining</span></div>
       <div class="c cad"><b id="cad">&ndash;</b><span>steps / min</span></div>
@@ -138,7 +139,8 @@ const TB  = qs.get('tb')  || DEFAULT_TB;
 const TB_KEYS = ['hr','hr_src','hr_age_s','dist_mi','target_mi','pct','pace_min_mi',
                  'eta_s','elapsed_s','cadence_spm','kcal','steps','artifacts_60s','t',
                  'workout_mi','workout_pct','hr_mean_60s','lat','lon','loc_age_s',
-                 'hr_hist','trail','hr_win_min','dist_src'];
+                 'hr_hist','trail','hr_win_min','dist_src',
+                 'pace_last_mi','last_mi_window_s','hr_avg_run'];
 const $ = id => document.getElementById(id);
 const RACE_DAY = new Date('2026-09-05T06:00:00-07:00');
 
@@ -223,7 +225,7 @@ function parseSeries(v){
 
 // 5-minute heart-rate sparkline. Hand-drawn on a canvas rather than pulling in a chart
 // library: it is a few dozen lines, has no supply chain, and stays readable on a TV.
-function drawSpark(pts, winMin){
+function drawSpark(pts, winMin, avgRun){
   const cv = $('hrspark'); if (!cv) return;
   const cssW = cv.clientWidth || 300, cssH = cv.clientHeight || 70;
   const dpr = window.devicePixelRatio || 1;
@@ -259,6 +261,24 @@ function drawSpark(pts, winMin){
   g.strokeStyle = '#ff453a'; g.lineWidth = 2; g.lineJoin='round'; g.stroke();
 
   // current point + min/max labels
+  // Run-average HR as a dashed reference line. Drawn only when it falls inside the
+  // plotted range -- an off-scale line would be clamped to an edge and read as a value it
+  // is not.
+  if (typeof avgRun === 'number' && avgRun >= 30 && avgRun <= 240
+      && avgRun > y0 && avgRun < y1) {
+    const ay = sy(avgRun);
+    g.save();
+    g.setLineDash([4,3]);
+    g.strokeStyle = 'rgba(255,255,255,.55)';
+    g.lineWidth = 1;
+    g.beginPath(); g.moveTo(pad, ay); g.lineTo(cssW-pad, ay); g.stroke();
+    g.restore();
+    g.fillStyle = 'rgba(255,255,255,.75)';
+    g.font = '10px -apple-system,sans-serif';
+    const t = 'avg ' + Math.round(avgRun);
+    g.fillText(t, cssW - g.measureText(t).width - 2, Math.max(10, ay - 3));
+  }
+
   const last = pts[pts.length-1];
   g.beginPath(); g.arc(sx(last[0]), sy(last[1]), 3.5, 0, Math.PI*2);
   g.fillStyle = '#ff453a'; g.fill();
@@ -510,7 +530,7 @@ async function tick(){
     $('lapline').innerHTML = '<b>' + (d.target_mi - wmi).toFixed(2) + '</b> miles to go';
     $('steps2').textContent = d.steps > 0 ? d.steps.toLocaleString() : '-';
     $('hrv').textContent    = d.hr_mean_60s > 0 ? Math.round(d.hr_mean_60s) : '-';
-    drawSpark(parseSeries(d.hr_hist), d.hr_win_min);
+    drawSpark(parseSeries(d.hr_hist), d.hr_win_min, d.hr_avg_run);
     updateMap(d);
 
     // Which HR source is feeding the number, and how old it is. The watch samples only
@@ -537,7 +557,17 @@ async function tick(){
     // 164:34/mi and "136h remaining". Only show these once they mean something.
     const moving = d.dist_mi > 0.25 && d.pace_min_mi >= 5 && d.pace_min_mi <= 30;
     const started = wmi > 0.05 || d.dist_mi > 0.05;
+    // Overall average pace, with speed in mph on the caption -- the page is otherwise all
+    // min/mile, and mixing units between tiles invites misreading.
     $('pace').textContent = moving ? mmss(d.pace_min_mi) : '–';
+    $('pacelab').textContent = (moving && d.pace_min_mi > 0)
+      ? 'avg pace · ' + (60 / d.pace_min_mi).toFixed(1) + ' mph'
+      : 'avg pace';
+    // Last-mile pace: only meaningful once a full mile is behind you, and gated to a
+    // plausible band so a long aid-station stop cannot print an absurd number.
+    const plm = d.pace_last_mi;
+    $('lastmi').textContent = (typeof plm === 'number' && plm >= 4 && plm <= 40)
+      ? mmss(plm) : '–';
     $('el').textContent   = started ? hms(d.elapsed_s) : '–';
     $('eta').textContent  = (moving && d.eta_s > 0) ? hms(d.eta_s) : '–';
     $('cad').textContent  = d.cadence_spm >= 50 ? d.cadence_spm : '–';
