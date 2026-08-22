@@ -281,7 +281,6 @@
                  padding: 0.42rem 0.55rem; margin-bottom: 0.45rem; cursor: pointer; background: #fff; }
         .scell:hover { background: #fff8f3; border-color: #ffd9c2; }
         .scell.mine { background: var(--accent-soft); border-color: var(--accent); }
-        .scell.armed { background: #ffe9d6; box-shadow: 0 0 0 2px var(--accent); }
         .scell .ct { font-size: 0.72rem; font-weight: 800; color: var(--muted);
                      font-variant-numeric: tabular-nums; }
         .scell.mine .ct { color: var(--accent); }
@@ -414,8 +413,7 @@
         <section class="story signup" id="signup">
             <h2>Sign up to join a lap</h2>
             <p class="su-intro">I pass my driveway about every 15&nbsp;minutes.
-               <b>Tap a time to join.</b> Staying a while? Tap your start time, then tap the time
-               you&rsquo;ll leave &mdash; everything in between fills in.</p>
+               <b>Tap any times you can make</b> &mdash; tap again to remove.</p>
 
             <div class="su-card">
                 <div class="su-namewrap">
@@ -764,7 +762,7 @@
 
       var me = { id: null, n: '', e: EMOJI[0], s: [] };
       var others = {};      // id -> {n,e,s}
-      var anchor = null, pubTimer = null, tok = null;
+      var pubTimer = null, tok = null;
 
       try { var sv = JSON.parse(localStorage.getItem(K_ME) || 'null'); if (sv && sv.id) me = sv; } catch (e) {}
       if (!me.id) me.id = Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-2);
@@ -842,7 +840,7 @@
             ? who.map(function (w) { return '<span class="nchip' + (w.id === me.id ? ' self' : '') + '">' +
                 esc(w.p.e) + esc(shortName(w.p.n) || 'you') + '</span>'; }).join('')
             : '<span class="open">open</span>';
-          html += '<div class="scell' + (mine ? ' mine' : '') + (anchor === m ? ' armed' : '') +
+          html += '<div class="scell' + (mine ? ' mine' : '') +
                   '" data-m="' + m + '"><div class="ct">' + label(m) + '</div>' +
                   '<div class="cn">' + chips + '</div></div>';
         });
@@ -864,24 +862,15 @@
           setMsg('Pop your name in first, then tap a time.'); return false; }
         me.n = nm.value.trim().slice(0, 30); nm.style.borderColor = ''; return true;
       }
+      // Plain toggle: on, off. No anchors, no ranges, no modes -- tapping a cell only ever
+      // affects that cell, so there is nothing to learn and nothing to undo by mistake.
       function toggle(m) {
         if (!requireName()) return;
         var have = me.s.indexOf(m);
-        if (anchor !== null && anchor !== m) {
-          // A LATER second tap is the time you leave, so it is exclusive: 7:00 then 8:00
-          // means four laps ending at 8:00. An EARLIER tap means you will arrive sooner,
-          // which extends backwards and keeps the anchor lap.
-          var a, b;
-          if (m > anchor) { a = anchor; b = m - 15; } else { a = m; b = anchor; }
-          for (var x = a; x <= b; x += 15) if (me.s.indexOf(x) === -1) me.s.push(x);
-          anchor = null; me.s.sort(function (p, q) { return p - q; });
-          commit(); setMsg('Added ' + rangeLabel(a, b + 15) + ' \u2014 tap any of your times to drop it.');
-          return;
-        }
-        if (have !== -1) { me.s.splice(have, 1); anchor = null; commit(); setMsg(''); return; }
-        me.s.push(m); anchor = m; me.s.sort(function (p, q) { return p - q; });
+        if (have !== -1) me.s.splice(have, 1);
+        else { me.s.push(m); me.s.sort(function (p, q) { return p - q; }); }
+        setMsg('');
         commit();
-        setMsg('You\u2019re in at <b>' + label(m) + '</b>. Staying longer? Tap the time you\u2019ll leave.');
       }
 
       function commit() { saveMe(); renderAll(); schedulePublish(); }
