@@ -256,9 +256,16 @@
           .cd-item, .cd-item.small { min-width: 74px; padding-left: 0.5rem; padding-right: 0.5rem; } }
 
     /* ---- lap sign-up sheet ---------------------------------------------- */
+        /* Deep links: #signup lands on the heading, #sheet on the grid itself. The margin
+           stops the target sitting flush against the top of the viewport. */
+        #signup, #sheet, #rsvp, #route { scroll-margin-top: 1.5rem; }
+        html { scroll-behavior: smooth; }
         .signup .su-intro { color: var(--muted); margin-top: -0.4rem; }
-        .su-card { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; margin: 1.2rem 0 0.3rem; }
+        .su-card { display: flex; gap: 0.9rem; align-items: flex-start; flex-wrap: wrap; margin: 1.2rem 0 0.3rem; }
         .su-namewrap { flex: 1 1 200px; display: flex; flex-direction: column; gap: 0.28rem; }
+        .su-methodwrap { display: flex; flex-direction: column; gap: 0.28rem; }
+        .su-flab { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.09em;
+                   color: var(--muted); font-weight: 700; padding-left: 0.2rem; }
         .su-as { font-size: 0.76rem; color: var(--accent); font-weight: 700; min-height: 1em; padding-left: 0.2rem; }
         .su-card input { width: 100%; padding: 0.7em 0.9em; font-size: 1rem; font-family: inherit;
                    border: 1px solid var(--border); border-radius: 12px; background: #fff; color: var(--ink); }
@@ -417,14 +424,18 @@
 
             <div class="su-card">
                 <div class="su-namewrap">
-                    <input type="text" id="suName" placeholder="Your name" maxlength="30" autocomplete="name">
+                    <span class="su-flab">Your name</span>
+                    <input type="text" id="suName" placeholder="Bob Smith" maxlength="30" autocomplete="name">
                     <span class="su-as" id="suAs"></span>
                 </div>
-                <div class="picks" id="suPicks">
+                <div class="su-methodwrap">
+                    <span class="su-flab">Method</span>
+                    <div class="picks" id="suPicks">
                     <span class="pick sel" data-e="&#127939;" title="Run">&#127939;</span>
                     <span class="pick" data-e="&#128694;" title="Walk">&#128694;</span>
                     <span class="pick" data-e="&#128756;" title="Scooter">&#128756;</span>
                     <span class="pick" data-e="&#128692;" title="Bike">&#128692;</span>
+                    </div>
                 </div>
             </div>
             <p class="su-hint" id="suMsg"></p>
