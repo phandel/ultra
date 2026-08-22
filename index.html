@@ -240,6 +240,57 @@
         .ww-scroll.show-short .short { display: table-row; }
         .ww-more { margin: 0.75rem 0 0; font-size: 0.9rem; }
     /* WW_CSS_END */
+    /* ---- countdown ------------------------------------------------------ */
+        .countdown { display: flex; gap: 0.9rem; justify-content: center; margin: 0 0 0.5rem; flex-wrap: wrap; }
+        .cd-item { background: var(--accent-soft); border: 1px solid #ffd9c2; border-radius: 18px;
+                   padding: 0.75rem 1rem; min-width: 104px; text-align: center; }
+        .cd-num { display: block; font-size: clamp(2.1rem, 7.5vw, 3.4rem); font-weight: 800;
+                  color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+        .cd-item.small .cd-num { font-size: clamp(1.7rem, 5.5vw, 2.5rem); }
+        .cd-item.small { min-width: 92px; padding-top: 1.05rem; }
+        .cd-lab { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.13em;
+                  color: var(--muted); margin-top: 0.4rem; font-weight: 700; }
+        .cd-min { text-align: center; color: var(--muted); font-size: 0.92rem; margin: 0 0 2rem; }
+        .cd-done { text-align: center; font-size: 1.4rem; font-weight: 800; color: var(--accent); margin: 0 0 2rem; }
+        @media (max-width: 480px) { .countdown { gap: 0.55rem; }
+          .cd-item, .cd-item.small { min-width: 74px; padding-left: 0.5rem; padding-right: 0.5rem; } }
+
+    /* ---- lap sign-up sheet ---------------------------------------------- */
+        .signup .su-intro { color: var(--muted); margin-top: -0.4rem; }
+        .su-card { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; margin: 1.2rem 0 0.3rem; }
+        .su-namewrap { flex: 1 1 200px; display: flex; flex-direction: column; gap: 0.28rem; }
+        .su-as { font-size: 0.76rem; color: var(--accent); font-weight: 700; min-height: 1em; padding-left: 0.2rem; }
+        .su-card input { width: 100%; padding: 0.7em 0.9em; font-size: 1rem; font-family: inherit;
+                   border: 1px solid var(--border); border-radius: 12px; background: #fff; color: var(--ink); }
+        .su-card input:focus { outline: none; border-color: var(--accent); }
+        .picks { display: flex; gap: 0.4rem; }
+        .pick { font-size: 1.35rem; line-height: 1; padding: 0.38em 0.55em; border: 1px solid var(--border);
+                border-radius: 10px; cursor: pointer; background: #fff; user-select: none; }
+        .pick.sel { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+        .su-hint { font-size: 0.8rem; color: var(--accent); margin: 0 0 1.2rem; min-height: 1.2em; font-weight: 600; }
+        .who { margin: 0 0 1.2rem; }
+        .wrow { display: flex; align-items: baseline; gap: 0.6rem; padding: 0.42em 0; }
+        .wrow .we { font-size: 1.05rem; }
+        .wrow .wn { font-weight: 700; min-width: 6.5rem; }
+        .wrow .wt { color: var(--muted); font-size: 0.9rem; }
+        .wrow .wm { color: var(--accent); font-size: 0.78rem; font-weight: 700; margin-left: auto; white-space: nowrap; }
+        /* Multi-column, not grid: it flows down then across, so reading DOWN a column is
+           chronological. 1 column on a phone, up to 5 on a desktop, same markup. */
+        .sheet { columns: 190px 5; column-gap: 1rem; }
+        .scell { break-inside: avoid; border: 1px solid var(--border); border-radius: 10px;
+                 padding: 0.42rem 0.55rem; margin-bottom: 0.45rem; cursor: pointer; background: #fff; }
+        .scell:hover { background: #fff8f3; border-color: #ffd9c2; }
+        .scell.mine { background: var(--accent-soft); border-color: var(--accent); }
+        .scell.armed { background: #ffe9d6; box-shadow: 0 0 0 2px var(--accent); }
+        .scell .ct { font-size: 0.72rem; font-weight: 800; color: var(--muted);
+                     font-variant-numeric: tabular-nums; }
+        .scell.mine .ct { color: var(--accent); }
+        .scell .cn { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.2rem; }
+        .scell .open { font-size: 0.72rem; color: #c8c8c8; font-style: italic; }
+        .nchip { display: inline-flex; align-items: center; gap: 0.28em; font-size: 0.8rem;
+                 background: #f2f2f2; border-radius: 999px; padding: 0.14em 0.55em 0.14em 0.4em; }
+        .nchip.self { background: var(--accent); color: #fff; }
+        .su-status { font-size: 0.78rem; color: var(--muted); margin: 0.8rem 0 0; min-height: 1.2em; }
     </style>
     <script data-goatcounter="https://phandel.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -258,6 +309,9 @@
     </header>
 
     <div class="wrap">
+        <div class="countdown" id="countdown"></div>
+        <p class="cd-min" id="cdMin"></p>
+
         <div class="photo-frame">
             <img src="Triathalon.jpeg" alt="Handel family kids running a triathalon in 2023">
         </div>
@@ -355,6 +409,31 @@
                     <button type="button" id="rsvpNo" class="secondary">Can't make it</button>
                 </div>
             </form>
+        </section>
+
+        <section class="story signup" id="signup">
+            <h2>Sign up to join a lap</h2>
+            <p class="su-intro">I pass my driveway about every 15&nbsp;minutes.
+               <b>Tap a time to join.</b> Staying a while? Tap your start time, then tap the time
+               you&rsquo;ll leave &mdash; everything in between fills in.</p>
+
+            <div class="su-card">
+                <div class="su-namewrap">
+                    <input type="text" id="suName" placeholder="Your name" maxlength="30" autocomplete="name">
+                    <span class="su-as" id="suAs"></span>
+                </div>
+                <div class="picks" id="suPicks">
+                    <span class="pick sel" data-e="&#127939;" title="Run">&#127939;</span>
+                    <span class="pick" data-e="&#128694;" title="Walk">&#128694;</span>
+                    <span class="pick" data-e="&#128756;" title="Scooter">&#128756;</span>
+                    <span class="pick" data-e="&#128692;" title="Bike">&#128692;</span>
+                </div>
+            </div>
+            <p class="su-hint" id="suMsg"></p>
+
+            <div class="who" id="who"></div>
+            <div class="sheet" id="sheet"></div>
+            <p class="su-status" id="suStatus"></p>
         </section>
     </div>
 
@@ -627,6 +706,266 @@
         function closeModal() { modal.classList.remove('show'); }
         document.getElementById('rsvpModalClose').addEventListener('click', closeModal);
         modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+    })();
+    </script>
+
+    <script>
+    /* ===== countdown + 15-minute lap sign-up =================================
+       Storage: one telemetry key per person on a shared ThingsBoard device
+       (keys 's_<id>'). One key per person avoids the read-modify-write race a
+       shared per-slot key would have -- two people signing up at once cannot
+       clobber each other.
+
+       Page speed: nothing here blocks first paint. The sheet renders IMMEDIATELY
+       from a localStorage cache of the last known sign-ups, then refreshes in the
+       background (stale-while-revalidate). A slow or failed network shows the
+       cached sheet, never a spinner or an empty page.
+       ====================================================================== */
+    (function () {
+      var RACE_DAY = '2026-09-05', START_HOUR = 6, END_HOUR = 17;
+      var raceStart = new Date(RACE_DAY + 'T' + String(START_HOUR).padStart(2, '0') + ':00:00-07:00');
+
+      /* ---------- countdown ---------- */
+      var cd = document.getElementById('countdown'), cdMin = document.getElementById('cdMin');
+      function tickCd() {
+        if (!cd) return;
+        var ms = raceStart - new Date();
+        if (ms <= 0) {
+          cd.innerHTML = ''; cdMin.className = 'cd-done';
+          cdMin.textContent = 'It\u2019s race day \u2014 come find me on Crescent Dr! \uD83C\uDFC3';
+          return;
+        }
+        var t = Math.floor(ms / 1000);
+        var d = Math.floor(t / 86400), hh = Math.floor((t % 86400) / 3600),
+            mm = Math.floor((t % 3600) / 60), ss = t % 60;
+        var p = function (n) { return String(n).padStart(2, '0'); };
+        cd.innerHTML =
+          '<div class="cd-item"><span class="cd-num">' + d + '</span><span class="cd-lab">' + (d === 1 ? 'day' : 'days') + '</span></div>' +
+          '<div class="cd-item"><span class="cd-num">' + hh + '</span><span class="cd-lab">' + (hh === 1 ? 'hour' : 'hours') + '</span></div>' +
+          '<div class="cd-item small"><span class="cd-num">' + p(mm) + '</span><span class="cd-lab">min</span></div>' +
+          '<div class="cd-item small"><span class="cd-num">' + p(ss) + '</span><span class="cd-lab">sec</span></div>';
+        cdMin.textContent = 'until the first lap \u00b7 Saturday, September 5 at 6:00 AM';
+      }
+      tickCd(); setInterval(tickCd, 1000);
+
+      /* ---------- sign-up sheet ---------- */
+      var TB = 'https://thingsboard.cloud';
+      // Shared device, public by design. It carries only friend/sign-up data -- never the
+      // race telemetry -- so a leaked token cannot corrupt anything that matters.
+      var TB_TOKEN  = 'fSmStSbu2QzkrenAqZgR';
+      var TB_DEVICE = '424d8160-99fc-11f1-b480-1301d0f2616d';
+      var TB_PUBLIC = '49f60990-993a-11f1-bb5b-f59caa77e86d';
+      // Optional: mirror sign-ups into the RSVP spreadsheet. Left empty on purpose -- the
+      // Apps Script must learn a 'signup' action first, or posts would land as junk RSVP rows.
+      var SHEET_ENDPOINT = '';
+
+      var K_ME = 'phandel.signup.me.v2', K_CACHE = 'phandel.signup.cache.v2';
+      var EMOJI = ['\uD83C\uDFC3', '\uD83D\uDEB6', '\uD83D\uDEF4', '\uD83D\uDEB4'];
+
+      var me = { id: null, n: '', e: EMOJI[0], s: [] };
+      var others = {};      // id -> {n,e,s}
+      var anchor = null, pubTimer = null, tok = null;
+
+      try { var sv = JSON.parse(localStorage.getItem(K_ME) || 'null'); if (sv && sv.id) me = sv; } catch (e) {}
+      if (!me.id) me.id = Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-2);
+      if (!me.s) me.s = [];
+      try { var c = JSON.parse(localStorage.getItem(K_CACHE) || 'null'); if (c) others = c; } catch (e) {}
+
+      var $ = function (id) { return document.getElementById(id); };
+      function saveMe() { try { localStorage.setItem(K_ME, JSON.stringify(me)); } catch (e) {} }
+      function esc(t) { return String(t == null ? '' : t).replace(/[<>&"]/g,
+        function (ch) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[ch]; }); }
+
+      function slotList() {
+        var out = [];
+        for (var hr = START_HOUR; hr < END_HOUR; hr++) for (var q = 0; q < 4; q++) out.push(hr * 60 + q * 15);
+        return out;
+      }
+      function label(m) {
+        var hr = Math.floor(m / 60), mn = m % 60;
+        return (hr % 12 === 0 ? 12 : hr % 12) + ':' + String(mn).padStart(2, '0') + (hr >= 12 ? ' PM' : ' AM');
+      }
+      function ranges(sl) {
+        var s = sl.slice().sort(function (a, b) { return a - b; }), out = [], i = 0;
+        while (i < s.length) { var a = s[i], b = s[i];
+          while (i + 1 < s.length && s[i + 1] === b + 15) { b = s[++i]; }
+          out.push([a, b + 15]); i++; }
+        return out;
+      }
+      function rangeLabel(a, b) {
+        var A = label(a), B = label(b);
+        return (A.slice(-2) === B.slice(-2) ? A.slice(0, -3) : A) + '\u2013' + B;
+      }
+      // "Bob Smith" -> "Bob S."
+      function shortName(raw) {
+        var t = String(raw || '').trim().replace(/\s+/g, ' ');
+        if (!t) return '';
+        var parts = t.split(' ');
+        if (parts.length === 1) return parts[0];
+        var last = parts[parts.length - 1].replace(/[^A-Za-z]/g, '');
+        return parts[0] + (last ? ' ' + last.charAt(0).toUpperCase() + '.' : '');
+      }
+      function everyone() {
+        var all = {};
+        for (var id in others) all[id] = others[id];
+        if (me.n && me.s.length) all[me.id] = { n: me.n, e: me.e, s: me.s };
+        else delete all[me.id];
+        return all;
+      }
+      function peopleIn(m) {
+        var all = everyone(), out = [];
+        for (var id in all) if (all[id].s && all[id].s.indexOf(m) !== -1) out.push({ id: id, p: all[id] });
+        out.sort(function (a, b) { return a.id === me.id ? -1 : b.id === me.id ? 1 : 0; });
+        return out;
+      }
+
+      function renderWho() {
+        var all = everyone();
+        var ids = Object.keys(all).filter(function (id) { return all[id].n && all[id].s.length; })
+          .sort(function (a, b) { return Math.min.apply(null, all[a].s) - Math.min.apply(null, all[b].s); });
+        var host = $('who');
+        if (!ids.length) { host.innerHTML = ''; return; }
+        host.innerHTML = ids.map(function (id) {
+          var p = all[id];
+          var rs = ranges(p.s).map(function (r) { return rangeLabel(r[0], r[1]); }).join(', ');
+          return '<div class="wrow"><span class="we">' + esc(p.e) + '</span>' +
+                 '<span class="wn">' + esc(shortName(p.n)) + (id === me.id ? ' (you)' : '') + '</span>' +
+                 '<span class="wt">' + esc(rs) + '</span>' +
+                 '<span class="wm">' + (p.s.length * 15) + ' min</span></div>';
+        }).join('');
+      }
+      function renderSheet() {
+        var host = $('sheet'), html = '';
+        slotList().forEach(function (m) {
+          var who = peopleIn(m), mine = me.s.indexOf(m) !== -1;
+          var chips = who.length
+            ? who.map(function (w) { return '<span class="nchip' + (w.id === me.id ? ' self' : '') + '">' +
+                esc(w.p.e) + esc(shortName(w.p.n) || 'you') + '</span>'; }).join('')
+            : '<span class="open">open</span>';
+          html += '<div class="scell' + (mine ? ' mine' : '') + (anchor === m ? ' armed' : '') +
+                  '" data-m="' + m + '"><div class="ct">' + label(m) + '</div>' +
+                  '<div class="cn">' + chips + '</div></div>';
+        });
+        host.innerHTML = html;
+        Array.prototype.forEach.call(host.querySelectorAll('.scell'), function (c) {
+          c.addEventListener('click', function () { toggle(parseInt(c.dataset.m, 10)); });
+        });
+      }
+      function renderAll() { renderWho(); renderSheet(); }
+
+      function setMsg(t) { $('suMsg').innerHTML = t; }
+      function showAs() {
+        var s = shortName($('suName').value);
+        $('suAs').textContent = s ? 'shows as \u201c' + s + '\u201d' : '';
+      }
+      function requireName() {
+        var nm = $('suName');
+        if (!nm.value.trim()) { nm.focus(); nm.style.borderColor = '#e8590c';
+          setMsg('Pop your name in first, then tap a time.'); return false; }
+        me.n = nm.value.trim().slice(0, 30); nm.style.borderColor = ''; return true;
+      }
+      function toggle(m) {
+        if (!requireName()) return;
+        var have = me.s.indexOf(m);
+        if (anchor !== null && anchor !== m) {
+          // A LATER second tap is the time you leave, so it is exclusive: 7:00 then 8:00
+          // means four laps ending at 8:00. An EARLIER tap means you will arrive sooner,
+          // which extends backwards and keeps the anchor lap.
+          var a, b;
+          if (m > anchor) { a = anchor; b = m - 15; } else { a = m; b = anchor; }
+          for (var x = a; x <= b; x += 15) if (me.s.indexOf(x) === -1) me.s.push(x);
+          anchor = null; me.s.sort(function (p, q) { return p - q; });
+          commit(); setMsg('Added ' + rangeLabel(a, b + 15) + ' \u2014 tap any of your times to drop it.');
+          return;
+        }
+        if (have !== -1) { me.s.splice(have, 1); anchor = null; commit(); setMsg(''); return; }
+        me.s.push(m); anchor = m; me.s.sort(function (p, q) { return p - q; });
+        commit();
+        setMsg('You\u2019re in at <b>' + label(m) + '</b>. Staying longer? Tap the time you\u2019ll leave.');
+      }
+
+      function commit() { saveMe(); renderAll(); schedulePublish(); }
+      // Debounced: filling a block changes state several times, and that should be one POST.
+      function schedulePublish() {
+        $('suStatus').textContent = 'saving\u2026';
+        if (pubTimer) clearTimeout(pubTimer);
+        pubTimer = setTimeout(publish, 900);
+      }
+      function publish() {
+        var body = {}; body['s_' + me.id] = JSON.stringify({ n: me.n, e: me.e, s: me.s, t: Math.round(Date.now() / 1000) });
+        // text/plain keeps this a CORS "simple request" -- no preflight. ThingsBoard rejects
+        // the preflight for this endpoint (403), so a JSON content-type would be blocked.
+        fetch(TB + '/api/v1/' + TB_TOKEN + '/telemetry',
+              { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body) })
+          .then(function () { $('suStatus').textContent = 'saved \u2713'; setTimeout(refresh, 1200); })
+          .catch(function () { $('suStatus').textContent = 'could not save \u2014 check your connection'; });
+        if (SHEET_ENDPOINT) {
+          var p = new URLSearchParams({ action: 'signup', id: me.id, name: me.n,
+            emoji: me.e, slots: me.s.map(label).join(', '), minutes: String(me.s.length * 15) });
+          fetch(SHEET_ENDPOINT, { method: 'POST', mode: 'no-cors', body: p }).catch(function () {});
+        }
+      }
+
+      async function tbAuth() {
+        var r = await fetch(TB + '/api/auth/login/public', { method: 'POST',
+          headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ publicId: TB_PUBLIC }) });
+        if (!r.ok) throw new Error('auth ' + r.status);
+        tok = (await r.json()).token;
+      }
+      async function tbGet(path) {
+        if (!tok) await tbAuth();
+        var hd = function () { return { 'X-Authorization': 'Bearer ' + tok }; };
+        var r = await fetch(TB + path, { headers: hd() });
+        if (r.status === 401) { await tbAuth(); r = await fetch(TB + path, { headers: hd() }); }
+        if (!r.ok) throw new Error('http ' + r.status);
+        return r.json();
+      }
+      async function refresh() {
+        try {
+          var base = '/api/plugins/telemetry/DEVICE/' + TB_DEVICE;
+          var keys = (await tbGet(base + '/keys/timeseries')).filter(function (k) { return k.indexOf('s_') === 0; });
+          var fresh = {};
+          if (keys.length) {
+            var raw = await tbGet(base + '/values/timeseries?keys=' + keys.join(','));
+            for (var i = 0; i < keys.length; i++) {
+              var k = keys[i]; if (!raw[k] || !raw[k][0]) continue;
+              try { var o = JSON.parse(raw[k][0].value);
+                if (o && o.n && o.s && o.s.length) fresh[k.slice(2)] = { n: o.n, e: o.e || EMOJI[0], s: o.s };
+              } catch (e) { /* one bad entry must not sink the sheet */ }
+            }
+          }
+          delete fresh[me.id];        // our own copy is authoritative locally
+          others = fresh;
+          try { localStorage.setItem(K_CACHE, JSON.stringify(others)); } catch (e) {}
+          renderAll();
+          $('suStatus').textContent = '';
+        } catch (e) {
+          // Cached sheet stays on screen; say so rather than blanking it.
+          $('suStatus').textContent = 'showing last known sign-ups (offline?)';
+        }
+      }
+
+      /* ---------- wiring ---------- */
+      var nameEl = $('suName');
+      nameEl.value = me.n || '';
+      showAs();
+      nameEl.addEventListener('input', function () { me.n = nameEl.value.trim().slice(0, 30);
+        saveMe(); showAs(); renderWho(); if (me.s.length) schedulePublish(); });
+      Array.prototype.forEach.call(document.querySelectorAll('#suPicks .pick'), function (el) {
+        if (el.dataset.e === me.e) {
+          Array.prototype.forEach.call(document.querySelectorAll('#suPicks .pick'), function (x) { x.classList.remove('sel'); });
+          el.classList.add('sel');
+        }
+        el.addEventListener('click', function () {
+          Array.prototype.forEach.call(document.querySelectorAll('#suPicks .pick'), function (x) { x.classList.remove('sel'); });
+          el.classList.add('sel'); me.e = el.dataset.e; saveMe(); renderAll();
+          if (me.s.length) schedulePublish();
+        });
+      });
+
+      renderAll();                      // instant, from cache
+      setTimeout(refresh, 60);          // network after first paint
+      setInterval(refresh, 60000);
     })();
     </script>
 </body>
