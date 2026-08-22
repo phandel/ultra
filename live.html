@@ -97,7 +97,7 @@
 
   <div class="hero">
     <div class="miles" id="miles">0.00</div>
-    <div class="of" id="of">of 50 miles &middot; <b id="pctbig">0.0%</b>
+    <div class="of" id="of">of <span id="oftgt">50</span> miles &middot; <b id="pctbig">0.0%</b>
       <span id="ovrflag" class="ovrflag"></span></div>
   </div>
   <div class="bar"><i id="bar"></i></div>
@@ -113,7 +113,7 @@
       <div class="c last"><b id="lastmi">&ndash;</b><span>last mile</span></div>
       <div class="c pace"><b id="pace">&ndash;</b><span id="pacelab">avg pace</span></div>
       <div class="c"><b id="el">&ndash;</b><span>elapsed</span></div>
-      <div class="c eta"><b id="eta">&ndash;</b><span>est. remaining</span></div>
+      <div class="c eta"><b id="eta">&ndash;</b><span id="etalab">est. finish</span></div>
       <div class="c cad"><b id="cad">&ndash;</b><span>steps / min</span></div>
       <div class="c"><b id="kcal">&ndash;</b><span>calories</span></div>
       <div class="c"><b id="steps2">&ndash;</b><span>steps</span></div>
@@ -174,7 +174,8 @@ const TB_KEYS = ['hr','hr_src','hr_age_s','dist_mi','target_mi','pct','pace_min_
                  'eta_s','elapsed_s','cadence_spm','kcal','steps','artifacts_60s','t',
                  'workout_mi','workout_pct','hr_mean_60s','lat','lon','loc_age_s',
                  'hr_hist','trail','hr_win_min','dist_src',
-                 'pace_last_mi','last_mi_window_s','hr_avg_run'];
+                 'pace_last_mi','last_mi_window_s','hr_avg_run',
+                 'eta_clock','eta_flat_s','fade_k'];
 const $ = id => document.getElementById(id);
 const RACE_DAY = new Date('2026-09-05T06:00:00-07:00');
 
@@ -750,6 +751,9 @@ async function tick(){
                                                      : (wmi / d.target_mi * 100);
     $('miles').textContent = wmi.toFixed(2);
     $('pctbig').textContent = wpct.toFixed(1) + '%';
+    // Follow the target from the feed. It was hardcoded at 50, which silently disagreed
+    // with the percentage on a 25-mile day.
+    if (typeof d.target_mi === 'number' && d.target_mi > 0) $('oftgt').textContent = d.target_mi;
     // A hand-entered distance must never look measured, on the public page either.
     const isOvr = d.dist_src === 'override';
     $('miles').style.color = isOvr ? '#ff6a33' : '';
@@ -813,7 +817,20 @@ async function tick(){
     $('lastmi').textContent = (typeof plm === 'number' && plm >= 4 && plm <= 40)
       ? mmss(plm) : '–';
     $('el').textContent   = started ? hms(d.elapsed_s) : '–';
-    $('eta').textContent  = (moving && d.eta_s > 0) ? hms(d.eta_s) : '–';
+    // Completion ETA as a wall-clock time -- "2:41 PM" is more use to a watching room
+    // than "5h12". Remaining time and the fade exponent go in the caption.
+    if (moving && d.eta_s > 0) {
+      const fin = (typeof d.eta_clock === 'number' && d.eta_clock > 0)
+        ? new Date(d.eta_clock * 1000)
+        : new Date(Date.now() + d.eta_s * 1000);
+      $('eta').textContent = fin.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+      const k = (typeof d.fade_k === 'number' && d.fade_k > 1.001)
+        ? ' · fade ' + d.fade_k.toFixed(2) : '';
+      $('etalab').textContent = 'est. finish · ' + hms(d.eta_s) + ' to go' + k;
+    } else {
+      $('eta').textContent = '–';
+      $('etalab').textContent = 'est. finish';
+    }
     $('cad').textContent  = d.cadence_spm >= 50 ? d.cadence_spm : '–';
     $('kcal').textContent = d.kcal > 0 ? d.kcal : '–';
 
