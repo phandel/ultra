@@ -567,7 +567,9 @@ const F_IC = { run:'\ud83c\udfc3', walk:'\ud83d\udeb6', bike:'\ud83d\udeb4', sco
 // when somebody new joins, so it is cached rather than re-fetched every pass -- that
 // alone removed a third of all requests.
 let friendKeys = null, friendKeysAt = 0;
-const FRIEND_KEYS_TTL = 300000;   // re-read the roster every 5 min
+// 60s, not longer: this is how quickly somebody who just joined via join.html shows up on
+// the board, and people join in clusters at the start. It costs ~1.7 req/s at 100 viewers.
+const FRIEND_KEYS_TTL = 60000;
 
 async function fetchFriends(){
   if (!FRIENDS_DEVICE) return null;
