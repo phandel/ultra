@@ -1,2 +1,5 @@
 .DS_Store
 invite/
+
+# launchd logs for the birthday-wishes photo sync -- never publish these
+photos/*.log
