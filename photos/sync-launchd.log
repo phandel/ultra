@@ -1,0 +1,12 @@
+=== 2026-08-28 18:56:30 ===
+== cannot read this Mac's Photos library
+   Error: unable to open database "file:/Users/local/Pictures/Photos Library.photoslibrary/database/Photos.sqlite?immutable=1": authorization denied
+   The library is TCC-protected. Whatever runs this needs Full Disk Access
+   (System Settings > Privacy & Security > Full Disk Access). Or use --phone.
+  -- library unreadable from launchd; trying the phone
+== asking n64 what is in the album
+Warning: Permanently added '[localhost]:50022' (ED25519) to the list of known hosts.
+   2 asset(s) with a local derivative
+   pulled 2 file(s)
+  manifest: 2 item(s)
+  added 0, skipped 2 already-present
