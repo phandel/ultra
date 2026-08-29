@@ -59,6 +59,27 @@
   .setup code{color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
   .setup h2{color:var(--ink);font-size:clamp(.9rem,1.6vw,1.2rem);margin:0 0 .6em;}
   .hidden{display:none;}
+
+  .wishes{margin:3vh 0 0;}
+  .wishhead{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.8rem;}
+  .wishhead h2{font-size:clamp(.95rem,1.8vw,1.25rem);margin:0;color:var(--ink);font-weight:700;}
+  .wishlink{background:var(--card);border-radius:14px;padding:1rem 1.2rem;display:flex;
+            align-items:center;gap:1rem;text-decoration:none;border:1px solid #2a2a2c;}
+  .wishlink:hover{border-color:var(--accent);}
+  .wishlink .em{font-size:1.8rem;}
+  .wishlink .tx{flex:1;}
+  .wishlink .t1{color:var(--ink);font-weight:700;font-size:clamp(.85rem,1.4vw,1rem);}
+  .wishlink .t2{color:var(--muted);font-size:clamp(.7rem,1.1vw,.82rem);margin-top:.2em;}
+  .wishlink .arw{color:var(--accent);font-weight:700;}
+  .carousel{position:relative;background:var(--card);border-radius:16px;overflow:hidden;margin-top:1rem;}
+  .carousel .stage{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:#000;}
+  .carousel img,.carousel video{max-width:100%;max-height:100%;object-fit:contain;display:block;}
+  .carousel .cap{padding:.7em 1em;color:var(--muted);font-size:clamp(.7rem,1.1vw,.85rem);
+                 display:flex;justify-content:space-between;gap:1rem;}
+  .carousel .dots{display:flex;gap:.35rem;flex-wrap:wrap;}
+  .carousel .dots i{width:.5em;height:.5em;border-radius:50%;background:#3a3a3c;display:block;}
+  .carousel .dots i.on{background:var(--accent);}
+
   .bt{font-size:clamp(.95rem,1.8vw,1.25rem);margin:3vh 0 .8rem;color:var(--ink);font-weight:700;}
   .board{background:var(--card);border-radius:16px;overflow-x:auto;}
   table.lb{width:100%;border-collapse:collapse;font-size:clamp(.72rem,1.15vw,.95rem);}
@@ -142,6 +163,27 @@
   <div class="board" id="board"><div class="bempty">nobody has joined yet &mdash; share
     <a href="join.html">phandel.com/join.html</a></div></div>
   <p class="bnote">Awards are extremely official. Join at <a href="join.html">phandel.com/join.html</a>.</p>
+
+
+  <section class="wishes">
+    <div class="wishhead">
+      <h2>Birthday wishes</h2>
+      <span class="status" id="wishcount"></span>
+    </div>
+    <a class="wishlink" id="wishlink" href="https://photos.icloud.com/shared/album/0303xPdZVRS1ZfXlWzTtJUzZw"
+       target="_blank" rel="noopener">
+      <span class="em">&#127874;</span>
+      <span class="tx">
+        <span class="t1">Add a photo or video to Peter&rsquo;s 50th</span>
+        <span class="t2">Opens the shared album in Photos &mdash; everything posted there shows up here</span>
+      </span>
+      <span class="arw">&rarr;</span>
+    </a>
+    <div class="carousel hidden" id="carousel">
+      <div class="stage" id="wishstage"></div>
+      <div class="cap"><span id="wishcap"></span><span class="dots" id="wishdots"></span></div>
+    </div>
+  </section>
 
   <div class="foot" id="foot"></div>
   <div class="foot"><a href="index.html">&larr; Back to the invitation</a></div>
@@ -858,6 +900,61 @@ async function tick(){
     if (!lastGood) { $('setup').classList.remove('hidden'); countdown(); }
   }
 }
+
+// --- birthday wishes carousel ----------------------------------------------
+// Reads photos/manifest.json from THIS origin. That is deliberate: the iCloud shared
+// album cannot be embedded (x-frame-options SAMEORIGIN, frame-ancestors 'self'
+// *.icloud.com) and its undocumented sharedstreams JSON API returns 404 on every
+// partition p01-p199 for this album token, so a browser cannot read the album directly.
+// Files synced into the repo have no CORS problem, no expiring signed URLs, and keep
+// working if Apple changes anything.
+let wishItems = [], wishIdx = 0, wishTimer = null;
+
+async function loadWishes(){
+  try {
+    const r = await fetch('photos/manifest.json?_=' + Date.now(), {cache:'no-store'});
+    if (!r.ok) return;
+    const j = await r.json();
+    if (Array.isArray(j.items)) wishItems = j.items;
+    if (j.album) $('wishlink').href = j.album;
+  } catch (e) { /* no manifest yet -- the link card still works */ }
+
+  const n = wishItems.length;
+  $('wishcount').textContent = n ? (n + (n===1?' wish':' wishes')) : 'be the first';
+  if (!n) return;
+  $('carousel').classList.remove('hidden');
+  $('wishdots').innerHTML = wishItems.map(()=>'<i></i>').join('');
+  showWish(0);
+  if (wishTimer) clearInterval(wishTimer);
+  wishTimer = setInterval(nextWish, 6000);
+}
+function showWish(i){
+  if (!wishItems.length) return;
+  wishIdx = (i + wishItems.length) % wishItems.length;
+  const it = wishItems[wishIdx];
+  const isVid = /\.(mp4|mov|m4v)$/i.test(it.file || '');
+  const src = 'photos/' + (it.file || '');
+  // Videos autoplay muted and advance when they finish, so a long clip is not cut off
+  // mid-way by the slideshow timer.
+  $('wishstage').innerHTML = isVid
+    ? '<video src="' + esc(src) + '" autoplay muted playsinline></video>'
+    : '<img src="' + esc(src) + '" alt="' + esc(it.caption || 'birthday wish') + '">';
+  if (isVid) {
+    const v = $('wishstage').querySelector('video');
+    if (v) {
+      if (wishTimer) clearInterval(wishTimer);
+      v.addEventListener('ended', () => { nextWish(); wishTimer = setInterval(nextWish, 6000); });
+    }
+  }
+  $('wishcap').textContent = (it.caption || '') + (it.from ? ' — ' + it.from : '');
+  const dots = $('wishdots').children;
+  for (let k=0;k<dots.length;k++) dots[k].className = (k===wishIdx ? 'on' : '');
+}
+function nextWish(){ showWish(wishIdx + 1); }
+
+loadWishes();
+setInterval(loadWishes, 300000);      // pick up newly synced wishes every 5 min
+
 tick();
 setInterval(tick, 3000);
 </script>
