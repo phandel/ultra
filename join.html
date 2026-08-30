@@ -143,6 +143,7 @@ let mode = 'run';
 let watchId = null, timer = null, wakeLock = null;
 let me = { id:null, name:'', mode:'run' };
 let started = 0, distM = 0, lastFix = null, fixes = 0, lastPub = 0;
+let anchor = null;      // last CREDITED position; see onFix for why this is not lastFix
 let gaps = 0, gapS = 0;
 let gainM = 0, lastAlt = null, vmax = 0;
 let recent = [];        // rolling window of fixes, for a current (not average) pace
@@ -242,20 +243,35 @@ function onFix(pos) {
   if (fix.acc > 50) { setStatus(); return; }        // too vague to trust
 
   if (lastFix) {
-    const d  = hav(lastFix, fix);
-    const dt = Math.max(0.001, (fix.t - lastFix.t)/1000);
-    const ms = d/dt;
-    // Two filters that matter far more than they look:
-    //  - a minimum step, because GPS jitter while standing still otherwise accumulates
-    //    hundreds of metres over an hour
-    //  - a per-mode speed ceiling, to drop teleport-style fixes
-    const minStep = Math.max(5, fix.acc/2);
-    if (dt > MAX_GAP_S) { gaps++; gapS += dt; }        // paused: credit nothing
-    else if (d >= minStep && ms <= (MODE_MAXMS[me.mode]||8)) {
-      distM += d;
-      if (ms > vmax) vmax = ms;                       // fastest sustained sample
+    const dtLast = Math.max(0.001, (fix.t - lastFix.t)/1000);
+    if (dtLast > MAX_GAP_S) {
+      gaps++; gapS += dtLast;                          // paused: credit nothing
+      anchor = fix;                                    // and never credit the jump across it
+    } else if (anchor) {
+      // Measure from the last CREDITED position, not the previous fix. This is the whole
+      // bug that made everyone read 0.00 mi: watchPosition fires about once a second, so
+      // walking covers ~1.3 m between fixes while minStep is 5 m. Comparing consecutive
+      // fixes discarded every step AND advanced the baseline, so the distance was thrown
+      // away permanently and nobody ever accumulated anything. Against a fixed anchor the
+      // small steps add up instead, and after ~4 s of walking the displacement clears
+      // minStep and gets credited in full.
+      const d  = hav(anchor, fix);
+      const dt = Math.max(0.001, (fix.t - anchor.t)/1000);
+      const ms = d/dt;
+      // Two filters that matter far more than they look:
+      //  - a minimum step, because GPS jitter while standing still otherwise accumulates
+      //    hundreds of metres over an hour
+      //  - a per-mode speed ceiling, to drop teleport-style fixes
+      const minStep = Math.max(5, fix.acc/2);
+      if (d >= minStep && ms <= (MODE_MAXMS[me.mode]||8)) {
+        distM += d;
+        anchor = fix;
+        if (ms > vmax) vmax = ms;                       // fastest sustained sample
+      }
     }
   }
+  // First usable fix of the session becomes the anchor.
+  if (!anchor) anchor = fix;
   // Elevation gain. Barometric/GPS altitude is noisy, so only count rises above a
   // threshold and ignore fixes whose own altitude accuracy is poor -- otherwise a flat
   // street accumulates hundreds of feet of imaginary climb.
@@ -370,7 +386,7 @@ $('go').addEventListener('click', async () => {
   $('running').classList.remove('hidden');
   $('who').textContent = me.name;
   $('mode').textContent = MODE_ICON[me.mode] || '🏃';
-  started = Date.now(); distM = 0; lastFix = null; fixes = 0; lastPub = 0;
+  started = Date.now(); distM = 0; lastFix = null; anchor = null; fixes = 0; lastPub = 0;
   gaps = 0; gapS = 0; gainM = 0; lastAlt = null; vmax = 0; recent = [];
 
   keepAwake();
