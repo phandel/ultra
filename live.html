@@ -60,6 +60,13 @@
   .setup h2{color:var(--ink);font-size:clamp(.9rem,1.6vw,1.2rem);margin:0 0 .6em;}
   .hidden{display:none;}
 
+  .cam{margin:3vh 0 0;}
+  .camwrap{background:var(--card);border-radius:18px;overflow:hidden;}
+  .camwrap video{display:block;width:100%;aspect-ratio:16/9;background:#000;}
+  .camoff{aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;
+          text-align:center;color:var(--muted);font-size:clamp(.75rem,1.3vw,.95rem);
+          background:#111113;padding:1em;line-height:1.6;}
+  .camnote{padding:.75em 1em;color:var(--muted);font-size:clamp(.6rem,1vw,.8rem);}
   .wishes{margin:3vh 0 0;}
   .wishhead{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.8rem;}
   .wishhead h2{font-size:clamp(.95rem,1.8vw,1.25rem);margin:0;color:var(--ink);font-weight:700;}
@@ -173,6 +180,15 @@
   <div class="board" id="board"><div class="bempty">nobody has joined yet &mdash; share
     <a href="join.html">phandel.com/join.html</a></div></div>
   <p class="bnote">Awards are extremely official. Join at <a href="join.html">phandel.com/join.html</a>.</p>
+
+  <section class="cam">
+    <h2 class="bt">Front yard, live</h2>
+    <div class="camwrap" id="camwrap">
+      <div class="camoff" id="camoff">checking the camera&hellip;</div>
+    </div>
+    <p class="camnote" id="camnote">Roughly 20&ndash;30 seconds behind real life &mdash; that is
+      how HLS works, not a fault.</p>
+  </section>
 
 
   <section class="wishes">
@@ -948,6 +964,97 @@ async function tick(){
     if (!lastGood) { $('setup').classList.remove('hidden'); countdown(); }
   }
 }
+
+// --- front-yard camera (HLS) ------------------------------------------------
+// The stream lives on Cloudflare R2, which serves it over HTTPS with
+// Access-Control-Allow-Origin: https://phandel.com (verified). That matters: the camera
+// itself is on a private 192.168 address behind digest auth, which a public HTTPS page
+// can neither reach nor authenticate to -- and no amount of JavaScript could hide the
+// credential if it tried. R2 also means the fan-out is Cloudflare's edge rather than the
+// house uplink: ~360 kbps per viewer (450 KB per 10 s segment), which 300 people watching
+// would have made impossible to serve from home.
+const CAM_SRC = 'https://pub-8cd8f10809a84abbb9915ef5cdd8e378.r2.dev/frontyard/live.m3u8';
+// Pinned + SRI rather than the floating @1: this is a third-party script on a public page,
+// so a changed artifact should fail closed (camera silently absent) instead of running
+// whatever the CDN happens to serve. Regenerate the hash if you bump the version.
+const HLS_JS  = 'https://cdn.jsdelivr.net/npm/hls.js@1.7.1/dist/hls.min.js';
+const HLS_SRI = 'sha384-X6qxWXYhVZFp6V31bNDBz4eOoPnZloPbOdTcnhnvRJY2+2pDMrO7R4/1mXfJ9VXY';
+let camState = 'idle';
+
+function camOff(msg){
+  const off = $('camoff');
+  if (off) { off.textContent = msg; off.classList.remove('hidden'); }
+}
+
+function loadHlsJs(){
+  return new Promise((resolve, reject) => {
+    if (window.Hls) return resolve();
+    const sc = document.createElement('script');
+    sc.src = HLS_JS; sc.integrity = HLS_SRI; sc.crossOrigin = 'anonymous';
+    sc.onload = resolve; sc.onerror = () => reject(new Error('hls.js blocked'));
+    document.head.appendChild(sc);
+  });
+}
+
+async function startCam(){
+  if (camState !== 'idle') return;
+  camState = 'starting';
+  try {
+    // Probe first. A dead camera or a stopped uploader would otherwise leave a black
+    // player with controls sitting on the page, which reads as "the site is broken".
+    const r = await fetch(CAM_SRC + '?_=' + Date.now(), {cache:'no-store'});
+    if (!r.ok) throw new Error('http ' + r.status);
+
+    const wrap = $('camwrap');
+    const v = document.createElement('video');
+    v.id = 'cam'; v.controls = true; v.muted = true; v.autoplay = true;
+    v.playsInline = true; v.setAttribute('playsinline','');
+    wrap.appendChild(v);
+
+    if (v.canPlayType && v.canPlayType('application/vnd.apple.mpegurl')) {
+      // Safari and iOS play HLS natively, so they never pay for the 618 KB of hls.js.
+      v.src = CAM_SRC;
+    } else {
+      await loadHlsJs();
+      if (!(window.Hls && Hls.isSupported())) throw new Error('HLS unsupported here');
+      const hls = new Hls({ lowLatencyMode: true });
+      hls.loadSource(CAM_SRC);
+      hls.attachMedia(v);
+      // A live playlist can 404 briefly while segments rotate -- recover, do not die.
+      hls.on(Hls.Events.ERROR, (_, d) => {
+        if (!d.fatal) return;
+        if (d.type === Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
+        else if (d.type === Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
+        else { hls.destroy(); camState = 'idle'; camOff('camera dropped out — retrying'); }
+      });
+    }
+    const off = $('camoff'); if (off) off.classList.add('hidden');
+    camState = 'playing';
+  } catch (e) {
+    camState = 'idle';
+    camOff('camera is offline right now — it will appear here when it comes back');
+  }
+}
+
+// Only start once it is actually on screen: no reason to pull 360 kbps for someone who
+// never scrolls down, and this page is built to survive a crowd.
+function camInit(){
+  const wrap = $('camwrap');
+  if (!wrap) return;
+  if (typeof IntersectionObserver === 'function' && wrap.getBoundingClientRect) {
+    const io = new IntersectionObserver(es => {
+      for (const e of es) if (e.isIntersecting) { startCam(); io.disconnect(); }
+    }, {rootMargin: '200px'});
+    io.observe(wrap);
+  } else {
+    startCam();
+  }
+  // Retry a dead camera periodically, but never touch a healthy one.
+  setInterval(() => { if (camState === 'idle') startCam(); }, 60000);
+}
+// Guarded: the smoke harness has no IntersectionObserver or real DOM, and a throw here
+// would take the whole script down -- including the race numbers.
+try { camInit(); } catch (e) { /* camera is strictly optional */ }
 
 // --- birthday wishes carousel ----------------------------------------------
 // Reads photos/manifest.json from THIS origin. That is deliberate: the iCloud shared
