@@ -79,6 +79,16 @@
   .carousel .dots{display:flex;gap:.35rem;flex-wrap:wrap;}
   .carousel .dots i{width:.5em;height:.5em;border-radius:50%;background:#3a3a3c;display:block;}
   .carousel .dots i.on{background:var(--accent);}
+  /* Play badge for a video wish we only hold the poster frame for -- shared-album videos
+     download on demand, so the bytes often are not on any device we can read. */
+  .carousel .pw{position:relative;display:flex;align-items:center;justify-content:center;
+                width:100%;height:100%;text-decoration:none;}
+  .carousel .pw .pb{position:absolute;width:clamp(48px,9%,86px);aspect-ratio:1;border-radius:50%;
+                background:rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.85);
+                display:flex;align-items:center;justify-content:center;}
+  .carousel .pw .pb::after{content:'';border-left:clamp(13px,2.4vw,22px) solid #fff;
+                border-top:clamp(9px,1.6vw,15px) solid transparent;
+                border-bottom:clamp(9px,1.6vw,15px) solid transparent;margin-left:18%;}
 
   .bt{font-size:clamp(.95rem,1.8vw,1.25rem);margin:3vh 0 .8rem;color:var(--ink);font-weight:700;}
   .board{background:var(--card);border-radius:16px;overflow-x:auto;}
@@ -972,19 +982,36 @@ function showWish(i){
   const it = wishItems[wishIdx];
   const isVid = /\.(mp4|mov|m4v)$/i.test(it.file || '');
   const src = 'photos/' + (it.file || '');
-  // Videos autoplay muted and advance when they finish, so a long clip is not cut off
-  // mid-way by the slideshow timer.
-  $('wishstage').innerHTML = isVid
-    ? '<video src="' + esc(src) + '" autoplay muted playsinline></video>'
-    : '<img src="' + esc(src) + '" alt="' + esc(it.caption || 'birthday wish') + '">';
-  if (isVid) {
+  const album = ($('wishlink') && $('wishlink').href) || '';
+  // Three cases, and the middle one is easy to get wrong. it.poster means the wish IS a
+  // video but only its still frame exists: iCloud shared albums download video bytes on
+  // demand, so unless somebody has played it in Photos there is nothing to serve. Rendering
+  // a <video> for those produced a frozen first frame that looked broken, so show the still
+  // with a play badge that opens the album instead of faking playback.
+  if (it.poster) {
+    $('wishstage').innerHTML =
+      '<a class="pw" href="' + esc(album) + '" target="_blank" rel="noopener">' +
+        '<img src="' + esc(src) + '" alt="' + esc(it.caption || 'video birthday wish') + '">' +
+        '<span class="pb"></span>' +
+      '</a>';
+  } else if (isVid) {
+    // Videos autoplay muted and advance when they finish, so a long clip is not cut off
+    // mid-way by the slideshow timer.
+    $('wishstage').innerHTML =
+      '<video src="' + esc(src) + '" autoplay muted playsinline></video>';
+  } else {
+    $('wishstage').innerHTML =
+      '<img src="' + esc(src) + '" alt="' + esc(it.caption || 'birthday wish') + '">';
+  }
+  if (isVid && !it.poster) {
     const v = $('wishstage').querySelector('video');
     if (v) {
       if (wishTimer) clearInterval(wishTimer);
       v.addEventListener('ended', () => { nextWish(); wishTimer = setInterval(nextWish, 6000); });
     }
   }
-  $('wishcap').textContent = (it.caption || '') + (it.from ? ' — ' + it.from : '');
+  $('wishcap').textContent = (it.poster ? '\u25b6 video wish \u00b7 tap to watch in the album' :
+                              (it.caption || '')) + (it.from ? ' \u2014 ' + it.from : '');
   const dots = $('wishdots').children;
   for (let k=0;k<dots.length;k++) dots[k].className = (k===wishIdx ? 'on' : '');
 }
