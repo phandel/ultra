@@ -1069,7 +1069,24 @@ async function tick(){
 // second page, so the two layouts cannot drift apart. Everything is guarded and wrapped:
 // on the normal page none of this runs, and if any of it fails the race numbers are
 // untouched.
-const TV = qs.get('tv') === '1' || qs.get('tv') === '' || location.hash === '#tv';
+// Kiosk is now the DEFAULT. It loses nothing: numbers, map, camera, leaderboard and wishes
+// all fit on the one screen, so it works as well for someone watching from afar as it does
+// on the driveway TV.
+//
+// Two exceptions. ?tv=0 forces the scrolling page. And a portrait or narrow viewport gets
+// the scrolling page automatically, because three non-scrolling columns are unusable on a
+// phone held upright -- which is how most remote viewers will open this.
+const TV_MIN_W = 700;
+function tvSuits(){
+  const w = (typeof window !== 'undefined') ? window.innerWidth  : 0;
+  const h = (typeof window !== 'undefined') ? window.innerHeight : 0;
+  if (!w || !h) return true;              // no viewport info (test harness): behave as default
+  return w >= TV_MIN_W && w > h;          // landscape, and wide enough to hold three columns
+}
+const tvParam = qs.get('tv');
+const TV = tvParam === '0' ? false
+         : (tvParam === '1' || tvParam === '' || location.hash === '#tv') ? true
+         : tvSuits();
 
 function tvLayout(){
   const wrap = document.querySelector && document.querySelector('.wrap');
@@ -1131,7 +1148,17 @@ if (TV) {
       document.addEventListener('visibilitychange', () => { if (!document.hidden) tvKeepAwake(); });
     }
     if (typeof window !== 'undefined' && window.addEventListener) {
-      window.addEventListener('resize', () => setTimeout(tvSelfCheck, 250));
+      // Rotating the phone must not leave a three-column layout on a portrait screen.
+      // Toggling body.tv is enough: the .tvmain wrapper is inert without those rules and
+      // its panels just stack in one column, which is the narrow layout anyway. Only do
+      // this when the mode was not pinned explicitly by ?tv=.
+      const pinned = tvParam === '0' || tvParam === '1' || tvParam === '';
+      window.addEventListener('resize', () => setTimeout(() => {
+        if (!pinned && document.body && document.body.classList) {
+          document.body.classList.toggle('tv', tvSuits());
+        }
+        tvSelfCheck();
+      }, 250));
     }
     setTimeout(tvSelfCheck, 1200);      // after fonts, map tiles and the first paint
     setInterval(tvSelfCheck, 15000);    // and as content (leaderboard, wishes) grows
@@ -1275,7 +1302,12 @@ function showWish(i){
   wishIdx = (i + wishItems.length) % wishItems.length;
   const it = wishItems[wishIdx];
   const isVid = /\.(mp4|mov|m4v)$/i.test(it.file || '');
-  const src = 'photos/' + (it.file || '');
+  // An absolute URL is used verbatim, so a video wish can be served from somewhere with
+  // free egress (the same Cloudflare R2 bucket as the camera) instead of GitHub Pages.
+  // That matters at this scale: autoplaying phone video to a few hundred viewers for
+  // thirteen hours is tens of gigabytes, and Pages' bandwidth allowance is not meant for it.
+  const raw = it.file || '';
+  const src = /^https?:\/\//i.test(raw) ? raw : 'photos/' + raw;
   const album = ($('wishlink') && $('wishlink').href) || '';
   // Three cases, and the middle one is easy to get wrong. it.poster means the wish IS a
   // video but only its still frame exists: iCloud shared albums download video bytes on
