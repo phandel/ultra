@@ -160,6 +160,15 @@
   body.tv{height:100dvh;overflow:hidden;}
   body.tv .wrap{max-width:none;height:100dvh;padding:1.4vh 1.6vw;display:grid;
         grid-template-rows:auto minmax(0,1fr);gap:1.2vh;overflow:hidden;}
+  /* .wrap has 13 direct children and tvLayout only MOVES eight of them into .tvmain, so the
+     leftovers (.split, section.cam, section.wishes, ...) stayed as grid items. With only two
+     rows declared they fell into implicit auto rows, and the minmax(0,1fr) row went to the
+     second child -- the now-EMPTY .split -- which then ate all the free height and pushed
+     .tvmain far down the screen. Hiding everything except the two panels we actually place,
+     and pinning those to explicit rows, makes the layout independent of stray siblings. */
+  body.tv .wrap > *{display:none;}
+  body.tv .wrap > .top{display:flex;grid-row:1;}
+  body.tv .wrap > .tvmain{display:grid;grid-row:2;}
   /* Everything that is for a reader, not a watcher, goes away. */
   body.tv .setup,body.tv .foot,body.tv .bnote,body.tv .camnote,body.tv .mapnote,
   body.tv .wishhead,body.tv .wishlink,body.tv #btitle,body.tv .cam h2{display:none!important;}
@@ -201,6 +210,14 @@
   body.tv .cam,body.tv .wishes{margin:0;min-height:0;overflow:hidden;display:grid;}
   body.tv .board{min-height:0;overflow:hidden;border-radius:1.6vh;}
   body.tv table.lb{font-size:1.6vh;}
+  /* The panel is a third of the screen, and td{white-space:nowrap} meant a long award
+     ("THE WHOLE REASON WE ARE HERE") widened the Who column until Miles and Avg pace were
+     pushed past the panel's overflow:hidden and disappeared. Drop the optional columns here
+     regardless of viewport width, and clip the award instead of the numbers. */
+  body.tv table.lb .opt{display:none;}
+  body.tv .nmw{min-width:0;}
+  body.tv .nmw .nn,body.tv .nmw .aw{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+        display:block;max-width:14vw;}
   body.tv table.lb th{font-size:1.15vh;padding:.5em .4em;}
   body.tv table.lb td{padding:.42em .4em;}
   body.tv .carousel{margin:0;min-height:0;overflow:hidden;display:grid;
@@ -1109,6 +1126,8 @@ function tvLayout(){
     }
   }
   wrap.appendChild(main);
+  // Report success: the caller must not switch on body.tv unless the panels really moved.
+  return cols.reduce((n, c) => n + (c.children ? c.children.length : 0), 0);
 }
 
 // The one thing the CSS cannot promise on a screen I cannot measure: that nothing is being
@@ -1141,8 +1160,12 @@ async function tvKeepAwake(){
 
 if (TV) {
   try {
+    // Build FIRST, then switch the class on -- and only if panels actually moved. body.tv
+    // hides every direct child of .wrap except .top and .tvmain, so adding it before a
+    // failed build would have left a blank screen on the driveway TV.
+    const moved = tvLayout();
+    if (!moved) throw new Error('tv layout moved nothing');
     document.body && document.body.classList && document.body.classList.add('tv');
-    tvLayout();
     tvKeepAwake();
     if (typeof document.addEventListener === 'function') {
       document.addEventListener('visibilitychange', () => { if (!document.hidden) tvKeepAwake(); });
@@ -1159,6 +1182,15 @@ if (TV) {
         }
         tvSelfCheck();
       }, 250));
+    }
+    // Leaflet measures its container ONCE at init and caches it. TV mode moves .mapwrap into
+    // a different grid cell afterwards, so the map kept the old dimensions and never
+    // requested tiles for the new box -- the panel just sat there empty. Nothing else in the
+    // page notices, because the map "worked".
+    const remap = () => { try { if (lmap && lmap.invalidateSize) lmap.invalidateSize(); } catch (e) {} };
+    setTimeout(remap, 300); setTimeout(remap, 1500);
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      window.addEventListener('resize', () => setTimeout(remap, 300));
     }
     setTimeout(tvSelfCheck, 1200);      // after fonts, map tiles and the first paint
     setInterval(tvSelfCheck, 15000);    // and as content (leaderboard, wishes) grows
