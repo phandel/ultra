@@ -1007,7 +1007,13 @@ setInterval(loadWishes, 300000);      // pick up newly synced wishes every 5 min
 // cached key list, and nothing at all while the tab is hidden. That is ~0.21 req/s per
 // visible viewer -- about 21 req/s at 100 concurrent viewers, inside the ceiling with
 // room to spare, and far lower in practice because most tabs sit in the background.
-const POLL_MS       = 6000;   // the phone only publishes every 5 s, so faster is waste
+// 12 s, sized for the expected crowd rather than for one watcher. Measured ceiling is ~37
+// successful reads/s, and each visible viewer costs ~0.121 req/s at this interval, so ~300
+// simultaneous FOREGROUND viewers fit. At the previous 6 s it was ~164, which 200-300
+// people would have blown straight through. The phone publishes every 5 s, so the page is
+// at most one interval behind -- fine for a spectator page, and far better than everyone
+// oscillating between fresh and rate-limited.
+const POLL_MS       = 12000;
 const FRIENDS_EVERY = 4;      // => friends refresh every ~24 s
 const MAX_BACKOFF   = 30000;
 let tickN = 0, backoff = 0, pollTimer = null;
