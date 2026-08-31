@@ -89,9 +89,18 @@
   .wishlink .arw{color:var(--accent);font-weight:700;}
   .carousel{position:relative;background:var(--card);border-radius:16px;overflow:hidden;margin-top:1rem;}
   .carousel .stage{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;background:#000;}
-  .carousel img,.carousel video{max-width:100%;max-height:100%;object-fit:contain;display:block;}
+  /* width/height 100% + contain, NOT max-*: with max-width/max-height the element's own
+     intrinsic size decides the box, so a portrait wish and a landscape wish gave the
+     section different heights and everything below it jumped as the slideshow advanced.
+     Now the stage box is fixed and the image is letterboxed inside it. */
+  .carousel img,.carousel video{width:100%;height:100%;object-fit:contain;display:block;}
+  /* Fixed height and a single clipped line: a long caption used to wrap onto a second
+     line and shift the page too. */
   .carousel .cap{padding:.7em 1em;color:var(--muted);font-size:clamp(.7rem,1.1vw,.85rem);
-                 display:flex;justify-content:space-between;gap:1rem;}
+                 display:flex;justify-content:space-between;align-items:center;gap:1rem;
+                 min-height:3em;}
+  .carousel .cap #wishcap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .carousel .dots{flex:0 0 auto;}
   .carousel .dots{display:flex;gap:.35rem;flex-wrap:wrap;}
   .carousel .dots i{width:.5em;height:.5em;border-radius:50%;background:#3a3a3c;display:block;}
   .carousel .dots i.on{background:var(--accent);}
@@ -591,23 +600,29 @@ function drawMapKit(lat, lon, trail){
 // labelled street map, unlike standard OSM mapnik which is bright and cluttered. Satellite
 // and Dark stay one tap away in the layer switcher.
 const TILE_STYLES = {
+  // All three from Esri's arcgisonline service, which needs no key or account.
+  //
+  // CARTO used to be the default and had to go: basemaps.cartocdn.com now stamps
+  // "API KEY REQUIRED" + carto.com/basemaps/apikey diagonally across every tile. It still
+  // returns HTTP 200 with a perfectly normal-looking 22KB PNG, so nothing in the response
+  // reveals the problem -- only opening the image does. Do not judge a tile by its status
+  // code or its byte count; look at it.
+  //
+  // Esri tiles are {z}/{y}/{x} -- the row/col order is swapped relative to OSM/CARTO, and
+  // they are JPEG, with no {s} subdomains and no {r} retina variant.
   'Streets': {
-    url:'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    opts:{maxZoom:20, subdomains:'abcd', detectRetina:true,
-          attribution:'&copy; OpenStreetMap &copy; CARTO'}
+    url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    opts:{maxZoom:19, attribution:'Esri, HERE, Garmin, USGS'}
   },
   'Satellite': {
-    // Esri tiles are {z}/{y}/{x} -- the row/col order differs from OSM/CARTO.
     url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     opts:{maxZoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}
   },
   'Dark': {
-    url:'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    opts:{maxZoom:20, subdomains:'abcd', detectRetina:true,
-          attribution:'&copy; OpenStreetMap &copy; CARTO'}
+    url:'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    opts:{maxZoom:16, attribution:'Esri'}
   }
 };
-
 function drawLeaflet(lat, lon, trail){
   if (typeof L === 'undefined') { $('mapnote').textContent='map library unavailable'; return; }
   if (!lmap) {
