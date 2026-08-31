@@ -63,7 +63,11 @@
   .setup{background:var(--card);border-radius:18px;padding:2.4vh 2vw;margin-top:3vh;color:var(--muted);font-size:clamp(.72rem,1.2vw,.95rem);line-height:1.75;}
   .setup code{color:var(--accent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
   .setup h2{color:var(--ink);font-size:clamp(.9rem,1.6vw,1.2rem);margin:0 0 .6em;}
-  .hidden{display:none;}
+  /* !important because this utility is defined BEFORE component rules that set their own
+     display (.camoff{display:flex}), and equal specificity means source order wins -- so
+     adding .hidden silently did nothing and the camera placeholder stayed on top of the
+     working video. */
+  .hidden{display:none!important;}
 
   .cam{margin:3vh 0 0;}
   .camwrap{background:var(--card);border-radius:18px;overflow:hidden;}
@@ -173,6 +177,10 @@
   body.tv .spark{height:6.5vh;margin-top:.3em;}
 
   body.tv .mapwrap,body.tv .camwrap{min-height:0;overflow:hidden;border-radius:1.6vh;}
+  /* One cell, everything overlaid: with overflow:hidden a stacked sibling would otherwise
+     push the video out of view entirely, which is exactly what happened. */
+  body.tv .camwrap{display:grid;grid-template-rows:minmax(0,1fr);}
+  body.tv .camwrap > *{grid-area:1/1;min-height:0;}
   body.tv .map{aspect-ratio:auto;height:100%;min-height:0;}
   body.tv .camwrap video,body.tv .camoff{aspect-ratio:auto;height:100%;}
   body.tv .camoff{font-size:1.7vh;}
@@ -1178,28 +1186,42 @@ async function startCam(){
     camState = 'playing';
   } catch (e) {
     camState = 'idle';
-    camOff('camera is offline right now — it will appear here when it comes back');
+    // Name the reason. A generic "offline" gave nothing to act on when the cause was the
+    // page never even asking.
+    camOff('camera offline (' + ((e && e.message) || 'unknown') + ') — retrying');
   }
 }
 
-// Only start once it is actually on screen: no reason to pull 360 kbps for someone who
-// never scrolls down, and this page is built to survive a crowd.
+// Starting the camera must not depend on anything that can silently not happen. The first
+// version gated it purely on IntersectionObserver, and when that never fired -- which is
+// what an element with zero computed area at observe() time does, and TV mode gives the
+// camera panel its height from a grid row that resolves after first paint -- the placeholder
+// sat on "checking the camera" forever. So: the retry timer is registered FIRST so it can
+// never be skipped, TV mode starts immediately because the panel is always on screen there,
+// and every path has a short fallback that starts it regardless.
 function camInit(){
   const wrap = $('camwrap');
   if (!wrap) return;
-  if (typeof IntersectionObserver === 'function' && wrap.getBoundingClientRect) {
-    const io = new IntersectionObserver(es => {
-      for (const e of es) if (e.isIntersecting) { startCam(); io.disconnect(); }
-    }, {rootMargin: '200px'});
-    io.observe(wrap);
-  } else {
-    startCam();
-  }
-  // Retry a dead camera periodically, but never touch a healthy one.
-  setInterval(() => { if (camState === 'idle') startCam(); }, 60000);
+  // Registered before anything that could throw, so a dead camera always gets retried.
+  setInterval(() => { if (camState === 'idle') startCam(); }, 30000);
+  // Belt and braces: start anyway shortly after load even if no observer ever fires.
+  setTimeout(() => { if (camState === 'idle') startCam(); }, 2500);
+
+  if (TV) { startCam(); return; }   // kiosk: the panel is on screen by definition
+
+  // Elsewhere, still prefer not to pull 360 kbps for someone who never scrolls down --
+  // but only as an optimisation on top of the guaranteed start above.
+  try {
+    if (typeof IntersectionObserver === 'function') {
+      const io = new IntersectionObserver(es => {
+        for (const e of es) if (e.isIntersecting) { startCam(); io.disconnect(); }
+      }, {rootMargin: '300px'});
+      io.observe(wrap);
+    } else {
+      startCam();
+    }
+  } catch (e) { startCam(); }
 }
-// Guarded: the smoke harness has no IntersectionObserver or real DOM, and a throw here
-// would take the whole script down -- including the race numbers.
 try { camInit(); } catch (e) { /* camera is strictly optional */ }
 
 // --- birthday wishes carousel ----------------------------------------------
