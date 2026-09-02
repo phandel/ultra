@@ -371,12 +371,10 @@ const FRIENDS_DEVICE = '424d8160-99fc-11f1-b480-1301d0f2616d';
 // ---------------------------------------------------------------------------
 const qs  = new URLSearchParams(location.search);
 const SRC = qs.get('src') || DEFAULT_SRC;
-// An explicit ?src= BEATS ThingsBoard. Without this the fallback was unreachable: tick()
-// does `if (TB) {...} else { fetch(SRC) }`, and TB fell back to a hardcoded DEFAULT_TB, so
-// it was always truthy and the ?src= branch could never run. That matters on race day --
-// if ThingsBoard is throttled, out of quota or simply down, ?src=<url-to-state.json> is
-// the manual failover, and it has to actually work.
-const TB  = SRC ? '' : (qs.get('tb') || DEFAULT_TB);
+// BOTH sources run when both are configured, and the fresher one wins (see raceFetch).
+// The phone pushes to both, so either backend can fail -- quota, throttling, an outage --
+// without the page noticing. ?tb=off and ?src= let either be forced for testing.
+const TB  = (qs.get('tb') === 'off') ? '' : (qs.get('tb') || DEFAULT_TB);
 const TB_KEYS = ['hr','hr_src','hr_age_s','dist_mi','target_mi','pct','pace_min_mi',
                  'eta_s','elapsed_s','cadence_spm','kcal','steps','artifacts_60s','t',
                  'workout_mi','workout_pct','hr_mean_60s','lat','lon','loc_age_s',
@@ -434,7 +432,13 @@ async function tbFetch(){
     const v = raw[k][0].value;
     out[k] = (k === 'hr_src') ? v : (isNaN(parseFloat(v)) ? v : parseFloat(v));
   }
-  // Prefer ThingsBoard's own server-side timestamp for staleness; it is authoritative
+  // Keep the PHONE's own timestamp separately as `pt`. raceFetch compares sources to decide
+  // which is fresher, and that comparison has to be the same quantity on both sides: `t`
+  // below is ThingsBoard's server RECEIVE time, whereas the file carries the phone's
+  // generation time. Comparing those two clocks made ThingsBoard look either a second newer
+  // (network latency) or wildly older, and picked the wrong source.
+  if (typeof out.t === 'number') out.pt = out.t;
+  // Prefer ThingsBoard's own server-side timestamp for staleness DISPLAY; it is authoritative
   // even if the phone's clock drifts.
   if (raw.hr && raw.hr[0]) out.t = Math.round(raw.hr[0].ts / 1000);
   return out;
@@ -966,19 +970,52 @@ function updateMap(d){
     '" target="_blank" rel="noopener">open in Maps</a>';
 }
 
+// Which source actually rendered, and how stale the other one is. Surfaced in the footer
+// so it is possible to confirm the redundancy is really working rather than assume it.
+let feedVia = '', feedOther = '';
+
+async function fileFetch(){
+  // Cache-buster: CDNs in front of these feeds will happily serve a stale body.
+  const sep = SRC.includes('?') ? '&' : '?';
+  const r = await fetch(SRC + sep + '_=' + Date.now(), {cache:'no-store'});
+  if (!r.ok) throw new Error('http ' + r.status);
+  const d = unwrap(await r.json());
+  if (d && typeof d.t === 'number') d.pt = d.t;   // same quantity as tbFetch's pt
+  return d;
+}
+
+// Read every configured source and render whichever carries the newer `t`. Deliberately
+// Promise.allSettled, not Promise.all: with all() one failing backend would reject the whole
+// thing and throw away a perfectly good reading from the other, which would defeat the
+// entire point of pushing to two places.
+async function raceFetch(){
+  const jobs = [];
+  if (TB)  jobs.push(tbFetch().then(d => ({via:'ThingsBoard', d}),
+                                    e => ({via:'ThingsBoard', err:e})));
+  if (SRC) jobs.push(fileFetch().then(d => ({via:'file', d}),
+                                      e => ({via:'file', err:e})));
+  const rs = await Promise.all(jobs);           // each already caught, so this cannot reject
+  const pt = x => (typeof x.pt === 'number') ? x.pt : x.t;   // phone clock, both sources
+  const good = rs.filter(r => r.d && typeof pt(r.d) === 'number');
+  // A ThingsBoard success clears the throttle flag; a 429 sets it inside tbFetch. Kept
+  // separate so the poll loop still backs off TB even when the file source is carrying us.
+  if (rs.some(r => r.via === 'ThingsBoard' && r.d)) rateLimited = false;
+  if (!good.length) {
+    const e = rs.find(r => r.err);
+    throw (e && e.err) || new Error('no source responded');
+  }
+  good.sort((a, b) => pt(b.d) - pt(a.d));
+  feedVia = good[0].via;
+  const other = good[1] || rs.find(r => r.via !== feedVia);
+  feedOther = (other && other.d) ? Math.max(0, pt(good[0].d) - pt(other.d)) + 's behind'
+            : (other ? 'down' : '');
+  return good[0].d;
+}
+
 async function tick(){
   if (!SRC && !TB) { $('setup').classList.remove('hidden'); countdown(); return; }
   try {
-    let d;
-    if (TB) {
-      d = await tbFetch();
-    } else {
-      // Cache-buster: CDNs in front of these feeds will happily serve a stale body.
-      const sep = SRC.includes('?') ? '&' : '?';
-      const r = await fetch(SRC + sep + '_=' + Date.now(), {cache:'no-store'});
-      if (!r.ok) throw new Error('http ' + r.status);
-      d = unwrap(await r.json());
-    }
+    const d = await raceFetch();
     if (!d || typeof d.dist_mi !== 'number') throw new Error('unrecognised payload');
     lastGood = Date.now();
     rateLimited = false;
@@ -1088,7 +1125,8 @@ async function tick(){
       ' · source ' + d.hr_src +
       ' · ' + d.artifacts_60s + ' artifacts/min' +
       ' · ' + d.steps + ' steps' +
-      ' · feed age ' + age + 's';
+      ' · feed age ' + age + 's' +
+      (feedVia ? ' · via ' + feedVia + (feedOther ? ' (other: ' + feedOther + ')' : '') : '');
   } catch (e) {
     const msg = (e && e.message) ? e.message : 'unknown';
     // Being throttled is not the same as being offline: the numbers already on screen are
