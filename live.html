@@ -361,6 +361,12 @@
 // page. That requires the device to be made public in ThingsBoard
 // (device -> Manage credentials / "Make public"). The device ACCESS TOKEN is the write
 // credential and must stay on the phone only -- never put it in this file.
+// Second race feed: a plain state.json served over HTTPS with CORS for phandel.com.
+// The phone pushes here as well as to ThingsBoard (MODE2/URL2 in /var/root/race/push.conf),
+// and whichever is fresher gets rendered -- so filling this in is what turns the redundancy
+// on. Leave empty and the page simply uses ThingsBoard alone, exactly as before.
+// Any host works; R2 is the obvious one since it already serves the camera and its egress
+// is free. Test without committing first:  live.html?src=<url>
 const DEFAULT_SRC = '';
 const DEFAULT_TB  = '91e6d070-9937-11f1-a3bc-95bc3f4b3917';  // ultra50 device id
 const TB_PUBLIC_ID = '49f60990-993a-11f1-bb5b-f59caa77e86d';  // Public customer (auth as)
