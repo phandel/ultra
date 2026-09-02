@@ -371,7 +371,12 @@ const FRIENDS_DEVICE = '424d8160-99fc-11f1-b480-1301d0f2616d';
 // ---------------------------------------------------------------------------
 const qs  = new URLSearchParams(location.search);
 const SRC = qs.get('src') || DEFAULT_SRC;
-const TB  = qs.get('tb')  || DEFAULT_TB;
+// An explicit ?src= BEATS ThingsBoard. Without this the fallback was unreachable: tick()
+// does `if (TB) {...} else { fetch(SRC) }`, and TB fell back to a hardcoded DEFAULT_TB, so
+// it was always truthy and the ?src= branch could never run. That matters on race day --
+// if ThingsBoard is throttled, out of quota or simply down, ?src=<url-to-state.json> is
+// the manual failover, and it has to actually work.
+const TB  = SRC ? '' : (qs.get('tb') || DEFAULT_TB);
 const TB_KEYS = ['hr','hr_src','hr_age_s','dist_mi','target_mi','pct','pace_min_mi',
                  'eta_s','elapsed_s','cadence_spm','kcal','steps','artifacts_60s','t',
                  'workout_mi','workout_pct','hr_mean_60s','lat','lon','loc_age_s',
