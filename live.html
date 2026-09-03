@@ -119,6 +119,21 @@
   .carousel .dots{flex:0 1 auto;display:flex;gap:.35rem;flex-wrap:nowrap;overflow:hidden;}
   .carousel .dots i{width:.5em;height:.5em;border-radius:50%;background:#3a3a3c;display:block;}
   .carousel .dots i.on{background:var(--accent);}
+  /* Placeholder shown while WISHES_LIVE is false. Fills the stage exactly, so the section
+     occupies the same space it will on race day. */
+  .carousel .wishph{display:flex;flex-direction:column;align-items:center;justify-content:center;
+        gap:.45em;text-align:center;background:#111113;padding:1.4em;}
+  .carousel .wishph .phem{font-size:clamp(2rem,5vw,3.4rem);line-height:1;}
+  .carousel .wishph .pht{color:var(--ink);font-weight:700;font-size:clamp(.9rem,1.6vw,1.15rem);}
+  .carousel .wishph .phs{color:var(--muted);font-size:clamp(.72rem,1.2vw,.9rem);}
+  .carousel .wishph .phu{color:var(--accent);font-weight:700;font-size:clamp(.7rem,1.15vw,.88rem);
+        margin-top:.3em;}
+  /* No items, so the dots/caption row would just be an empty 3em bar. */
+  .carousel.phmode .cap{display:none;}
+  body.tv .carousel .wishph .phem{font-size:6.5vh;}
+  body.tv .carousel .wishph .pht{font-size:2.3vh;}
+  body.tv .carousel .wishph .phs{font-size:1.7vh;}
+  body.tv .carousel .wishph .phu{font-size:1.7vh;}
   /* Play badge for a video wish we only hold the poster frame for -- shared-album videos
      download on demand, so the bytes often are not on any device we can read. */
   .carousel .pw{position:absolute;inset:0;display:flex;align-items:center;
@@ -1488,17 +1503,31 @@ async function loadWishes(){
 
   const n = wishItems.length;
   if (!WISHES_LIVE) {
-    // Collected but not displayed: the album link above still works, so people can keep
-    // adding, and the count reassures them it arrived.
-    $('wishcount').textContent = n ? (n + (n===1 ? ' wish so far \u00b7 shown on race day'
-                                              : ' wishes so far \u00b7 shown on race day'))
+    // Placeholder rendered INTO the carousel rather than hiding it, so the box, its aspect
+    // ratio and its grid cell are identical to race day -- what you see now is the real
+    // layout minus the content. Hiding it instead left an empty cell in the kiosk column.
+    $('wishcount').textContent = n ? (n + (n===1 ? ' wish so far' : ' wishes so far'))
                                    : 'be the first';
-    $('carousel').classList.add('hidden');
+    const st = $('wishstage');
+    if (st) st.innerHTML =
+      '<div class="wishph">' +
+        '<span class="phem">\u{1F382}</span>' +
+        '<span class="pht">' + (n ? n + (n===1 ? ' birthday wish is waiting' : ' birthday wishes are waiting')
+                                  : 'Birthday wishes go here') + '</span>' +
+        '<span class="phs">They start playing on race day</span>' +
+        // Worth showing on the TV: body.tv hides the album link card, so without this
+        // nobody standing in the driveway would know where to send one.
+        '<span class="phu">phandel.com/#wishes</span>' +
+      '</div>';
+    const dots = $('wishdots'); if (dots) dots.innerHTML = '';
+    const car = $('carousel');
+    if (car) { car.classList.add('phmode'); car.classList.remove('hidden'); }
     return;
   }
   $('wishcount').textContent = n ? (n + (n===1?' wish':' wishes')) : 'be the first';
   if (!n) return;
   $('carousel').classList.remove('hidden');
+  $('carousel').classList.remove('phmode');
   $('wishdots').innerHTML = wishItems.map(()=>'<i></i>').join('');
   showWish(0);
   if (wishTimer) clearInterval(wishTimer);
