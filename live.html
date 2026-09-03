@@ -42,6 +42,12 @@
   .mapwrap{background:var(--card);border-radius:18px;overflow:hidden;}
   .map{width:100%;aspect-ratio:4/3;min-height:220px;background:#141416;}
   .mapnote{padding:.8em 1em;color:var(--muted);font-size:clamp(.6rem,1vw,.8rem);}
+  /* Hairline gaps between map tiles. Leaflet positions each 256 px tile with a fractional
+     CSS transform, and on a high-DPR screen the rounding leaves a sub-pixel seam, which
+     reads as thin lines ruling the whole map (seen on iPad, not on the desktop). Nudging
+     each tile half a pixel larger makes them overlap instead of abut. Safe here because
+     every layer we use serves plain 256 px tiles. */
+  .leaflet-tile-container img{width:256.5px!important;height:256.5px!important;}
   .leaflet-control-layers,.leaflet-bar a{background:#1c1c1e!important;color:#f2f2f7!important;border-color:#333!important;}
   .leaflet-control-layers-expanded{color:#f2f2f7!important;}
   .leaflet-control-attribution{background:rgba(0,0,0,.6)!important;color:#8e8e93!important;}
@@ -185,9 +191,14 @@
   body.tv .tvcol.k2{grid-template-rows:minmax(0,1.25fr) minmax(0,1fr);}
   body.tv .tvcol.k3{grid-template-rows:minmax(0,1fr) minmax(0,1fr);}
 
-  body.tv .hero{margin:0;gap:1.4vw;align-items:baseline;flex-wrap:nowrap;min-width:0;}
-  body.tv .miles{font-size:16vh;line-height:.82;}
-  body.tv .of{font-size:2.6vh;padding-bottom:.5em;white-space:nowrap;}
+  /* min(vh, vw): sizing on height alone assumed a 16:9 screen. An iPad in landscape is
+     1.44:1, so 16vh made the number 131 px tall inside a ~400 px column and the percentage
+     beside it was clipped off the right edge. Taking whichever dimension binds keeps it
+     legible on a TV and intact on a 4:3 tablet. flex-wrap is the backstop: if it still will
+     not fit, the percentage drops to a second line instead of disappearing. */
+  body.tv .hero{margin:0;gap:1.2vw;align-items:baseline;flex-wrap:wrap;min-width:0;}
+  body.tv .miles{font-size:min(16vh,10vw);line-height:.82;}
+  body.tv .of{font-size:min(2.6vh,1.9vw);padding-bottom:.4em;white-space:normal;}
   body.tv .bar{margin:0;height:1.9vh;}
   body.tv .laps{font-size:2.1vh;}
   body.tv .split{display:contents;}     /* its children are placed by .tvmain instead */
@@ -249,6 +260,14 @@
 
   /* Runtime self-check. Only ever appears if the layout really is being clipped, which is
      the one thing the CSS above cannot rule out on a screen I cannot measure from here. */
+  /* Fullscreen toggle. The Fullscreen API is the normal way to do this on the web; on
+     iPad it works, on iPhone Safari it does not, so the button hides itself when the API is
+     absent. Add to Home Screen (see the meta tags) is the other route and gives a
+     chrome-free window on any iOS device. */
+  #fsbtn{position:fixed;top:.6vh;right:.6vw;z-index:9998;background:rgba(28,28,30,.85);
+        color:var(--ink);border:1px solid #3a3a3c;border-radius:.6em;cursor:pointer;
+        font-size:1.7vh;line-height:1;padding:.45em .6em;}
+  #fsbtn:hover{border-color:var(--accent);color:var(--accent);}
   #tvwarn{position:fixed;bottom:1vh;right:1vw;z-index:9999;background:rgba(255,69,58,.92);
         color:#fff;font-size:1.5vh;padding:.5em .8em;border-radius:.6em;max-width:44vw;}
 
@@ -258,6 +277,7 @@
 </style>
 </head>
 <body>
+<button id="fsbtn" class="hidden" title="Full screen">⬜ Full screen</button>
 <div id="tvwarn" class="hidden"></div>
 <div class="wrap">
 
@@ -1211,6 +1231,38 @@ function tvLayout(){
   return cols.reduce((n, c) => n + (c.children ? c.children.length : 0), 0);
 }
 
+// Fullscreen. Must be triggered by a real click -- browsers refuse to enter fullscreen
+// without a user gesture, so this cannot be done automatically on load.
+function fsSupported(){
+  const el = document.documentElement;
+  return !!(el && (el.requestFullscreen || el.webkitRequestFullscreen));
+}
+function fsActive(){
+  return !!(document.fullscreenElement || document.webkitFullscreenElement);
+}
+function fsToggle(){
+  const el = document.documentElement;
+  try {
+    if (fsActive()) {
+      (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    } else {
+      (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+    }
+  } catch (e) { /* refused; leave the button alone */ }
+}
+function fsInit(){
+  const b = $('fsbtn');
+  if (!b || !fsSupported()) return;          // stays hidden where the API does not exist
+  b.classList.remove('hidden');
+  b.addEventListener('click', fsToggle);
+  const sync = () => {
+    b.textContent = fsActive() ? '\u2715 Exit' : '\u2b1c Full screen';
+    setTimeout(tvSelfCheck, 400);            // the viewport just changed size
+  };
+  document.addEventListener('fullscreenchange', sync);
+  document.addEventListener('webkitfullscreenchange', sync);
+}
+
 // The one thing the CSS cannot promise on a screen I cannot measure: that nothing is being
 // clipped. So ask the browser, on the actual TV, and say so plainly if it is.
 function tvSelfCheck(){
@@ -1248,6 +1300,7 @@ if (TV) {
     if (!moved) throw new Error('tv layout moved nothing');
     document.body && document.body.classList && document.body.classList.add('tv');
     tvKeepAwake();
+    fsInit();
     if (typeof document.addEventListener === 'function') {
       document.addEventListener('visibilitychange', () => { if (!document.hidden) tvKeepAwake(); });
     }
