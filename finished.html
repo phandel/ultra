@@ -152,6 +152,16 @@
   body.one .stat span{font-size:1.05vh;margin-top:.3em;}
   body.one .carousel{min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto;}
   body.one .carousel .stage{aspect-ratio:auto;height:100%;min-height:0;}
+  /* Soften wish photos and videos ON THE BIG SCREEN ONLY. A face that is fine on a phone is
+     a different thing at two metres tall in a driveway full of people, and the point is for
+     guests to enjoy the wall, not to study themselves on it. Scoped to the kiosk layout, so
+     anyone viewing on their own phone or laptop still sees full quality -- these were made
+     to be looked at.
+     --wishblur is the single knob: raise it to soften further, set it to 0 to disable.
+     Kept in vh so it scales with the screen rather than the pixel count. */
+  body.one{--wishblur:.34vh;}
+  body.one .carousel img,body.one .carousel video{filter:blur(var(--wishblur));}
+
   body.one .carousel .cap{font-size:1.2vh;min-height:0;padding:.4em .7em;}
   body.one .addbox{margin:0;padding:1vh .8rem;border-radius:1.4vh;}
   body.one .addbox input,body.one .addbox textarea{font-size:1.5vh;padding:.5em .6em;}

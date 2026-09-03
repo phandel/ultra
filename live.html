@@ -275,6 +275,16 @@
   body.tv .carousel{margin:0;min-height:0;overflow:hidden;display:grid;
         grid-template-rows:minmax(0,1fr);border-radius:1.6vh;}
   body.tv .carousel .stage{aspect-ratio:auto;height:100%;min-height:0;}
+  /* Soften wish photos and videos ON THE BIG SCREEN ONLY. A face that is fine on a phone is
+     a different thing at two metres tall in a driveway full of people, and the point is for
+     guests to enjoy the wall, not to study themselves on it. Scoped to the kiosk layout, so
+     anyone viewing on their own phone or laptop still sees full quality -- these were made
+     to be looked at.
+     --wishblur is the single knob: raise it to soften further, set it to 0 to disable.
+     Kept in vh so it scales with the screen rather than the pixel count. */
+  body.tv{--wishblur:.34vh;}
+  body.tv .carousel img,body.tv .carousel video{filter:blur(var(--wishblur));}
+
   body.tv .carousel .cap{display:none;}
 
   /* Runtime self-check. Only ever appears if the layout really is being clipped, which is
