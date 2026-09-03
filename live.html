@@ -26,6 +26,10 @@
   h1{font-size:clamp(1.1rem,2.6vw,2.1rem);margin:0;letter-spacing:-.02em;font-weight:700;}
   h1 em{color:var(--accent);font-style:normal;}
   .status{font-size:clamp(.7rem,1.2vw,1rem);color:var(--muted);}
+  .joinlink{color:var(--accent);text-decoration:none;font-weight:700;margin-right:1.2em;
+        border:1px solid #3a3a3c;border-radius:999px;padding:.25em .7em;white-space:nowrap;}
+  .joinlink:hover{border-color:var(--accent);}
+  body.tv .joinlink{font-size:1.8vh;}
   .dot{display:inline-block;width:.62em;height:.62em;border-radius:50%;background:var(--muted);margin-right:.45em;vertical-align:baseline;}
   .dot.live{background:var(--eta);box-shadow:0 0 12px var(--eta);animation:p 2s infinite;}
   .dot.stale{background:var(--hr);}
@@ -283,7 +287,9 @@
 
   <div class="top">
     <h1>Running <em>50 miles</em> for my 50th</h1>
-    <div class="status"><span class="dot" id="dot"></span><span id="status">connecting&hellip;</span></div>
+    <div class="status">
+      <a class="joinlink" href="join.html">&#127939; run with me &rarr;</a>
+      <span class="dot" id="dot"></span><span id="status">connecting&hellip;</span></div>
   </div>
 
   <div class="hero">
@@ -1348,6 +1354,17 @@ if (TV) {
 // credential if it tried. R2 also means the fan-out is Cloudflare's edge rather than the
 // house uplink: ~360 kbps per viewer (450 KB per 10 s segment), which 300 people watching
 // would have made impossible to serve from home.
+// ===================== RACE-DAY SWITCHES =====================
+// Both OFF while testing so the driveway camera and the family photos are not on a public
+// page for days beforehand. Flip BOTH to true on the morning of Sept 5 -- that is the whole
+// revert, no other edit needed.
+//   CAM_LIVE    false -> a placeholder card instead of the camera stream
+//   WISHES_LIVE false -> the "add a photo" link stays (people should keep contributing)
+//                        but the carousel does not display anything
+const CAM_LIVE    = false;
+const WISHES_LIVE = false;
+// =============================================================
+
 const CAM_SRC = 'https://pub-8cd8f10809a84abbb9915ef5cdd8e378.r2.dev/frontyard/live.m3u8';
 // Pinned + SRI rather than the floating @1: this is a third-party script on a public page,
 // so a changed artifact should fail closed (camera silently absent) instead of running
@@ -1372,6 +1389,7 @@ function loadHlsJs(){
 }
 
 async function startCam(){
+  if (!CAM_LIVE) return;          // race-day switch
   if (camState !== 'idle') return;
   camState = 'starting';
   try {
@@ -1423,6 +1441,11 @@ async function startCam(){
 function camInit(){
   const wrap = $('camwrap');
   if (!wrap) return;
+  if (!CAM_LIVE) {
+    camOff('The front-yard camera goes live on race day \u2014 Sept 5');
+    camState = 'disabled';        // blocks the retry timer and any later start
+    return;
+  }
   // Registered before anything that could throw, so a dead camera always gets retried.
   setInterval(() => { if (camState === 'idle') startCam(); }, 30000);
   // Belt and braces: start anyway shortly after load even if no observer ever fires.
@@ -1464,6 +1487,15 @@ async function loadWishes(){
   } catch (e) { /* no manifest yet -- the link card still works */ }
 
   const n = wishItems.length;
+  if (!WISHES_LIVE) {
+    // Collected but not displayed: the album link above still works, so people can keep
+    // adding, and the count reassures them it arrived.
+    $('wishcount').textContent = n ? (n + (n===1 ? ' wish so far \u00b7 shown on race day'
+                                              : ' wishes so far \u00b7 shown on race day'))
+                                   : 'be the first';
+    $('carousel').classList.add('hidden');
+    return;
+  }
   $('wishcount').textContent = n ? (n + (n===1?' wish':' wishes')) : 'be the first';
   if (!n) return;
   $('carousel').classList.remove('hidden');
