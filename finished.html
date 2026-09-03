@@ -91,14 +91,97 @@
   .foot{margin-top:4vh;color:#48484a;font-size:.78rem;line-height:1.8;}
   .foot a{color:var(--accent);text-decoration:none;}
   .hidden{display:none!important;}
+
+  /* Carousel. Same lesson as live.html: the stage is position:relative with absolutely
+     positioned children, so a portrait photo cannot change the box height and shove the
+     page around as the slideshow advances. */
+  .carousel{background:var(--card);border-radius:16px;overflow:hidden;border:1px solid #2a2a2c;}
+  .carousel .stage{position:relative;width:100%;aspect-ratio:4/3;background:#000;overflow:hidden;}
+  .carousel .stage > *{position:absolute;inset:0;}
+  .carousel img,.carousel video{width:100%;height:100%;object-fit:contain;display:block;}
+  .carousel .pw{display:flex;align-items:center;justify-content:center;text-decoration:none;}
+  .carousel .pw .pb{position:absolute;width:clamp(44px,9%,80px);aspect-ratio:1;border-radius:50%;
+        background:rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.85);
+        display:flex;align-items:center;justify-content:center;}
+  .carousel .pw .pb::after{content:'';border-left:clamp(12px,2.2vw,20px) solid #fff;
+        border-top:clamp(8px,1.5vw,14px) solid transparent;
+        border-bottom:clamp(8px,1.5vw,14px) solid transparent;margin-left:18%;}
+  .carousel .cap{padding:.6em .9em;display:flex;justify-content:space-between;align-items:center;
+        gap:.8rem;color:var(--muted);font-size:.78rem;min-height:2.6em;}
+  .carousel .cap #cap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .dots{display:flex;gap:.3rem;flex-wrap:nowrap;overflow:hidden;flex:0 1 auto;}
+  .dots i{width:.5em;height:.5em;border-radius:50%;background:#3a3a3c;display:block;flex:0 0 auto;}
+  .dots i.on{background:var(--accent);}
+  .phnone{display:flex;align-items:center;justify-content:center;color:var(--muted);
+        font-size:.85rem;background:#111113;}
+
+  #fsbtn{position:fixed;bottom:1vh;right:1vw;z-index:9998;background:rgba(28,28,30,.85);
+        color:var(--ink);border:1px solid #3a3a3c;border-radius:.6em;cursor:pointer;
+        font-size:.8rem;line-height:1;padding:.5em .7em;}
+  #fsbtn:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* ============== ONE-PAGE MODE (body.one) ==============
+     Applied on a landscape screen at least 700px wide. Unlike live.html this needs NO JS
+     reparenting -- the markup is already three sections inside a grid container, so a class
+     on <body> is the whole switch. Overflow is structurally impossible: 100dvh, rows of
+     minmax(0,1fr), min-height:0 on every panel. The wish wall is the one thing allowed to
+     scroll, inside its own panel, because it grows without bound. */
+  body.one{height:100dvh;overflow:hidden;}
+  body.one .wrap{max-width:none;height:100dvh;padding:1.6vh 1.6vw .6vh;display:grid;
+        grid-template-rows:auto minmax(0,1fr) auto;gap:1vh;overflow:hidden;}
+  body.one .top{display:flex;align-items:baseline;justify-content:space-between;gap:1.5vw;
+        flex-wrap:wrap;}
+  body.one .top h1{margin:.1em 0 0;font-size:clamp(1rem,2.4vh,1.8rem);}
+  body.one .eyebrow{font-size:1.3vh;padding:.25em .7em;}
+  body.one .sub{margin:0;font-size:1.6vh;}
+  body.one .cols{display:grid;grid-template-columns:1fr 1.15fr 1.1fr;gap:1.2vw;
+        min-height:0;overflow:hidden;}
+  body.one .col{display:grid;min-height:0;overflow:hidden;align-content:start;gap:1vh;}
+  body.one .col.ca{grid-template-rows:auto auto;}
+  body.one .col.cb{grid-template-rows:auto auto minmax(0,1fr);}
+  body.one .col.cc{grid-template-rows:auto auto auto minmax(0,1fr);}
+  body.one h2{font-size:2vh;margin:0;}
+  body.one .h2sub{font-size:1.4vh;margin:0;}
+  body.one .final{margin:0;padding:2vh 1rem;border-radius:2vh;}
+  body.one .final .big{font-size:min(15vh,9vw);}
+  body.one .final .unit{font-size:min(2vh,1.6vw);}
+  body.one .bar{height:1.4vh;margin-top:1.4vh;}
+  body.one .stats{margin:0;gap:.7vh;grid-template-columns:repeat(3,1fr);}
+  body.one .stat{padding:1vh .5rem;border-radius:1.2vh;}
+  body.one .stat b{font-size:2.3vh;}
+  body.one .stat span{font-size:1.05vh;margin-top:.3em;}
+  body.one .carousel{min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto;}
+  body.one .carousel .stage{aspect-ratio:auto;height:100%;min-height:0;}
+  body.one .carousel .cap{font-size:1.2vh;min-height:0;padding:.4em .7em;}
+  body.one .addbox{margin:0;padding:1vh .8rem;border-radius:1.4vh;}
+  body.one .addbox input,body.one .addbox textarea{font-size:1.5vh;padding:.5em .6em;}
+  body.one .addbox textarea{min-height:6vh;margin-top:.5vh;}
+  body.one .addbox button{margin-top:.5vh;font-size:1.5vh;padding:.5em 1em;}
+  body.one .addnote{font-size:1.1vh;margin-top:.5vh;}
+  body.one .addmsg{font-size:1.2vh;margin-top:.3vh;min-height:1em;}
+  /* The only scrollable thing on the page, and only inside its own panel. */
+  body.one .wall{columns:auto 1;min-height:0;overflow-y:auto;padding-right:.3rem;}
+  body.one .wish{margin:0 0 .8vh;padding:.9vh .8rem;border-radius:1.2vh;}
+  body.one .wish p{font-size:1.5vh;}
+  body.one .wish .ini{font-size:1.2vh;}
+  body.one .wish .when{font-size:1.1vh;}
+  body.one .foot{margin:0;font-size:1.1vh;line-height:1.5;}
 </style>
 </head>
 <body>
+<button id="fsbtn" class="hidden" title="Full screen">⬜ Full screen</button>
 <div class="wrap">
 
-  <span class="eyebrow">&#127937; Done</span>
-  <h1>Fifty miles for a <em>fiftieth</em></h1>
-  <p class="sub">September 5, 2026 &middot; Willow Glen, San Jose</p>
+  <header class="top">
+    <div>
+      <span class="eyebrow">&#127937; Done</span>
+      <h1>Fifty miles for a <em>fiftieth</em></h1>
+    </div>
+    <p class="sub">September 5, 2026 &middot; Willow Glen, San Jose</p>
+  </header>
+
+  <main class="cols">
+  <section class="col ca">
 
   <div class="final">
     <div class="big" id="miles">50.00</div>
@@ -114,8 +197,20 @@
     <div class="stat"><b id="kcal">&ndash;</b><span>calories</span></div>
   </div>
 
-  <h2>Birthday wishes</h2>
-  <p class="h2sub" id="wishcount">&nbsp;</p>
+  </section>
+
+  <section class="col cb">
+    <h2>Photos &amp; videos</h2>
+    <p class="h2sub" id="phcount">&nbsp;</p>
+    <div class="carousel" id="carousel">
+      <div class="stage" id="stage"><div class="phnone">no photos yet</div></div>
+      <div class="cap"><span id="cap"></span><span class="dots" id="dots"></span></div>
+    </div>
+  </section>
+
+  <section class="col cc">
+    <h2>Birthday wishes</h2>
+    <p class="h2sub" id="wishcount">&nbsp;</p>
 
   <div class="addbox">
     <div class="row">
@@ -130,6 +225,8 @@
   </div>
 
   <div class="wall" id="wall"><p class="empty">loading&hellip;</p></div>
+  </section>
+  </main>
 
   <p class="foot">
     <a href="index.html">The invitation</a> &middot;
@@ -261,6 +358,96 @@ async function loadLive(){
   } catch (e) { /* wall still shows the seeded ones */ }
 }
 
+
+// ---- photo carousel ------------------------------------------------------
+// Reads the same photos/manifest.json that ultra-photos-sync.sh maintains. Written fresh
+// here rather than shared with live.html, so this page cannot affect that one.
+let phItems = [], phIdx = 0, phTimer = null, albumURL = '';
+
+async function loadPhotos(){
+  try {
+    const r = await fetch('photos/manifest.json?_=' + Date.now(), {cache:'no-store'});
+    if (!r.ok) return;
+    const j = await r.json();
+    if (Array.isArray(j.items)) phItems = j.items;
+    if (j.album) albumURL = j.album;
+  } catch (e) { /* no manifest yet */ }
+  const n = phItems.length;
+  $('phcount').textContent = n ? (n + (n === 1 ? ' photo or video' : ' photos and videos'))
+                              : 'none yet';
+  $('dots').innerHTML = phItems.slice(0, 40).map(() => '<i></i>').join('');
+  if (!n) { $('stage').innerHTML = '<div class="phnone">no photos yet</div>'; return; }
+  showPhoto(0);
+  if (phTimer) clearInterval(phTimer);
+  phTimer = setInterval(nextPhoto, 6000);
+}
+
+function showPhoto(i){
+  if (!phItems.length) return;
+  phIdx = (i + phItems.length) % phItems.length;
+  const it = phItems[phIdx];
+  const rawf = it.file || '';
+  // An absolute URL is used as-is, so videos can be served from somewhere with free egress
+  // instead of GitHub Pages.
+  const src = /^https?:\/\//i.test(rawf) ? rawf : 'photos/' + rawf;
+  const isVid = /\.(mp4|mov|m4v)$/i.test(rawf);
+  if (it.poster) {
+    // A video whose bytes were never downloaded: show the still with a play badge linking to
+    // the album, rather than a <video> that renders one frozen frame.
+    $('stage').innerHTML =
+      '<a class="pw" href="' + esc(albumURL) + '" target="_blank" rel="noopener">' +
+        '<img src="' + esc(src) + '" alt="birthday video">' +
+        '<span class="pb"></span></a>';
+  } else if (isVid) {
+    $('stage').innerHTML = '<video src="' + esc(src) + '" autoplay muted playsinline></video>';
+    const v = $('stage').querySelector('video');
+    if (v) { if (phTimer) clearInterval(phTimer);
+      v.addEventListener('ended', () => { nextPhoto(); phTimer = setInterval(nextPhoto, 6000); }); }
+  } else {
+    $('stage').innerHTML = '<img src="' + esc(src) + '" alt="birthday photo">';
+  }
+  $('cap').textContent = it.poster ? '\u25b6 video \u00b7 tap to watch in the album'
+                                   : (it.caption || '');
+  const dots = $('dots').children;
+  for (let k = 0; k < dots.length; k++) dots[k].className = (k === phIdx ? 'on' : '');
+}
+function nextPhoto(){ showPhoto(phIdx + 1); }
+
+// ---- one-page mode -------------------------------------------------------
+// A class on <body> is the entire switch: the markup is already three sections inside a grid
+// container, so there is no node-moving to go wrong. Off on portrait or narrow screens,
+// where three non-scrolling columns would be unusable.
+const ONE_MIN_W = 700;
+function onePageSuits(){
+  const w = window.innerWidth, h = window.innerHeight;
+  if (!w || !h) return true;
+  return w >= ONE_MIN_W && w > h;
+}
+function applyOnePage(){
+  const qs = new URLSearchParams(location.search);
+  const p = qs.get('one');
+  const want = (p === '0') ? false : (p === '1' ? true : onePageSuits());
+  if (document.body && document.body.classList) document.body.classList.toggle('one', want);
+}
+
+function fsSupported(){
+  const el = document.documentElement;
+  return !!(el && (el.requestFullscreen || el.webkitRequestFullscreen));
+}
+function fsActive(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+function fsInit(){
+  const b = $('fsbtn');
+  if (!b || !fsSupported()) return;
+  b.classList.remove('hidden');
+  b.addEventListener('click', () => {
+    const el = document.documentElement;
+    try {
+      if (fsActive()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      else (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+    } catch (e) {}
+  });
+}
+
 // ---- adding one ----------------------------------------------------------
 async function send(){
   const nameEl = $('wname'), textEl = $('wtext'), btn = $('wsend'), msg = $('wmsg');
@@ -294,14 +481,18 @@ async function send(){
 
 (async function init(){
   try {
+    applyOnePage();
+    fsInit();
+    if (window.addEventListener) window.addEventListener('resize', () => setTimeout(applyOnePage, 200));
     if ($('wsend')) $('wsend').addEventListener('click', send);
     await loadSeeded();
     render();
-    await Promise.all([loadFinal(), loadLive()]);
+    await Promise.all([loadFinal(), loadLive(), loadPhotos()]);
     render();
     // Slow poll: this page has no live race to follow, so once a minute is plenty and keeps
     // it far away from the read-rate ceiling even with a crowd.
     setInterval(async () => { await loadLive(); render(); }, 60000);
+    setInterval(loadPhotos, 300000);      // pick up newly synced photos every 5 min
   } catch (e) { /* the final number and the seeded wall still render */ }
 })();
 </script>
