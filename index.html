@@ -179,6 +179,37 @@
         }
 
         /* Oktoberfest / Bavarian */
+        /* index.html had no .hidden utility (live.html's lives in a different file), so the
+           banner markup below would have been visible immediately. !important for the same
+           reason as live.html: .livebanner sets its own display. */
+        .hidden { display: none !important; }
+
+        /* Race-morning banner pointing at the live dashboard. Hidden until LIVE_BANNER is
+           flipped to true -- there is nothing to watch before the run starts. */
+        .livebanner {
+            display: block;
+            background: linear-gradient(90deg, var(--accent), #ff6a00);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 16px;
+            padding: 1.4rem 1.5rem;
+            margin: 0 0 2rem;
+            text-align: center;
+            box-shadow: 0 4px 22px rgba(232,89,12,.35);
+        }
+        .livebanner:hover { text-decoration: none; filter: brightness(1.05); }
+        .livebanner .lb1 {
+            display: block; font-size: clamp(1.3rem, 4vw, 2rem); font-weight: 800;
+            letter-spacing: -.02em; line-height: 1.15;
+        }
+        .livebanner .lb2 { display: block; font-size: clamp(.85rem, 1.8vw, 1.05rem);
+            opacity: .95; margin-top: .35em; }
+        .livebanner .lbdot {
+            display: inline-block; width: .6em; height: .6em; border-radius: 50%;
+            background: #fff; margin-right: .5em; animation: lbp 1.6s infinite;
+        }
+        @keyframes lbp { 0%,100% { opacity: 1 } 50% { opacity: .3 } }
+
         /* Birthday-wish callout. Deliberately styled as an aside and signed by Julie: the
            rest of this page is written in Peter's first person, so an ask to send PETER a
            present cannot be in that voice. */
@@ -360,6 +391,11 @@
     </header>
 
     <div class="wrap">
+        <a class="livebanner hidden" id="livebanner" href="live.html">
+            <span class="lb1"><span class="lbdot"></span>Peter is running right now &mdash; watch live</span>
+            <span class="lb2">Live distance, heart rate, pace and map &middot; tap to follow along</span>
+        </a>
+
         <div class="countdown" id="countdown"></div>
         <p class="cd-min" id="cdMin"></p>
 
@@ -818,6 +854,16 @@
        cached sheet, never a spinner or an empty page.
        ====================================================================== */
     (function () {
+      // ===== RACE-MORNING SWITCH =====
+      // false before the run: there is nothing live to send people to yet.
+      // Flip to true on the morning of Sept 5 and the banner appears at the top of the page.
+      var LIVE_BANNER = false;
+      // =================================
+      if (LIVE_BANNER) {
+        var _lb = document.getElementById('livebanner');
+        if (_lb) _lb.classList.remove('hidden');
+      }
+
       var RACE_DAY = '2026-09-05', START_HOUR = 6, END_HOUR = 17;
       var raceStart = new Date(RACE_DAY + 'T' + String(START_HOUR).padStart(2, '0') + ':00:00-07:00');
 

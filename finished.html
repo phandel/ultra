@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>50 Miles, Done &middot; Peter&rsquo;s 50th</title>
+<meta name="description" content="Fifty miles for a fiftieth birthday. Leave a birthday wish.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="50 Done">
+<!--
+  finished.html — the after-the-race page.
+
+  DELIBERATELY STANDALONE. It shares no code with live.html and imports nothing from it, so
+  nothing here can affect the race-day page. Switch over by linking to it; live.html is
+  untouched either way.
+
+  Wishes come from wishes/published.json, which is built by ~/bin/wishes-publish.sh from the
+  APPROVED entries in wishes/candidates.json. Texts pulled out of Messages are private, so
+  the pipeline is exclude-by-default and shows INITIALS only -- nothing reaches this page
+  unless a human flipped approved:true.
+
+  Live additions are written to the same ThingsBoard device join.html uses. Its write token
+  is public by necessity, so this can be spammed; entries are visible immediately and can be
+  removed from the ThingsBoard console.
+-->
+<style>
+  :root{ --ink:#f2f2f7; --muted:#8e8e93; --accent:#ff9f0a; --go:#30d158; --card:#1c1c1e; }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{background:#0a0a0b;color:var(--ink);
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+       -webkit-font-smoothing:antialiased;line-height:1.6;}
+  .wrap{max-width:900px;margin:0 auto;padding:5vh 1.25rem 4rem;}
+
+  .eyebrow{display:inline-block;text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;
+        font-weight:700;color:var(--accent);border:1px solid #3a3a3c;border-radius:999px;
+        padding:.35em .9em;}
+  h1{font-size:clamp(1.6rem,4.5vw,2.6rem);margin:1rem 0 .3em;letter-spacing:-.02em;}
+  h1 em{color:var(--accent);font-style:normal;}
+  .sub{color:var(--muted);margin:0 0 3vh;}
+
+  /* The one number worth keeping */
+  .final{background:var(--card);border-radius:20px;padding:3vh 1.5rem;text-align:center;
+        margin:0 0 1rem;}
+  .final .big{font-size:clamp(4.5rem,18vw,11rem);font-weight:800;line-height:.85;
+        color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.04em;}
+  .final .unit{font-size:clamp(1rem,2.6vw,1.6rem);color:var(--muted);margin-top:.4em;}
+  .bar{height:14px;background:#2a2a2c;border-radius:999px;overflow:hidden;margin:2vh auto 0;
+        max-width:520px;}
+  .bar i{display:block;height:100%;width:100%;border-radius:999px;
+        background:linear-gradient(90deg,var(--accent),#ff6a00);}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.7rem;
+        margin:1rem 0 3vh;}
+  .stat{background:var(--card);border-radius:14px;padding:1.4vh 1rem;text-align:center;}
+  .stat b{display:block;font-size:clamp(1.1rem,2.4vw,1.6rem);font-variant-numeric:tabular-nums;}
+  .stat span{display:block;font-size:.66rem;color:var(--muted);text-transform:uppercase;
+        letter-spacing:.09em;margin-top:.4em;}
+
+  h2{font-size:clamp(1.1rem,2.4vw,1.5rem);margin:0 0 .2em;}
+  .h2sub{color:var(--muted);font-size:.9rem;margin:0 0 1.2rem;}
+
+  /* Add-a-wish form */
+  .addbox{background:var(--card);border-radius:16px;padding:1.3rem;margin:0 0 1.5rem;
+        border:1px solid #2a2a2c;}
+  .addbox .row{display:flex;gap:.6rem;flex-wrap:wrap;}
+  .addbox input,.addbox textarea{background:#0f0f10;border:1px solid #3a3a3c;border-radius:10px;
+        color:var(--ink);font-family:inherit;font-size:1rem;padding:.7em .8em;width:100%;}
+  .addbox input{max-width:190px;}
+  .addbox textarea{min-height:74px;resize:vertical;margin-top:.6rem;}
+  .addbox input:focus,.addbox textarea:focus{outline:none;border-color:var(--accent);}
+  .addbox button{margin-top:.7rem;background:var(--go);color:#000;border:0;border-radius:10px;
+        font-weight:700;font-size:1rem;padding:.75em 1.4em;cursor:pointer;}
+  .addbox button:disabled{opacity:.45;cursor:default;}
+  .addnote{color:#6b6b70;font-size:.78rem;margin:.7rem 0 0;line-height:1.6;}
+  .addmsg{font-size:.85rem;margin:.6rem 0 0;min-height:1.2em;}
+  .addmsg.ok{color:var(--go);} .addmsg.err{color:#ff453a;}
+
+  /* The wall */
+  .wall{columns:290px 2;column-gap:1rem;}
+  .wish{background:var(--card);border-radius:14px;padding:1rem 1.1rem;margin:0 0 1rem;
+        break-inside:avoid;border:1px solid #2a2a2c;}
+  .wish .who{display:flex;align-items:center;gap:.6rem;margin-bottom:.5em;}
+  .wish .ini{background:var(--accent);color:#000;font-weight:800;font-size:.78rem;
+        width:2.1em;height:2.1em;border-radius:50%;display:flex;align-items:center;
+        justify-content:center;flex:0 0 auto;letter-spacing:.02em;}
+  .wish .when{color:var(--muted);font-size:.74rem;}
+  .wish p{margin:0;font-size:.98rem;white-space:pre-wrap;overflow-wrap:anywhere;}
+  .wish.fresh{border-color:var(--accent);}
+  .empty{color:#6b6b70;font-size:.9rem;}
+  .foot{margin-top:4vh;color:#48484a;font-size:.78rem;line-height:1.8;}
+  .foot a{color:var(--accent);text-decoration:none;}
+  .hidden{display:none!important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="eyebrow">&#127937; Done</span>
+  <h1>Fifty miles for a <em>fiftieth</em></h1>
+  <p class="sub">September 5, 2026 &middot; Willow Glen, San Jose</p>
+
+  <div class="final">
+    <div class="big" id="miles">50.00</div>
+    <div class="unit">miles &middot; <span id="pct">100</span>% of the goal</div>
+    <div class="bar"><i id="bar"></i></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="el">&ndash;</b><span>total time</span></div>
+    <div class="stat"><b id="pace">&ndash;</b><span>avg pace</span></div>
+    <div class="stat"><b id="hr">&ndash;</b><span>avg heart rate</span></div>
+    <div class="stat"><b id="steps">&ndash;</b><span>steps</span></div>
+    <div class="stat"><b id="kcal">&ndash;</b><span>calories</span></div>
+  </div>
+
+  <h2>Birthday wishes</h2>
+  <p class="h2sub" id="wishcount">&nbsp;</p>
+
+  <div class="addbox">
+    <div class="row">
+      <input type="text" id="wname" maxlength="40" placeholder="Your name"
+             autocomplete="name" autocapitalize="words">
+    </div>
+    <textarea id="wtext" maxlength="400" placeholder="Say something nice&hellip;"></textarea>
+    <button id="wsend">Add my wish</button>
+    <p class="addmsg" id="wmsg"></p>
+    <p class="addnote">Only your <b>initials</b> appear, never your full name or number.
+       Wishes show up right away.</p>
+  </div>
+
+  <div class="wall" id="wall"><p class="empty">loading&hellip;</p></div>
+
+  <p class="foot">
+    <a href="index.html">The invitation</a> &middot;
+    <a href="live.html">Race-day dashboard</a><br>
+    Seeded wishes are quoted with permission-by-curation and shown as initials only.
+  </p>
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// Standalone on purpose: nothing here is imported by, or imports from, live.html.
+const TB_HOST      = 'https://thingsboard.cloud';
+const TB_PUBLIC_ID = '49f60990-993a-11f1-bb5b-f59caa77e86d';   // anonymous read
+const RACE_DEVICE  = '91e6d070-9937-11f1-a3bc-95bc3f4b3917';   // final numbers
+// Same device join.html writes to. Its token is necessarily public, so treat anything
+// arriving here as untrusted: it is escaped before display and can be deleted server-side.
+const WISH_TOKEN   = 'fSmStSbu2QzkrenAqZgR';
+const WISH_DEVICE  = '424d8160-99fc-11f1-b480-1301d0f2616d';
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
+function initialsOf(name){
+  const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  if (parts.length === 1) return parts[0].slice(0,2).toUpperCase();
+  return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
+}
+const hms = s => {
+  s = Math.max(0, Math.round(s||0));
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60);
+  return h ? h + 'h' + String(m).padStart(2,'0') : m + 'm';
+};
+const mmss = p => {
+  if (!(p > 0)) return '–';
+  const m = Math.floor(p), s = Math.round((p-m)*60);
+  return m + ':' + String(s).padStart(2,'0');
+};
+
+// ---- final numbers, read once ---------------------------------------------
+let tok = null;
+async function tbAuth(){
+  const r = await fetch(TB_HOST + '/api/auth/login/public', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({publicId: TB_PUBLIC_ID})});
+  if (!r.ok) throw new Error('auth ' + r.status);
+  tok = (await r.json()).token;
+}
+async function tbGet(path){
+  if (!tok) await tbAuth();
+  let r = await fetch(TB_HOST + path, {headers:{'X-Authorization':'Bearer ' + tok}});
+  if (r.status === 401) { await tbAuth();
+    r = await fetch(TB_HOST + path, {headers:{'X-Authorization':'Bearer ' + tok}}); }
+  if (!r.ok) throw new Error('http ' + r.status);
+  return r.json();
+}
+async function loadFinal(){
+  try {
+    const keys = 'workout_mi,dist_mi,target_mi,elapsed_s,pace_min_mi,hr_avg_run,steps,kcal';
+    const raw = await tbGet('/api/plugins/telemetry/DEVICE/' + RACE_DEVICE +
+                            '/values/timeseries?keys=' + keys);
+    const num = k => (raw[k] && raw[k][0]) ? parseFloat(raw[k][0].value) : NaN;
+    const mi  = isNaN(num('workout_mi')) ? num('dist_mi') : num('workout_mi');
+    const tgt = num('target_mi') || 50;
+    // Only overwrite the printed 50.00 if the feed actually has a number: the telemetry TTL
+    // is short, so weeks later this page should still read 50.00 rather than a dash.
+    if (!isNaN(mi) && mi > 0) {
+      $('miles').textContent = mi.toFixed(2);
+      $('pct').textContent = Math.round(mi / tgt * 100);
+      $('bar').style.width = Math.min(100, mi / tgt * 100) + '%';
+    }
+    if (!isNaN(num('elapsed_s')))  $('el').textContent   = hms(num('elapsed_s'));
+    if (!isNaN(num('pace_min_mi'))) $('pace').textContent = mmss(num('pace_min_mi')) + '/mi';
+    if (!isNaN(num('hr_avg_run')))  $('hr').textContent   = Math.round(num('hr_avg_run')) + ' bpm';
+    if (!isNaN(num('steps')))       $('steps').textContent = Math.round(num('steps')).toLocaleString();
+    if (!isNaN(num('kcal')))        $('kcal').textContent  = Math.round(num('kcal')).toLocaleString();
+  } catch (e) { /* the printed 50.00 stands on its own */ }
+}
+
+// ---- the wall -------------------------------------------------------------
+let seeded = [], live = [];
+
+function render(){
+  const all = seeded.concat(live).sort((a,b) => (b.ts||0) - (a.ts||0));
+  const n = all.length;
+  $('wishcount').textContent = n
+    ? n + (n === 1 ? ' wish' : ' wishes') + ' — add yours below'
+    : 'Be the first to leave one.';
+  $('wall').innerHTML = n ? all.map(w =>
+      '<div class="wish' + (w.fresh ? ' fresh' : '') + '">' +
+        '<div class="who"><span class="ini">' + esc(w.initials) + '</span>' +
+          '<span class="when">' + esc(w.when || '') + '</span></div>' +
+        '<p>' + esc(w.text) + '</p>' +
+      '</div>').join('')
+    : '<p class="empty">No wishes yet.</p>';
+}
+
+async function loadSeeded(){
+  try {
+    const r = await fetch('wishes/published.json?_=' + Date.now(), {cache:'no-store'});
+    if (!r.ok) return;
+    const j = await r.json();
+    seeded = (j.wishes || []).map(w => ({
+      initials: w.initials || '?', text: w.text || '', when: (w.when || '').slice(0,10),
+      ts: Date.parse((w.when || '').replace(' ', 'T')) || 0}));
+  } catch (e) { /* none published yet */ }
+}
+
+async function loadLive(){
+  try {
+    const base = '/api/plugins/telemetry/DEVICE/' + WISH_DEVICE;
+    const keys = (await tbGet(base + '/keys/timeseries')).filter(k => k.indexOf('bw_') === 0);
+    if (!keys.length) { live = []; return; }
+    const raw = await tbGet(base + '/values/timeseries?keys=' + keys.join(','));
+    const out = [];
+    for (const k of keys) {
+      if (!raw[k] || !raw[k][0]) continue;
+      try {
+        const o = JSON.parse(raw[k][0].value);
+        if (!o || !o.t) continue;
+        out.push({initials: initialsOf(o.n), text: String(o.m || '').slice(0,400),
+                  when: new Date(o.t * 1000).toISOString().slice(0,10),
+                  ts: o.t, fresh: true});
+      } catch (e) { /* skip one bad entry rather than lose the wall */ }
+    }
+    live = out;
+  } catch (e) { /* wall still shows the seeded ones */ }
+}
+
+// ---- adding one ----------------------------------------------------------
+async function send(){
+  const nameEl = $('wname'), textEl = $('wtext'), btn = $('wsend'), msg = $('wmsg');
+  const name = nameEl.value.trim(), text = textEl.value.trim();
+  msg.className = 'addmsg';
+  if (name.length < 2)  { msg.className = 'addmsg err'; msg.textContent = 'Your name, please.'; return; }
+  if (text.length < 2)  { msg.className = 'addmsg err'; msg.textContent = 'Say something first.'; return; }
+  btn.disabled = true; msg.textContent = 'sending…';
+  // Key includes a random suffix so two people posting at once cannot overwrite each other.
+  const key = 'bw_' + Math.random().toString(36).slice(2,10);
+  const body = {}; body[key] = JSON.stringify({
+    n: name.slice(0,40), m: text.slice(0,400), t: Math.round(Date.now()/1000)});
+  try {
+    // text/plain keeps this a CORS "simple request": a preflight to this endpoint returns
+    // 403, so application/json would fail from a browser.
+    const r = await fetch(TB_HOST + '/api/v1/' + WISH_TOKEN + '/telemetry',
+      {method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(body)});
+    if (!r.ok) throw new Error('http ' + r.status);
+    live.push({initials: initialsOf(name), text: text,
+               when: new Date().toISOString().slice(0,10),
+               ts: Math.round(Date.now()/1000), fresh: true});
+    textEl.value = '';
+    msg.className = 'addmsg ok'; msg.textContent = 'Thank you! It is on the wall.';
+    render();
+  } catch (e) {
+    msg.className = 'addmsg err';
+    msg.textContent = 'Could not send (' + (e.message || 'error') + '). Try again?';
+  }
+  btn.disabled = false;
+}
+
+(async function init(){
+  try {
+    if ($('wsend')) $('wsend').addEventListener('click', send);
+    await loadSeeded();
+    render();
+    await Promise.all([loadFinal(), loadLive()]);
+    render();
+    // Slow poll: this page has no live race to follow, so once a minute is plenty and keeps
+    // it far away from the read-rate ceiling even with a crowd.
+    setInterval(async () => { await loadLive(); render(); }, 60000);
+  } catch (e) { /* the final number and the seeded wall still render */ }
+})();
+</script>
+</body>
+</html>
