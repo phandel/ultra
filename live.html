@@ -283,11 +283,12 @@
      iPad it works, on iPhone Safari it does not, so the button hides itself when the API is
      absent. Add to Home Screen (see the meta tags) is the other route and gives a
      chrome-free window on any iOS device. */
-  #fsbtn{position:fixed;top:.6vh;right:.6vw;z-index:9998;background:rgba(28,28,30,.85);
+  #fsbtn{position:fixed;bottom:1vh;right:1vw;z-index:9998;background:rgba(28,28,30,.85);
         color:var(--ink);border:1px solid #3a3a3c;border-radius:.6em;cursor:pointer;
         font-size:1.7vh;line-height:1;padding:.45em .6em;}
   #fsbtn:hover{border-color:var(--accent);color:var(--accent);}
-  #tvwarn{position:fixed;bottom:1vh;right:1vw;z-index:9999;background:rgba(255,69,58,.92);
+  /* bottom-LEFT: the fullscreen button now occupies bottom-right. */
+  #tvwarn{position:fixed;bottom:1vh;left:1vw;z-index:9999;background:rgba(255,69,58,.92);
         color:#fff;font-size:1.5vh;padding:.5em .8em;border-radius:.6em;max-width:44vw;}
 
   .ftip{background:rgba(0,0,0,.75)!important;border:0!important;color:#fff!important;
@@ -892,7 +893,7 @@ function renderBoard(host){
   const rows = [];
   if (host && host.mi > 0) rows.push({host:true, key:'host', n:'Peter', m:'run',
       mi:host.mi, el:host.el, pace:host.pace, up:0, vx:0, live:true,
-      award:'the whole reason we are here 🎂', lat:host.lat, lon:host.lon});
+      award:'doing this to himself 🎂', lat:host.lat, lon:host.lon});
   for (const f of friends.slice().sort((a,b) => (b.mi||0)-(a.mi||0))) {
     const mi = f.mi||0, act = f.el||0;
     rows.push({key:f.key, n:f.n, m:f.m, mi:mi, el:act,
