@@ -406,7 +406,8 @@ const TB_KEYS = ['hr','hr_src','hr_age_s','dist_mi','target_mi','pct','pace_min_
                  'workout_mi','workout_pct','hr_mean_60s','lat','lon','loc_age_s',
                  'hr_hist','trail','hr_win_min','dist_src',
                  'pace_last_mi','last_mi_window_s','hr_avg_run',
-                 'eta_clock','eta_flat_s','fade_k'];
+                 'eta_clock','eta_flat_s','fade_k',
+                 'bridge_mi','hk_lag_s','last_mi_src'];
 const $ = id => document.getElementById(id);
 const RACE_DAY = new Date('2026-09-05T06:00:00-07:00');
 
@@ -1152,6 +1153,14 @@ async function tick(){
       ' · ' + d.artifacts_60s + ' artifacts/min' +
       ' · ' + d.steps + ' steps' +
       ' · feed age ' + age + 's' +
+      // How far behind HealthKit's own timestamps are, and how much of the headline is
+      // currently carried by GPS rather than HealthKit. Both matter on race day: a large
+      // HealthKit lag at the moment you press Start is what lets pre-run walking leak into
+      // the total.
+      (typeof d.hk_lag_s === 'number' && d.hk_lag_s >= 0
+        ? ' · healthkit ' + (d.hk_lag_s >= 60 ? Math.floor(d.hk_lag_s/60) + 'm' : d.hk_lag_s + 's') + ' behind' : '') +
+      (typeof d.bridge_mi === 'number' && d.bridge_mi > 0.005
+        ? ' · gps bridging ' + d.bridge_mi.toFixed(2) + ' mi' : '') +
       (feedVia ? ' · via ' + feedVia + (feedOther ? ' (other: ' + feedOther + ')' : '') : '');
   } catch (e) {
     const msg = (e && e.message) ? e.message : 'unknown';
