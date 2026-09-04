@@ -60,11 +60,25 @@ Was the biggest risk in the project; now the smallest. TTL is 3 days (was 30) an
 sends ~3 keys instead of 38, so the race costs roughly 0.5–1 M storage-days against ~6 M
 remaining. At the original settings it would have been 7–10.7 M — it would have died mid-race.
 
-**Residual risk:** the cycle appears to reset ~Sept 15, i.e. *after* the race, so there is no
-top-up coming. **Mitigation not yet in place:** the phone supports pushing to a second target
-(`MODE2`/`URL2` in `/var/root/race/push.conf`) and the page already reads both and renders
-whichever is fresher — but `MODE2` is **not configured**, so ThingsBoard is still a single
-point of failure. Configuring it is the highest-value remaining task.
+**Mitigated as of Sept 4.** The phone now pushes to ThingsBoard **and** to R2, and the page
+reads both and renders whichever carries the newer phone timestamp. Verified live: identical
+`t` from both sources, matching values, zero second-target failures.
+
+- Second target: a **presigned PUT URL** scoped to the single object `handel-cam/race/state.json`,
+  valid until **Sept 11**. Deliberately not full write credentials — the URL can only write
+  that one key, and only until it expires.
+- Public read: `https://pub-8cd8f10809a84abbb9915ef5cdd8e378.r2.dev/race/state.json`, which the
+  page has as `DEFAULT_SRC`. R2 returns CORS for phandel.com even on a 404, so a missing object
+  degrades cleanly instead of erroring.
+- **`URL2` must stay quoted** in `push.conf`: the file is sourced by the shell and a presigned
+  URL contains `&`, which unquoted empties the variable and silently disables the second target.
+  The pusher now logs a warning if `MODE2` is set with an empty `URL2`.
+- Re-mint after expiry with `~/bin/r2-presign.py` (reads credentials from the environment,
+  stores none).
+
+**Residual risk:** the ThingsBoard cycle appears to reset ~Sept 15, i.e. after the race, so
+there is no quota top-up coming — but with two independent publish targets, exhausting it no
+longer takes the page down.
 
 ---
 
