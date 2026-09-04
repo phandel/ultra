@@ -32,18 +32,55 @@ test runs, not guesswork. Likelihoods are estimates; the evidence behind each is
 app's buttons did nothing until it was restarted by hand.
 
 Nothing auto-restarts. Verified: `/Library/LaunchDaemons`, `/Library/LaunchAgents` and
-`/System/Library/LaunchDaemons` are all read-only on a sealed volume, and `/var/root/Library/
-LaunchAgents` does not exist. `launchctl bootstrap` from a writable path *does* work while the
-phone is up, but launchd will not re-scan it at boot, so it buys nothing here.
+`/System/Library/LaunchDaemons` are all read-only on a sealed volume, `/var/root/Library/
+LaunchAgents` does not exist, and there is no `cron`, `crontab` or `atrun` on the device.
+`launchctl bootstrap` from a writable path *does* work while the phone is up, but launchd
+will not re-scan it at boot, so it buys nothing here.
 
 **The app cannot fix this** — it talks to `racectl` on :8081, and `racectl` died with the reboot.
 
-**Recovery:** the Mac at the house is the only route. You pass it every lap.
+**Recovery A — from the phone, no Mac (added Sept 4).** In the Terminal app:
 ```
-ssh n64 '/var/root/bin/race ctl'          # revive the control server
+sh /var/mobile/go.sh
+```
+That restarts the pipeline as the **mobile** user and **keeps the clock and the distance**.
+
+Why it works: the binaries that need privilege get it from entitlements on the binary, not
+from the uid. Verified at uid 501 vs uid 0 — `hkctl` returns byte-identical HealthKit output
+(same sums, same provenance rows), `locmon` produces real GPS fixes, `curl` publishes to both
+targets (R2 PUT → 200, read back live from the phone). `/var/root` and `/var/root/bin` are
+`drwxr-xr-x`, and every state file needed to resume is `0644`, so mobile can read the session
+and carry on from it. There is no `ssh` client, no `sudo` and no `su` on this phone and
+`/private/var` is `nosuid`, so getting back to *root* is not possible — running as mobile is.
+
+Two guards, both tested:
+- It refuses to start if root's `state.json` is under 180 s old, so you can never end up with
+  two collectors double-publishing. (`sh /var/mobile/go.sh force` overrides.)
+- If root's `start_epoch` differs from the copy it holds, a new run has been prepped since,
+  so it discards its stale state rather than resuming into the wrong session.
+
+Also: `status` and `stop`. `stop` waits up to 20 s and then escalates to `-9`, because
+`racehist`/`racecollect` sit inside ~13 s `hkctl` calls and a short wait reports a stop that
+did not happen.
+
+**What you lose in mobile mode:** the Polar strap. `rrd2` owns the H10 and logs to root-owned
+`/var/root/rrlog`, so HR falls back to the watch via HealthKit — the same 25 s fallback the
+page already handles. Distance, map, GPS bridge, last-mile pace and both publish targets all
+continue.
+
+**`/var/mobile/race/push.conf` is the load-bearing piece.** Root's copy is `0600 root`, so
+mobile cannot read it; a copy is staged at `/var/mobile/race/push.conf` (`0600`, mobile-owned,
+in a `0700` directory). Without it `go.sh` collects but publishes nothing — it says so loudly
+rather than looking healthy. **If you re-mint the R2 URL, re-stage this copy too.**
+
+**Recovery B — from the Mac**, still the cleanest if you are at the house:
+```
+ssh n64 '/var/root/bin/race ctl'          # revive the control server (restores the app)
 ssh n64 '/var/root/bin/race on'           # restart collection (keeps clock + distance)
 ```
-Use `on`, **not** `prep` or `reset` — those would zero your distance.
+Use `on`, **not** `prep` or `reset` — those would zero your distance. Prefer this one when
+it is available: it also brings back `racectl`, so the app's buttons work again, and it keeps
+the strap. `go.sh` does not restart `racectl` (that binary hardcodes the root state dir).
 
 **Detection:** the page's dot turns red and the status reads `feed Nm stale`. Ask whoever is
 watching to shout if that happens.
@@ -123,9 +160,20 @@ Consequence: the page may read 50.00 slightly before you have run 50.
 ## Still worth doing before Saturday
 
 1. ~~Configure the second push target.~~ **Done Sept 4** — ThingsBoard and R2, verified live.
-2. **Tell whoever is watching the page what "feed 5m stale" means** — that is the signal that
+2. **Run `sh /var/mobile/go.sh status` once from the Terminal app on the phone.** This is the
+   one thing that could not be tested from here. Everything above was verified by dropping to
+   uid 501 from a root ssh session, which exercises the permissions but *not* the Terminal
+   app's own sandbox. Two things to confirm, and they take a minute:
+   - `status` prints without a permission error (proves the app can execute `/var/root/bin`).
+   - Then run `sh /var/mobile/go.sh force`, send Terminal to the background for two minutes,
+     and check the live page is still updating. That proves the spawned processes survive the
+     app being backgrounded — if they do not, `go.sh` only works with Terminal in the
+     foreground, which is still usable but worth knowing before mile 30.
+   Afterwards: `sh /var/mobile/go.sh stop`, then start the real run with `race prep` as usual.
+3. **Tell whoever is watching the page what "feed 5m stale" means** — that is the signal that
    something needs a hand, and they can reach you before it becomes an hour. With no automatic
    restart after a reboot, a human noticing is the entire detection layer.
-3. **Rotate the R2 access keys after the race.** They were pasted into a chat transcript on
+4. **Rotate the R2 access keys after the race.** They were pasted into a chat transcript on
    Sept 4. The presigned URL on the phone is unaffected by a rotation only until it expires on
-   Sept 11, so re-mint it afterwards if the second target is still wanted.
+   Sept 11, so re-mint it afterwards if the second target is still wanted — and re-stage
+   `/var/mobile/race/push.conf` at the same time.
