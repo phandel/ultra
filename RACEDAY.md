@@ -59,14 +59,28 @@ Two guards, both tested:
 - If root's `start_epoch` differs from the copy it holds, a new run has been prepped since,
   so it discards its stale state rather than resuming into the wrong session.
 
-Also: `status` and `stop`. `stop` waits up to 20 s and then escalates to `-9`, because
-`racehist`/`racecollect` sit inside ~13 s `hkctl` calls and a short wait reports a stop that
-did not happen.
+Also: `status`, `stop`, and `nostrap`. `stop` waits up to 20 s and then escalates to `-9`,
+because `racehist`/`racecollect` sit inside ~13 s `hkctl` calls and a short wait reports a
+stop that did not happen.
 
-**What you lose in mobile mode:** the Polar strap. `rrd2` owns the H10 and logs to root-owned
-`/var/root/rrlog`, so HR falls back to the watch via HealthKit — the same 25 s fallback the
-page already handles. Distance, map, GPS bridge, last-mile pace and both publish targets all
-continue.
+**The strap keeps working in mobile mode.** `rrd2` runs fine at uid 501 — verified Sept 4, it
+opened CoreBluetooth with no permission error and wrote its logs. It takes the output
+directory as `argv[1]` and `racecollect`'s `RRDIR` is now overridable, so the pair lives
+entirely under `/var/mobile`. `go.sh` starts it automatically, *unless* an `rrd2` is already
+running — the H10 only supports ~2 concurrent connections and Health holds one, so in that
+case it reads root's `/var/root/rrlog` (world-readable) instead of competing for the device.
+
+**Do not bother trying to setuid `go.sh` — it cannot work, tested Sept 4.** Two independent
+blockers: every writable volume mobile can reach is mounted `nosuid` (the bit sets fine and
+the kernel ignores it; a setuid copy of `/usr/bin/id` still reported uid 501), and Darwin
+ignores setuid on `#!` scripts regardless, so it would have to be a compiled, code-signed
+binary on a volume that does not exist here. Running as mobile is not a workaround for the
+lack of root — it is the answer, and it costs almost nothing.
+
+**What you actually lose in mobile mode:** only `racectl`, the app's control channel on
+:8081. That binary hardcodes the root state dir, so the app's buttons stay dead — but `go.sh`
+replaces the app. Distance, map, GPS bridge, last-mile pace, strap HR and both publish
+targets all continue.
 
 **`/var/mobile/race/push.conf` is the load-bearing piece.** Root's copy is `0600 root`, so
 mobile cannot read it; a copy is staged at `/var/mobile/race/push.conf` (`0600`, mobile-owned,
@@ -79,8 +93,8 @@ ssh n64 '/var/root/bin/race ctl'          # revive the control server (restores 
 ssh n64 '/var/root/bin/race on'           # restart collection (keeps clock + distance)
 ```
 Use `on`, **not** `prep` or `reset` — those would zero your distance. Prefer this one when
-it is available: it also brings back `racectl`, so the app's buttons work again, and it keeps
-the strap. `go.sh` does not restart `racectl` (that binary hardcodes the root state dir).
+it is available: it also brings back `racectl`, so the app's buttons work again. `go.sh` does
+not restart `racectl` (that binary hardcodes the root state dir).
 
 **Detection:** the page's dot turns red and the status reads `feed Nm stale`. Ask whoever is
 watching to shout if that happens.
