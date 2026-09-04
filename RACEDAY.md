@@ -41,9 +41,22 @@ will not re-scan it at boot, so it buys nothing here.
 
 **Recovery A — from the phone, no Mac (added Sept 4).** In the Terminal app:
 ```
-sh /var/mobile/go.sh
+cd /var/mobile && ./go.sh
 ```
 That restarts the pipeline as the **mobile** user and **keeps the clock and the distance**.
+
+**Confirmed end to end on the device from the real Terminal app, Sept 4.** All six processes
+came up as `mobile` and published to both targets with zero failures — `state.json` and
+`last_push.json` 1–4 s old, `target_mi 50`, real GPS, and the R2 object the page reads was
+8 s fresh. Then `go.sh` itself was killed with SIGHUP+SIGTERM, exactly what closing Terminal
+does, and **every process survived**, reparented to ppid 1, still publishing. `nohup` covers
+them, so you can put the phone away.
+
+One cosmetic wart, so it does not alarm you at mile 30: **your prompt may not come back.**
+`go.sh` prints its summary and then blocks writing to the tty as soon as you leave Terminal,
+so the script lingers even though its work is finished. Harmless — the pipeline has already
+detached. Switch away or close the tab and it keeps running. Running `go.sh` a second time is
+also safe; the guards handle it.
 
 Why it works: the binaries that need privilege get it from entitlements on the binary, not
 from the uid. Verified at uid 501 vs uid 0 — `hkctl` returns byte-identical HealthKit output
@@ -174,16 +187,9 @@ Consequence: the page may read 50.00 slightly before you have run 50.
 ## Still worth doing before Saturday
 
 1. ~~Configure the second push target.~~ **Done Sept 4** — ThingsBoard and R2, verified live.
-2. **Run `sh /var/mobile/go.sh status` once from the Terminal app on the phone.** This is the
-   one thing that could not be tested from here. Everything above was verified by dropping to
-   uid 501 from a root ssh session, which exercises the permissions but *not* the Terminal
-   app's own sandbox. Two things to confirm, and they take a minute:
-   - `status` prints without a permission error (proves the app can execute `/var/root/bin`).
-   - Then run `sh /var/mobile/go.sh force`, send Terminal to the background for two minutes,
-     and check the live page is still updating. That proves the spawned processes survive the
-     app being backgrounded — if they do not, `go.sh` only works with Terminal in the
-     foreground, which is still usable but worth knowing before mile 30.
-   Afterwards: `sh /var/mobile/go.sh stop`, then start the real run with `race prep` as usual.
+2. ~~Test `go.sh` from the Terminal app.~~ **Done Sept 4** — ran from Terminal, all six
+   processes came up as `mobile`, published to both targets with zero failures, and survived
+   `go.sh` being SIGHUP'd/SIGTERM'd the way closing Terminal would. See Recovery A above.
 3. **Tell whoever is watching the page what "feed 5m stale" means** — that is the signal that
    something needs a hand, and they can reach you before it becomes an hour. With no automatic
    restart after a reboot, a human noticing is the entire detection layer.
