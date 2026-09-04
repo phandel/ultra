@@ -120,9 +120,12 @@ Consequence: the page may read 50.00 slightly before you have run 50.
 
 ---
 
-## The two things worth doing before Saturday
+## Still worth doing before Saturday
 
-1. **Configure the second push target.** Removes the only remaining single point of failure.
-   The plumbing is deployed and tested on both ends; it needs a URL that accepts a PUT.
+1. ~~Configure the second push target.~~ **Done Sept 4** — ThingsBoard and R2, verified live.
 2. **Tell whoever is watching the page what "feed 5m stale" means** — that is the signal that
-   something needs a hand, and they can reach you before it becomes an hour.
+   something needs a hand, and they can reach you before it becomes an hour. With no automatic
+   restart after a reboot, a human noticing is the entire detection layer.
+3. **Rotate the R2 access keys after the race.** They were pasted into a chat transcript on
+   Sept 4. The presigned URL on the phone is unaffected by a rotation only until it expires on
+   Sept 11, so re-mint it afterwards if the second target is still wanted.
