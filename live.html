@@ -157,9 +157,14 @@
   table.lb tr:last-child td{border-bottom:0;}
   table.lb tr.host td{background:#20180d;}
   table.lb tr.off td{opacity:.5;}
-  .nmw{display:flex;flex-direction:column;line-height:1.25;}
-  .nmw .nn{font-weight:600;}
-  .nmw .aw{font-size:.82em;color:var(--accent);opacity:.9;}
+  /* The "Who" cell is the one place text may wrap. The blurbs are the fun part and an
+     ellipsis eats the punchline, so they run onto as many lines as they need. Every other
+     cell stays nowrap so the numbers keep their tabular single-line alignment. */
+  table.lb td.l{white-space:normal;}
+  .nmw{display:flex;flex-direction:column;line-height:1.25;min-width:0;}
+  .nmw .nn{font-weight:600;overflow-wrap:anywhere;}
+  .nmw .aw{font-size:.82em;color:var(--accent);opacity:.9;
+        white-space:normal;overflow-wrap:anywhere;}
   .mi{font-weight:700;}
   .st{display:inline-block;width:.58em;height:.58em;border-radius:50%;background:#3a3a3c;}
   .st.on{background:var(--eta);box-shadow:0 0 8px var(--eta);}
@@ -249,7 +254,12 @@
   body.tv .camwrap video{object-fit:cover;}
   body.tv .camoff{font-size:1.7vh;}
   body.tv .cam,body.tv .wishes{margin:0;min-height:0;overflow:hidden;display:grid;}
-  body.tv .board{min-height:0;overflow:hidden;border-radius:1.6vh;}
+  /* Was overflow:hidden, which silently CLIPPED anyone past the panel height -- with a big
+     turnout the last people to join simply never appeared. Scroll instead, so everybody is
+     reachable; the sticky <th> stays put while the rows move, and autoScrollBoard() below
+     creeps it along on its own because a driveway TV has nobody to swipe it. */
+  body.tv .board{min-height:0;overflow-y:auto;overflow-x:hidden;border-radius:1.6vh;
+        -webkit-overflow-scrolling:touch;}
   /* table-layout:fixed is the actual fix for the clipped columns. With auto layout the
      table's min-content width is the sum of its nowrap cells, so a long award pushed
      Miles/Avg pace past the panel's overflow:hidden however much the award was trimmed.
@@ -268,8 +278,12 @@
      regardless of viewport width, and clip the award instead of the numbers. */
   body.tv table.lb .opt{display:none;}
   body.tv .nmw{min-width:0;}
-  body.tv .nmw .nn,body.tv .nmw .aw{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-        display:block;max-width:100%;}
+  /* Kiosk used to ellipsize both lines. table-layout:fixed above already stops a long blurb
+     from widening the table (that was the real cause of the clipped Miles column), so the
+     text can safely wrap here instead of being truncated -- the blurb is the whole point. */
+  body.tv .nmw .nn,body.tv .nmw .aw{display:block;max-width:100%;
+        white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;}
+  body.tv .nmw .aw{line-height:1.2;}
   body.tv table.lb th{font-size:1.15vh;padding:.5em .4em;}
   body.tv table.lb td{padding:.42em .4em;}
   body.tv .carousel{margin:0;min-height:0;overflow:hidden;display:grid;
@@ -441,7 +455,9 @@ const TB_KEYS = ['hr','hr_src','hr_age_s','dist_mi','target_mi','pct','pace_min_
                  'eta_clock','eta_flat_s','fade_k',
                  'bridge_mi','hk_lag_s','last_mi_src'];
 const $ = id => document.getElementById(id);
-const RACE_DAY = new Date('2026-09-05T06:00:00-07:00');
+// 2 AM start: a ~13 h day off a 02:00 gun finishes mid-afternoon, ahead of the 5 PM party.
+// Keep this in step with index.html's RACE_START_HOUR -- both drive a pre-race countdown.
+const RACE_DAY = new Date('2026-09-05T02:00:00-07:00');
 
 // NOTE the two ids are different things and are easy to confuse:
 //   TB_PUBLIC_ID -> the "Public" CUSTOMER, used to authenticate anonymously
@@ -894,6 +910,29 @@ function hmsShort(s){
   return h? h+'h'+String(m).padStart(2,'0') : m+'m';
 }
 
+// The driveway TV has nobody to swipe it, so when the roster is taller than the panel the
+// board creeps down on its own and reverses at the ends. Deliberately slow (~12 px/s) with a
+// pause at each end so a name is readable rather than sliding past.
+// Only runs while it actually overflows: with a short roster this is a no-op, and it is torn
+// down and re-armed on every render so a shrinking roster stops it.
+let boardScroll = null;
+function autoScrollBoard(){
+  const el = $('board');
+  if (boardScroll) { clearInterval(boardScroll); boardScroll = null; }
+  if (!el || !document.body.classList.contains('tv')) return;
+  const slack = () => el.scrollHeight - el.clientHeight;
+  if (slack() <= 4) return;
+  let dir = 1, hold = 40;               // start with a beat at the top
+  boardScroll = setInterval(() => {
+    const s = slack();
+    if (s <= 4) return;                 // roster shrank mid-cycle; idle until next render
+    if (hold > 0) { hold--; return; }
+    el.scrollTop += dir * 0.5;
+    if (el.scrollTop >= s - 0.5)    { dir = -1; hold = 60; }
+    else if (el.scrollTop <= 0.5)   { dir =  1; hold = 60; }
+  }, 40);
+}
+
 function renderBoard(host){
   const el = $('board');
   if (friends === null) {
@@ -904,7 +943,7 @@ function renderBoard(host){
   if (host && host.mi > 0) rows.push({host:true, key:'host', n:'Peter', m:'run',
       mi:host.mi, el:host.el, pace:host.pace, up:0, vx:0, live:true,
       award:'doing this to himself 🎂', lat:host.lat, lon:host.lon});
-  for (const f of friends.slice().sort((a,b) => (b.mi||0)-(a.mi||0))) {
+  for (const f of friends) {
     const mi = f.mi||0, act = f.el||0;
     rows.push({key:f.key, n:f.n, m:f.m, mi:mi, el:act,
       pace: (mi>0.05 && act>0) ? (act/60)/mi : 0,
@@ -912,6 +951,12 @@ function renderBoard(host){
       lat:f.lat, lon:f.lon,
       live: f.a === 1 && (now - (f.t||0)) < 90});
   }
+  // ONE sort over everyone, Peter included. He used to be pushed first unconditionally, so
+  // the "#" column was not really a ranking -- early in the run a friend who had done more
+  // miles still appeared below him. Position is now earned by mileage; Peter is still tinted
+  // via tr.host, he just is not pinned to the top. Sorting here (rather than sorting friends
+  // before the push) is also why the rank counter below is truthful.
+  rows.sort((a,b) => (b.mi||0) - (a.mi||0));
   if (!rows.length) {
     el.innerHTML = '<div class="bempty">nobody has joined yet &mdash; share ' +
                    '<a href="join.html">phandel.com/join.html</a></div>';
@@ -950,6 +995,11 @@ function renderBoard(host){
       '</tr>';
   }).join('');
 
+  // Keep the reader's place. renderBoard replaces innerHTML every ~48 s, which resets
+  // scrollTop to 0 -- so without this the board would yank back to the top mid-read, and
+  // the auto-scroll below would restart from the beginning every cycle.
+  const keepScroll = el.scrollTop;
+
   el.innerHTML =
     '<table class="lb"><thead><tr>' +
       '<th></th><th>#</th><th class="l"></th><th class="l">Who</th>' +
@@ -957,6 +1007,9 @@ function renderBoard(host){
       '<th class="opt">Now</th><th class="opt">Time</th><th class="opt">Climb&nbsp;ft</th>' +
       '<th class="opt">Top&nbsp;mph</th><th class="opt">Cal*</th><th>Near&nbsp;Peter</th>' +
     '</tr></thead><tbody>' + body + '</tbody></table>';
+
+  el.scrollTop = keepScroll;
+  autoScrollBoard();
 
   const live = rows.filter(r => r.live).length;
   const total = rows.reduce((s,r) => s + (r.mi||0), 0);

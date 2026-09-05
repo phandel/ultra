@@ -198,8 +198,16 @@
             margin: 0 0 2rem;
             text-align: center;
             box-shadow: 0 6px 30px rgba(232,89,12,.45);
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(255,255,255,.28);
+            transition: transform .08s ease, filter .12s ease;
         }
         .livebanner:hover { text-decoration: none; filter: brightness(1.05); }
+        .livebanner:active { transform: scale(.99); filter: brightness(.97); }
+        /* The <a> IS the box -- it wraps every line, so the whole orange card is the link.
+           pointer-events:none on the children guarantees a tap on the text or the padding
+           always lands on the anchor and can never be swallowed by a span. */
+        .livebanner * { pointer-events: none; }
         .livebanner .lb1 {
             display: block; font-size: clamp(1.75rem, 6.5vw, 3.1rem); font-weight: 800;
             letter-spacing: -.02em; line-height: 1.1;
@@ -862,17 +870,26 @@
        ====================================================================== */
     (function () {
       // ===== RACE-MORNING SWITCH =====
-      // Flipped true on the evening of 2026-09-04 for the Sept 5 race. The banner is the
-      // first thing in .wrap, above the countdown, and points at the live dashboard.
-      var LIVE_BANNER = true;
+      // Flip to true when the run actually starts. The whole orange box is one <a>, so
+      // revealing it gives you a full-width clickable link to the live dashboard.
+      var LIVE_BANNER = false;
       // =================================
       if (LIVE_BANNER) {
         var _lb = document.getElementById('livebanner');
         if (_lb) _lb.classList.remove('hidden');
       }
 
-      var RACE_DAY = '2026-09-05', START_HOUR = 6, END_HOUR = 17;
-      var raceStart = new Date(RACE_DAY + 'T' + String(START_HOUR).padStart(2, '0') + ':00:00-07:00');
+      /* Two different "start hours", deliberately separate:
+           RACE_START_HOUR  when Peter actually sets off -- drives the countdown only.
+           SLOT_START_HOUR  when the lap sign-up slots begin. Left at 6 AM on purpose:
+                            nobody is biking a lap at 2 AM, and lowering it would have
+                            added ~15 dead 2-6 AM slots to a sheet people already signed. */
+      var RACE_DAY = '2026-09-05', RACE_START_HOUR = 2;
+      var SLOT_START_HOUR = 6, END_HOUR = 17;
+      var raceStart = new Date(RACE_DAY + 'T' + String(RACE_START_HOUR).padStart(2, '0') + ':00:00-07:00');
+      /* Derived, so the prose under the countdown can never drift from the constant. */
+      var raceStartLabel = (RACE_START_HOUR % 12 === 0 ? 12 : RACE_START_HOUR % 12) +
+                           ':00 ' + (RACE_START_HOUR >= 12 ? 'PM' : 'AM');
 
       /* ---------- countdown ---------- */
       var cd = document.getElementById('countdown'), cdMin = document.getElementById('cdMin');
@@ -893,7 +910,7 @@
           '<div class="cd-item"><span class="cd-num">' + hh + '</span><span class="cd-lab">' + (hh === 1 ? 'hour' : 'hours') + '</span></div>' +
           '<div class="cd-item small"><span class="cd-num">' + p(mm) + '</span><span class="cd-lab">min</span></div>' +
           '<div class="cd-item small"><span class="cd-num">' + p(ss) + '</span><span class="cd-lab">sec</span></div>';
-        cdMin.textContent = 'until the first lap \u00b7 Saturday, September 5 at 6:00 AM';
+        cdMin.textContent = 'until the first lap \u00b7 Saturday, September 5 at ' + raceStartLabel;
       }
       tickCd(); setInterval(tickCd, 1000);
 
@@ -927,7 +944,7 @@
 
       function slotList() {
         var out = [];
-        for (var hr = START_HOUR; hr < END_HOUR; hr++) for (var q = 0; q < 4; q++) out.push(hr * 60 + q * 15);
+        for (var hr = SLOT_START_HOUR; hr < END_HOUR; hr++) for (var q = 0; q < 4; q++) out.push(hr * 60 + q * 15);
         return out;
       }
       function label(m) {
