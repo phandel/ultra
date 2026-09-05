@@ -1031,7 +1031,11 @@ function renderBoard(host){
   }
   const now = Date.now()/1000;
   const rows = [];
-  if (host && host.mi > 0) rows.push({host:true, key:'host', n:'Peter', m:'run',
+  // Show Peter from the very first render, at 0.00 if that is where he is. The old gate was
+  // `host.mi > 0`, which meant that at the start of the race -- standing in the driveway with
+  // friends already moving -- he vanished from his own leaderboard entirely. isFinite still
+  // keeps him out before any host data has arrived.
+  if (host && isFinite(host.mi)) rows.push({host:true, key:'host', n:'Peter', m:'run',
       mi:host.mi, el:host.el, pace:host.pace, up:0, vx:0, live:true,
       award:rotLine('host','host'), lat:host.lat, lon:host.lon});
   for (const f of friends) {
