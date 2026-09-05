@@ -161,10 +161,19 @@
      ellipsis eats the punchline, so they run onto as many lines as they need. Every other
      cell stays nowrap so the numbers keep their tabular single-line alignment. */
   table.lb td.l{white-space:normal;}
-  .nmw{display:flex;flex-direction:column;line-height:1.25;min-width:0;}
-  .nmw .nn{font-weight:600;overflow-wrap:anywhere;}
-  .nmw .aw{font-size:.82em;color:var(--accent);opacity:.9;
-        white-space:normal;overflow-wrap:anywhere;}
+  /* Two rows per person: r1 is the data, r2 is the blurb spanning the rest of the table.
+     The border goes on r2 only, so a person reads as one block rather than two rows. */
+  table.lb tr.r1 td{border-bottom:0;padding-bottom:.2em;}
+  table.lb tr.r2 td{border-bottom:1px solid #2a2a2c;padding-top:0;padding-bottom:.55em;}
+  table.lb tr.r2:last-child td{border-bottom:0;}
+  .nn{font-weight:600;}
+  /* One line, full width, never wrapped -- that is the whole point of giving it its own row.
+     The ellipsis lives on a block-level span rather than the td: the usual `max-width:0` cell
+     trick interacts badly with colspan, whereas a block span simply fills the cell's content
+     box. Ellipsis is only a backstop; keep AWARD_LINES short instead. */
+  table.lb td.aw2{text-align:left;}
+  table.lb td.aw2 span{display:block;font-size:.82em;color:var(--accent);opacity:.9;
+        white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .mi{font-weight:700;}
   .st{display:inline-block;width:.58em;height:.58em;border-radius:50%;background:#3a3a3c;}
   .st.on{background:var(--eta);box-shadow:0 0 8px var(--eta);}
@@ -277,13 +286,12 @@
      pushed past the panel's overflow:hidden and disappeared. Drop the optional columns here
      regardless of viewport width, and clip the award instead of the numbers. */
   body.tv table.lb .opt{display:none;}
-  body.tv .nmw{min-width:0;}
-  /* Kiosk used to ellipsize both lines. table-layout:fixed above already stops a long blurb
-     from widening the table (that was the real cause of the clipped Miles column), so the
-     text can safely wrap here instead of being truncated -- the blurb is the whole point. */
-  body.tv .nmw .nn,body.tv .nmw .aw{display:block;max-width:100%;
-        white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;}
-  body.tv .nmw .aw{line-height:1.2;}
+  /* The blurb now has its own full-width row, so kiosk needs no special handling beyond
+     tightening the vertical rhythm -- it is no longer competing with the Miles column for
+     horizontal space, which is what forced the old ellipsis on the "Who" cell. */
+  body.tv table.lb tr.r1 td{padding:.34em .4em .12em;}
+  body.tv table.lb tr.r2 td{padding:0 .4em .34em;}
+  body.tv table.lb td.aw2 span{font-size:1.35vh;line-height:1.2;}
   body.tv table.lb th{font-size:1.15vh;padding:.5em .4em;}
   body.tv table.lb td{padding:.42em .4em;}
   body.tv .carousel{margin:0;min-height:0;overflow:hidden;display:grid;
@@ -865,7 +873,82 @@ const SILLY = [
   'finest form on camera 📸', 'most improved since the driveway 📈'
 ];
 function hashi(s){ let x=0; for (let i=0;i<s.length;i++) x=(x*33 + s.charCodeAt(i)) & 0x7fffffff; return x; }
-function sillyFor(key){ return SILLY[hashi(key) % SILLY.length]; }
+
+// Rotating lines. Each list belongs to ONE achievement, so the joke always matches what the
+// person actually did -- the climb winner never reads like a sprint winner.
+//
+// Only `miles` is claimed first, so only it is guaranteed to be the outright maximum. The rest
+// go to the best UNTAKEN person (see assignAwards -- deliberate, so one strong cyclist cannot
+// hoover up every title), which means the runner-up can hold a title without leading the stat.
+// So these are flavoured by the achievement WITHOUT asserting a superlative that could be
+// false: a 25 min/mi walker holding the pace award should read as fun, not as a wrong claim.
+//
+// Rotation is keyed off a TIME SLOT rather than a render counter on purpose: renderBoard runs
+// on every friends poll, so a counter would flicker the text several times a minute. A slot
+// means the line is stable for ROTATE_MS no matter how often we redraw. The person's key is
+// folded into the index so two winners are never mid-rotation on the same phrasing.
+//
+// Keep these short. They render on ONE non-wrapping line, so anything much past ~50 characters
+// gets ellipsized on the driveway TV.
+const ROTATE_MS = 45000;
+const AWARD_LINES = {
+  miles: [
+    'mileage monarch 👑',
+    'has covered the most ground out here 👑',
+    'racking up miles like it is a hobby 👑',
+    'winning the distance argument 👑',
+    'someone check on them, they will not stop 👑',
+  ],
+  pace: [
+    'certified gazelle 🦌',
+    'light on the feet 🦌',
+    'making it look far too easy 🦌',
+    'quick feet on the loop 🦌',
+    'suspiciously smooth turnover 🦌',
+  ],
+  time: [
+    'endurance legend ⏳',
+    'has been out here a long, long while ⏳',
+    'time on feet: frankly absurd ⏳',
+    'still going while others sat down ⏳',
+    'has forgotten what a chair is ⏳',
+  ],
+  climb: [
+    'hill whisperer ⛰️',
+    'collects elevation like souvenirs ⛰️',
+    'saw the hill and said yes ⛰️',
+    'gravity has filed a complaint ⛰️',
+    'never met a climb they disliked ⛰️',
+  ],
+  speed: [
+    'speed demon 🔥',
+    'briefly became a projectile 🔥',
+    'radar gun says slow down 🔥',
+    'found a gear nobody else has 🔥',
+    'committed downhill enthusiast 🔥',
+  ],
+  host: [
+    'doing this to himself 🎂',
+    'turned 50 and chose violence 🎂',
+    'fifty years, fifty miles, one bad idea 🎂',
+    'celebrating by running until it hurts 🎂',
+    'running his age, in miles 🎂',
+    'nobody made him do this 🎂',
+    'the reason we are all in a driveway 🎂',
+  ],
+};
+function rotLine(kind, key){
+  const list = AWARD_LINES[kind];
+  if (!list) return '';
+  const slot = Math.floor(Date.now() / ROTATE_MS);
+  return list[(slot + hashi(String(key || kind))) % list.length];
+}
+// Everyone without a standout stat gets a participation line, and those rotate too -- the
+// original picked one by key and then showed it for the whole thirteen hours.
+function sillyFor(key){
+  const slot = Math.floor(Date.now() / ROTATE_MS);
+  return SILLY[(slot + hashi(String(key))) % SILLY.length];
+}
 
 function assignAwards(rows){
   const cand = rows.filter(r => !r.host);
@@ -873,24 +956,26 @@ function assignAwards(rows){
   // Award to the best candidate who has not already been crowned. Taking only the outright
   // winner meant one strong cyclist could win the first title and BLOCK the rest, leaving
   // three awards unassigned and everyone else on a silly one.
-  const claim = (title, pick, pool) => {
+  // `kind` names an AWARD_LINES bucket rather than being a literal title, so the winner gets
+  // a rotating line that matches the achievement instead of one fixed phrase.
+  const claim = (kind, pick, pool) => {
     const list = (pool || cand)
       .filter(r => !taken.has(r.key))
       .map(r => ({r, v: pick(r)}))
       .filter(x => x.v != null && isFinite(x.v) && x.v > 0)
       .sort((a,b) => b.v - a.v);
     if (!list.length) return;
-    list[0].r.award = title;
+    list[0].r.award = rotLine(kind, list[0].r.key);
     taken.add(list[0].r.key);
   };
   const onFoot = cand.filter(r => r.m === 'run' || r.m === 'walk');
-  claim('mileage monarch 👑',   r => r.mi);
+  claim('miles', r => r.mi);
   // Fastest pace judged among people on foot only: a bike or scooter wins on wheels, not
   // on running, and crowning them "gazelle" over the actual runners is no fun.
-  claim('certified gazelle 🦌', r => r.pace > 0 ? 1/r.pace : 0, onFoot);
-  claim('endurance legend ⏳',  r => r.el);
-  claim('hill whisperer ⛰️',    r => r.up);
-  claim('speed demon 🔥',       r => r.vx);
+  claim('pace', r => r.pace > 0 ? 1/r.pace : 0, onFoot);
+  claim('time',  r => r.el);
+  claim('climb', r => r.up);
+  claim('speed', r => r.vx);
   for (const r of cand) if (!r.award) r.award = sillyFor(r.key || r.n || 'x');
 }
 
@@ -942,7 +1027,7 @@ function renderBoard(host){
   const rows = [];
   if (host && host.mi > 0) rows.push({host:true, key:'host', n:'Peter', m:'run',
       mi:host.mi, el:host.el, pace:host.pace, up:0, vx:0, live:true,
-      award:'doing this to himself 🎂', lat:host.lat, lon:host.lon});
+      award:rotLine('host','host'), lat:host.lat, lon:host.lon});
   for (const f of friends) {
     const mi = f.mi||0, act = f.el||0;
     rows.push({key:f.key, n:f.n, m:f.m, mi:mi, el:act,
@@ -978,12 +1063,17 @@ function renderBoard(host){
             : (m < 1609 ? Math.round(m/0.3048/10)*10 + ' ft' : (m/1609.34).toFixed(1)+' mi');
     }
     const kc = Math.round((r.mi||0) * (KCAL_MI[r.m]||80));
-    return '<tr class="' + (r.host?'host':'') + (r.live?'':' off') + '">' +
+    // Two rows per person. The blurb used to live in the "Who" cell, where it had one narrow
+    // column to fit in and wrapped into a paragraph. On its own row it starts under the name
+    // and runs right, underneath Miles / Avg pace / the rest, so it gets the full table width
+    // on a single line. colspan is deliberately generous: the .opt columns are display:none on
+    // narrow screens and in kiosk mode, and the browser clamps an over-long colspan.
+    const cls = (r.host?'host':'') + (r.live?'':' off');
+    return '<tr class="r1 ' + cls + '">' +
       '<td><span class="st' + (r.live?' on':'') + '"></span></td>' +
       '<td>' + n + '</td>' +
       '<td class="l">' + (F_IC[r.m]||'•') + '</td>' +
-      '<td class="l"><span class="nmw"><span class="nn">' + esc(r.n) +
-        '</span><span class="aw">' + esc(r.award||'') + '</span></span></td>' +
+      '<td class="l"><span class="nn">' + esc(r.n) + '</span></td>' +
       '<td class="mi">' + (r.mi||0).toFixed(2) + '</td>' +
       '<td>' + pStr(r.pace) + '</td>' +
       '<td class="opt">' + (r.cp ? pStr(r.cp) : '–') + '</td>' +
@@ -992,6 +1082,10 @@ function renderBoard(host){
       '<td class="opt">' + (r.vx ? r.vx.toFixed(1) : '–') + '</td>' +
       '<td class="opt">' + (kc||'–') + '</td>' +
       '<td>' + withP + '</td>' +
+      '</tr>' +
+      '<tr class="r2 ' + cls + '">' +
+      '<td colspan="3"></td>' +
+      '<td class="aw2" colspan="9"><span>' + esc(r.award||'') + '</span></td>' +
       '</tr>';
   }).join('');
 
