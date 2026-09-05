@@ -869,19 +869,25 @@ const SILLY = [
   'champion of small talk 🗣️', 'best dog-petting detour 🐕', 'most reliable pacer ⏱️',
   'nicest wave to strangers 👋', 'best hat 🎩', 'most dramatic finish pose 🏁',
   'strategic shade seeker 🌳', 'most likely to bring donuts 🍩',
-  'best excuse for a walk break 🚶', 'unflappably cheerful 😄',
+  'takes the most excellent walk breaks 🚶', 'unflappably cheerful 😄',
   'finest form on camera 📸', 'most improved since the driveway 📈'
 ];
 function hashi(s){ let x=0; for (let i=0;i<s.length;i++) x=(x*33 + s.charCodeAt(i)) & 0x7fffffff; return x; }
 
-// Rotating lines. Each list belongs to ONE achievement, so the joke always matches what the
+// TONE, and this is a requirement rather than a preference: loving, caring and kind. These
+// lines go on a TV in front of friends and family who gave up a Saturday, so they read as
+// affection and gratitude, never as a dig. Nothing sarcastic, nothing at anyone's expense, no
+// mock-violence. If a new line would make someone wince to see it about themselves, it is
+// wrong for this list however funny it is.
+//
+// Rotating lines. Each list belongs to ONE achievement, so the warmth always matches what the
 // person actually did -- the climb winner never reads like a sprint winner.
 //
 // Only `miles` is claimed first, so only it is guaranteed to be the outright maximum. The rest
 // go to the best UNTAKEN person (see assignAwards -- deliberate, so one strong cyclist cannot
 // hoover up every title), which means the runner-up can hold a title without leading the stat.
 // So these are flavoured by the achievement WITHOUT asserting a superlative that could be
-// false: a 25 min/mi walker holding the pace award should read as fun, not as a wrong claim.
+// false: a 25 min/mi walker holding the pace award should read as kind, not as a wrong claim.
 //
 // Rotation is keyed off a TIME SLOT rather than a render counter on purpose: renderBoard runs
 // on every friends poll, so a counter would flicker the text several times a minute. A slot
@@ -895,46 +901,46 @@ const AWARD_LINES = {
   miles: [
     'mileage monarch 👑',
     'has covered the most ground out here 👑',
-    'racking up miles like it is a hobby 👑',
-    'winning the distance argument 👑',
-    'someone check on them, they will not stop 👑',
+    'the most miles given to a friend today 👑',
+    'going furthest, and loving every step 👑',
+    'quietly putting in the most miles 👑',
   ],
   pace: [
     'certified gazelle 🦌',
-    'light on the feet 🦌',
-    'making it look far too easy 🦌',
-    'quick feet on the loop 🦌',
-    'suspiciously smooth turnover 🦌',
+    'wonderfully light on the feet 🦌',
+    'makes it look like pure joy 🦌',
+    'happy legs on the loop 🦌',
+    'such a lovely smooth turnover 🦌',
   ],
   time: [
     'endurance legend ⏳',
-    'has been out here a long, long while ⏳',
-    'time on feet: frankly absurd ⏳',
-    'still going while others sat down ⏳',
-    'has forgotten what a chair is ⏳',
+    'has given so much time today ⏳',
+    'still out here, still smiling ⏳',
+    'time on feet, freely given ⏳',
+    'the very definition of sticking around ⏳',
   ],
   climb: [
     'hill whisperer ⛰️',
     'collects elevation like souvenirs ⛰️',
     'saw the hill and said yes ⛰️',
-    'gravity has filed a complaint ⛰️',
     'never met a climb they disliked ⛰️',
+    'takes the hills with real good cheer ⛰️',
   ],
   speed: [
-    'speed demon 🔥',
-    'briefly became a projectile 🔥',
-    'radar gun says slow down 🔥',
-    'found a gear nobody else has 🔥',
-    'committed downhill enthusiast 🔥',
+    'flying, in the very best way 🔥',
+    'a genuine and delightful turn of speed 🔥',
+    'quick feet and a big grin 🔥',
+    'found a lovely gear today 🔥',
+    'joyfully fast on the downhills 🔥',
   ],
   host: [
-    'doing this to himself 🎂',
-    'turned 50 and chose violence 🎂',
-    'fifty years, fifty miles, one bad idea 🎂',
-    'celebrating by running until it hurts 🎂',
+    'fifty years, fifty miles, one big heart 🎂',
     'running his age, in miles 🎂',
-    'nobody made him do this 🎂',
+    'celebrating fifty the happy hard way 🎂',
+    'so glad you are all here 🎂',
     'the reason we are all in a driveway 🎂',
+    'fifty and endlessly grateful 🎂',
+    'doing this surrounded by his people 🎂',
   ],
 };
 function rotLine(kind, key){
