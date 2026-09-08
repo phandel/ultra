@@ -244,6 +244,21 @@
   .thanks ul { margin: .7rem 0 0; padding-left: 1.15rem; color: #333; }
   .thanks li { margin: .45em 0; }
 
+  /* ---------- closing verse ---------- */
+  .verse {
+    margin: 1.6rem 0 0; padding: 1.1rem 0 0; border-top: 1px solid #f3d9c8;
+    text-align: center;
+  }
+  .verse p {
+    margin: 0; font-size: clamp(1.02rem, 2.6vw, 1.2rem); line-height: 1.5;
+    font-style: italic; color: var(--accent-dk);
+  }
+  .verse cite {
+    display: block; margin-top: .6em; font-style: normal; font-size: .82rem;
+    font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--faint);
+  }
+  .verse cite span { font-weight: 400; letter-spacing: .04em; }
+
   footer {
     margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
     color: var(--faint); font-size: .88rem; text-align: center;
@@ -295,7 +310,7 @@
     <li>
       <span class="hlnum">1</span>
       <div>
-        <b>Leo, who is seventeen, rode the first twenty-two miles with me</b>
+        <b>My teenage son Leo rode the first twenty-two miles with me</b>
         <p>Down the Los Gatos Creek Trail and back, from half past two in the morning. The
         trail would have been sketchy on my own at 3&nbsp;AM, and Leo was willing to come along
         on his bike and keep me company through it. So gracious of him. It turned into a
@@ -355,6 +370,8 @@
   <div class="thanks">
     <h2>Thank you</h2>
     <ul id="thanks">
+      <li><b>God</b>, first and above all &mdash; for blessing me with such a wonderful
+        community, and for providing the strength to run this race.</li>
       <li><b>Julie</b>, my wife, for supporting the whole mad idea from the beginning &mdash;
         and our kids, who were part of it all day.</li>
       <li><b>Leo</b>, for riding the first twenty-two miles through the middle of the night.</li>
@@ -367,6 +384,10 @@
       <li>Everyone who stood out in the driveway and cheered, handed over a cold drink, or
         simply turned up.</li>
     </ul>
+    <blockquote class="verse">
+      <p>&hellip; And let us run with endurance the race God has set before us.</p>
+      <cite>Hebrews 12:1 <span>(NLT)</span></cite>
+    </blockquote>
   </div>
 
   <div id="todo"></div>

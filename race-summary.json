@@ -55,7 +55,11 @@
     "  climb_ft          NOT AVAILABLE anywhere: trail.txt is epoch/lat/lon only and no HealthKit",
     "                    workout was ever written.",
     "  route map         NOT POSSIBLE from the phone: TRAIL_KEEP=3000 had trimmed trail.txt to the",
-    "                    last 3000 fixes, spanning 21 m x 39 m. Export the GPX from Strava."
+    "                    last 3000 fixes, spanning 21 m x 39 m. Export the GPX from Strava.",
+    "",
+    "leo_age was removed: this file is served publicly (phandel.com/race-summary.json) and the",
+    "page now says 'my teenage son Leo' rather than giving a number, so there is no reason to",
+    "publish a minor's exact age."
   ],
   "date": "2026-09-05",
   "date_pretty": "Saturday, September 5, 2026",
@@ -83,7 +87,6 @@
   "friends_moved": 6,
   "friends_tracked_mi": 7.0,
   "trail_out_and_back_mi": 22,
-  "leo_age": 17,
   "people_came_out": 125,
   "people_last_lap": 30,
   "people_estimated": true,
