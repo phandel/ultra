@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fifty Miles for Fifty Years &middot; September 5, 2026</title>
-<meta name="description" content="On his 50th birthday weekend Peter Handel ran fifty miles around the neighborhood — one mile for every year — with friends and family joining lap by lap.">
+<meta name="description" content="On his 50th birthday weekend Peter Handel ran fifty miles around the neighborhood - one mile for every year - with friends and family joining lap by lap.">
 
 <!--
   50.html -- the keepsake page for the Sept 5 2026 run.
@@ -315,13 +315,13 @@
   <h2>How it went</h2>
   <p class="body lead" id="story">
     I turned fifty on September&nbsp;3rd. Two days later I set off from my own driveway at
-    2:34&nbsp;in the morning to run fifty miles &mdash; one for every year. The first
+    2:34&nbsp;in the morning to run fifty miles - one for every year. The first
     twenty-two were an out-and-back down the Los Gatos Creek Trail; after that I came home and
     ran loops of the neighborhood. I started out doing a few big ones, then realized lots of
-    little loops were far nicer &mdash; kids could join without committing to much, and I came
+    little loops were far nicer - kids could join without committing to much, and I came
     past the house often enough to see everybody. People walked, ran, biked and scooted
-    alongside me from the small hours right through to the afternoon. I finished at 5:11 in the
-    afternoon and the Oktoberfest started more or less the moment I stopped. Doing it as
+    alongside me from the small hours right through to the afternoon. I finished at 5:11 PM and
+    the Oktoberfest started more or less the moment I stopped. Doing it as
     laps from home instead of heading off somewhere was the entire point, and it worked better
     than I'd hoped.
   </p>
@@ -337,17 +337,17 @@
         trail would have been sketchy on my own at 3&nbsp;AM, and Leo was willing to come along
         on his bike and keep me company through it. So gracious of him. It turned into a
         father-and-son camping trip and an all-nighter rolled into one, and we talked the whole
-        way out and the whole way back. That's the part of the day I'll keep.</p>
+        way out and the whole way back. What a highlight!</p>
       </div>
     </li>
     <li>
       <span class="hlnum">2</span>
       <div>
         <b>I never ran a single lap on my own</b>
-        <p>Not one. Somebody was next to me for every single loop &mdash; old friends, new
+        <p>Not one. Somebody was next to me for every single loop - old friends, new
         friends, people I'd only just met. The conversations were the whole thing. Around a
         hundred and twenty-five people came out over the course of the day. And the last lap was
-        enormous &mdash; something like thirty of us running it together, with more waiting at
+        enormous - something like thirty of us running it together, with more waiting at
         the finish line to cheer. Amazing, all of it.</p>
       </div>
     </li>
@@ -355,7 +355,7 @@
       <span class="hlnum">3</span>
       <div>
         <b>Then the Oktoberfest, which was epic</b>
-        <p>I stopped running at eleven minutes past five and the party started right then. I
+        <p>I stopped running at 5:11 PM and the party started right then. I
         showered, got into my lederhosen, and spent the rest of the evening just loving seeing
         everybody. Great food, even better friends, and conversation that went on and on.</p>
       </div>
@@ -373,7 +373,7 @@
     <p class="sub" id="gallerysub"></p>
     <div class="grid" id="grid"></div>
     <button class="more" id="more" hidden></button>
-    <p class="blurnote">Softened on purpose &mdash; nobody signed up to be sharp on the internet.</p>
+    <p class="blurnote">Softened on purpose - nobody signed up to be sharp on the internet.</p>
     <div class="coming" id="coming" hidden>
       <div class="frames"><i></i><i></i><i></i></div>
       <div>
@@ -392,16 +392,16 @@
   <div class="thanks">
     <h2>Thank you</h2>
     <ul id="thanks">
-      <li><b>God</b>, first and above all &mdash; for blessing me with such a wonderful
+      <li><b>God</b>, first and above all - for blessing me with such a wonderful
         community, and for providing the strength to run this race.</li>
-      <li><b>Julie</b>, my wife, for supporting the whole mad idea from the beginning &mdash;
+      <li><b>Julie</b>, my wife, for supporting the whole mad idea from the beginning -
         and our kids, who were part of it all day.</li>
       <li><b>Leo</b>, for riding the first twenty-two miles through the middle of the night.</li>
       <li>My coach, <b><a href="https://www.cptcoach.com" rel="noopener">Tim Borland</a></b>, who
-        got me ready for this &mdash; and who once ran
+        got me ready for this - and who once ran
         <a href="https://www.imdb.com/title/tt1326771/" rel="noopener">sixty-three marathons in
         sixty-three days</a>, so he knows what he's talking about!</li>
-      <li>Everyone who took a lap &mdash; on foot, on a bike, on a scooter, at 4am or at 4pm.
+      <li>Everyone who took a lap - on foot, on a bike, on a scooter, at 4am or at 4pm.
         You made fifty miles feel short.</li>
       <li>Everyone who stood out in the driveway and cheered, handed over a cold drink, or
         simply turned up.</li>
@@ -413,7 +413,7 @@
       such a way as to get the prize.</p>
     <p>Everyone who competes in the games goes into strict training. They do it to get a crown
       that will not last, but we do it to get a crown that will last forever.</p>
-    <cite>1 Corinthians 9:24&ndash;25 <span>(NIV)</span></cite>
+    <cite>1 Corinthians 9:24-25 <span>(NIV)</span></cite>
   </blockquote>
 
   <div id="todo"></div>
@@ -442,7 +442,7 @@ const MY_PHOTOS_LIVE = false;
 const LOCAL = location.protocol === 'file:' ||
               /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 const missing = [];
-const DASH = '—';
+const DASH = '-';
 
 // An em dash, never a guess. Anything that lands here is recorded so the local-only panel can
 // list exactly which numbers are still outstanding.
@@ -657,17 +657,17 @@ function renderThanks(d) {
 function renderTodo(dataOk, manOk) {
   if (!LOCAL) return;
   const n = [];
-  if (!dataOk) n.push('race-summary.json did not load (over file:// some browsers block fetch — use <code>python3 -m http.server</code>)');
+  if (!dataOk) n.push('race-summary.json did not load (over file:// some browsers block fetch - use <code>python3 -m http.server</code>)');
   if (missing.length) n.push('still null in race-summary.json: <code>' + missing.join('</code>, <code>') + '</code>');
   if (SHARED_PHOTOS_LIVE && !manOk) n.push('photos/manifest.json did not load, so the album is not showing');
-  if (SHARED_PHOTOS_LIVE) n.push('shared-album photos ARE showing, blurred at <code>--photoblur: 3px</code>. That blur is the condition of showing them — do not set it to 0.');
-  n.push('friends telemetry recovered and sitting in race-summary.json: 11 signed in, 6 logged movement, 7.0 tracked miles. Left OUT of the stat grid because the tracker was opt-in and undercounts badly — add it back only with an honest label.');
+  if (SHARED_PHOTOS_LIVE) n.push('shared-album photos ARE showing, blurred at <code>--photoblur: 3px</code>. That blur is the condition of showing them - do not set it to 0.');
+  n.push('friends telemetry recovered and sitting in race-summary.json: 11 signed in, 6 logged movement, 7.0 tracked miles. Left OUT of the stat grid because the tracker was opt-in and undercounts badly - add it back only with an honest label.');
   if (!MY_PHOTOS_LIVE) n.push('your own photos are embargoed. None are in the repo and <code>com.phandel.ultra-photos</code> is unloaded, so nothing can sync early. On release: reload the job, sync, set <code>MY_PHOTOS_LIVE = true</code>.');
-  if ($('wishsec').style.display !== 'block') n.push('no approved wishes yet — set <code>approved: true</code> in wishes/candidates.json, then run <code>~/bin/wishes-publish.sh</code>');
-  if ($('mapsec').style.display !== 'block') n.push('no route map, and the phone cannot provide one: <code>TRAIL_KEEP=3000</code> had trimmed trail.txt to the last 3000 fixes, which span 21 m x 39 m — you standing at the house after finishing. Export the GPX from Strava and drop it in as <code>trail.json</code> (<code>[[lat,lon], …]</code>) if you want the map.');
+  if ($('wishsec').style.display !== 'block') n.push('no approved wishes yet - set <code>approved: true</code> in wishes/candidates.json, then run <code>~/bin/wishes-publish.sh</code>');
+  if ($('mapsec').style.display !== 'block') n.push('no route map, and the phone cannot provide one: <code>TRAIL_KEEP=3000</code> had trimmed trail.txt to the last 3000 fixes, which span 21 m x 39 m - you standing at the house after finishing. Export the GPX from Strava and drop it in as <code>trail.json</code> (<code>[[lat,lon], …]</code>) if you want the map.');
   if (!n.length) return;
   $('todo').classList.add('on');
-  $('todo').innerHTML = '<b>Local preview only &mdash; never shown on phandel.com</b><ul><li>' +
+  $('todo').innerHTML = '<b>Local preview only - never shown on phandel.com</b><ul><li>' +
     n.join('</li><li>') + '</li></ul>';
 }
 
