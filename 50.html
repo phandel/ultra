@@ -258,6 +258,25 @@
   }
   .verse cite span { font-weight: 400; letter-spacing: .04em; }
 
+  /* ---------- closing passage ---------- */
+  .passage {
+    margin: 2.2rem 0 0; padding: 1.7rem 1.6rem; max-width: 62ch;
+    margin-left: auto; margin-right: auto;
+    background: #fff; border: 1px solid #f3d9c8; border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+  .passage p {
+    margin: 0 0 .75em; font-style: italic; color: var(--accent-dk);
+    font-size: clamp(1rem, 2.3vw, 1.1rem); line-height: 1.6;
+  }
+  .passage p:last-of-type { margin-bottom: 0; }
+  .passage cite {
+    display: block; margin-top: 1.1em; padding-top: .9em; border-top: 1px solid #f6e5d8;
+    font-style: normal; font-size: .8rem; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--faint); text-align: center;
+  }
+  .passage cite span { font-weight: 400; letter-spacing: .04em; }
+
   footer {
     margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
     color: var(--faint); font-size: .88rem; text-align: center;
@@ -388,6 +407,14 @@
         simply turned up.</li>
     </ul>
   </div>
+
+  <blockquote class="passage">
+    <p>Do you not know that in a race all the runners run, but only one gets the prize? Run in
+      such a way as to get the prize.</p>
+    <p>Everyone who competes in the games goes into strict training. They do it to get a crown
+      that will not last, but we do it to get a crown that will last forever.</p>
+    <cite>1 Corinthians 9:24&ndash;25 <span>(NIV)</span></cite>
+  </blockquote>
 
   <div id="todo"></div>
 
