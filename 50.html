@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fifty Miles for Fifty Years &middot; September 5, 2026</title>
+<meta name="description" content="On his 50th birthday weekend Peter Handel ran fifty miles around the neighborhood — one mile for every year — with friends and family joining lap by lap.">
+
+<!--
+  50.html -- the keepsake page for the Sept 5 2026 run.
+
+  DATA. Every number comes from race-summary.json. Anything null renders as an em dash rather
+  than a guess, and a "still to fill in" panel lists the gaps when the page is served from
+  file:// or localhost. That panel is hidden on the real domain, so a visitor never sees
+  scaffolding.
+
+  WHICH PHOTOS. Everything under photos/ was synced from the iCloud SHARED ALBUM -- the album
+  people were asked to text their pictures to. So it is other people's contributions, which
+  Peter has cleared for the page on the condition they are BLURRED, exactly as they were on
+  the driveway TV. Peter's OWN camera-roll photos are deliberately not here and are not to be uploaded yet;
+  the launchd sync job that would pull new album items is unloaded, so nothing can arrive
+  early on its own. The page says "in a few days" rather than naming a date, so the copy
+  cannot go stale if the upload slips.
+
+  BLUR is the whole basis of that permission, so treat --photoblur as load-bearing rather
+  than decorative. Set it to 0 and you are publishing unblurred pictures of other people.
+  Note it is CSS-only: photos/ is served as originals, so anyone can open a file directly and
+  see it sharp. That was raised with Peter and he judged CSS blur sufficient -- a deliberate
+  decision, not an oversight, so do not "harden" it into pre-blurred derivatives without asking.
+
+  PRIVACY. The wishes wall fetches wishes/published.json ONLY -- the approved, initials-only
+  file. It never touches wishes/candidates.json, which is the raw Messages pull and is now
+  gitignored precisely so it cannot ship.
+
+  The route map removes itself unless trail.json exists, so the page degrades to something
+  presentable rather than showing broken furniture.
+-->
+
+<style>
+  :root {
+    --ink: #17171a;
+    --muted: #5c5c5c;
+    --faint: #91919a;
+    --accent: #e8590c;
+    --accent-dk: #c2410c;
+    --accent-soft: #fff3ec;
+    --border: #ececec;
+    --shadow: 0 2px 16px rgba(0,0,0,.06);
+    /* Load-bearing: the permission to show these pictures is conditional on the blur. */
+    --photoblur: 3px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #fff; color: var(--ink); line-height: 1.65; margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 1.25rem 5rem; }
+  a { color: var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero {
+    text-align: center; overflow: hidden;
+    background: radial-gradient(120% 90% at 50% 0%, #ffe9db 0%, #fff8f3 45%, #fff 100%);
+    padding: 3.2rem 1.25rem 3.6rem;
+  }
+  .kicker {
+    display: inline-block; font-size: .74rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .16em; color: var(--accent-dk);
+    background: #fff; border: 1px solid #f6dcc9; border-radius: 999px; padding: .45em 1.1em;
+  }
+  .fifty {
+    font-size: clamp(6rem, 26vw, 13rem); font-weight: 800; line-height: .8;
+    letter-spacing: -.06em; margin: .3em 0 0;
+    background: linear-gradient(180deg, #f97316 0%, #c2410c 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero h1 {
+    font-size: clamp(1.45rem, 5vw, 2.5rem); font-weight: 800; letter-spacing: -.03em;
+    margin: .1em 0 .25em; line-height: 1.12;
+  }
+  .hero .when { color: var(--muted); margin: 0; font-size: clamp(.95rem, 2vw, 1.08rem); }
+  .hero .oneline {
+    margin: .9em auto 0; max-width: 32ch; color: var(--accent-dk); font-weight: 600;
+    font-size: clamp(.9rem, 2vw, 1rem);
+  }
+
+  /* ---------- headline numbers ---------- */
+  .big { display: grid; grid-template-columns: 1fr; gap: .8rem; margin-top: -2.1rem; }
+  @media (min-width: 620px) { .big { grid-template-columns: 1.25fr 1fr 1fr; } }
+  .bigcard {
+    background: #fff; border: 1px solid var(--border); border-radius: 18px;
+    box-shadow: var(--shadow); padding: 1.4rem 1.3rem; text-align: center;
+  }
+  .bigcard b {
+    display: block; font-weight: 800; letter-spacing: -.035em; line-height: 1;
+    font-variant-numeric: tabular-nums; color: var(--accent);
+    font-size: clamp(2.6rem, 11vw, 4.2rem);
+  }
+  .bigcard.alt b { color: var(--ink); font-size: clamp(2.1rem, 8vw, 3.1rem); }
+  .bigcard span {
+    display: block; margin-top: .5em; font-size: .74rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .11em; color: var(--faint);
+  }
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: .65rem; margin-top: .65rem; }
+  @media (min-width: 620px) { .stats { grid-template-columns: repeat(3, 1fr); } }
+  .stat {
+    background: #fafafa; border: 1px solid var(--border); border-radius: 14px;
+    padding: .95rem .8rem; text-align: center;
+  }
+  .stat b {
+    display: block; font-size: clamp(1.15rem, 3.6vw, 1.5rem); font-weight: 800;
+    letter-spacing: -.02em; line-height: 1.15; font-variant-numeric: tabular-nums;
+  }
+  .stat span {
+    display: block; margin-top: .3em; font-size: .68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .09em; color: var(--faint);
+  }
+
+  h2 {
+    font-size: clamp(1.2rem, 3.2vw, 1.65rem); font-weight: 800; letter-spacing: -.025em;
+    margin: 3.2rem 0 .25em;
+  }
+  h2 + .sub { color: var(--muted); margin: 0 0 1.1rem; font-size: .95rem; }
+  p.body { color: #333; margin: 0 0 1rem; }
+  p.body.lead { font-size: clamp(1.02rem, 2.4vw, 1.14rem); }
+
+  /* ---------- highlights ---------- */
+  ol.hl { list-style: none; margin: 0; padding: 0; display: grid; gap: .8rem; }
+  ol.hl li {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: #fff; border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.2rem 1.3rem; box-shadow: var(--shadow);
+  }
+  .hlnum {
+    flex: 0 0 auto; width: 2rem; height: 2rem; border-radius: 50%;
+    background: var(--accent); color: #fff; font-weight: 800; font-size: 1rem;
+    display: grid; place-items: center; margin-top: .15em;
+  }
+  ol.hl b {
+    display: block; font-size: clamp(1.05rem, 2.9vw, 1.25rem); font-weight: 800;
+    letter-spacing: -.02em; line-height: 1.25; margin-bottom: .3em;
+  }
+  ol.hl p { margin: 0; color: #333; }
+
+  /* ---------- route ---------- */
+  #mapsec { display: none; }
+  #map {
+    width: 100%; aspect-ratio: 16/10; border-radius: 16px; border: 1px solid var(--border);
+    box-shadow: var(--shadow); background: #f4f4f4;
+  }
+
+  /* ---------- gallery ---------- */
+  #gallerysec { display: none; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: .45rem; }
+  .cell {
+    position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden;
+    background: #eee; border: 0; padding: 0; cursor: zoom-in; display: block;
+  }
+  /* The blur is applied to the image, and the cell clips it. scale(1.06) hides the soft
+     transparent edge a blur leaves at the boundary. */
+  .cell img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    filter: blur(var(--photoblur)); transform: scale(1.06);
+  }
+  .cell .play {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    background: rgba(0,0,0,.28); pointer-events: none;
+  }
+  .cell .play::after {
+    content: ''; border-left: 15px solid #fff;
+    border-top: 9px solid transparent; border-bottom: 9px solid transparent;
+    margin-left: 4px; filter: drop-shadow(0 1px 3px rgba(0,0,0,.5));
+  }
+  .more {
+    display: block; width: 100%; margin: .9rem auto 0; padding: .8em 1.4em;
+    font: inherit; font-weight: 700; color: var(--accent-dk); background: var(--accent-soft);
+    border: 1px solid #f6dcc9; border-radius: 999px; cursor: pointer;
+  }
+  .blurnote { color: var(--faint); font-size: .85rem; margin: .9rem 0 0; text-align: center; }
+
+  /* ---------- "mine coming later" strip ---------- */
+  .coming {
+    display: flex; align-items: center; gap: 1rem; margin-top: 1.1rem;
+    border: 2px dashed #f0c9ac; border-radius: 16px; background: var(--accent-soft);
+    padding: 1.15rem 1.3rem;
+  }
+  .coming .frames { display: flex; gap: .3rem; flex: 0 0 auto; }
+  .coming .frames i {
+    width: clamp(26px, 7vw, 36px); aspect-ratio: 4/3; border-radius: 5px;
+    background: #fff; border: 1px solid #f0d4bf; display: block;
+  }
+  .coming .frames i:nth-child(1) { transform: rotate(-8deg); }
+  .coming .frames i:nth-child(3) { transform: rotate(8deg); }
+  .coming div b {
+    display: block; font-size: clamp(1.05rem, 3.2vw, 1.3rem); font-weight: 800;
+    letter-spacing: -.02em; color: var(--accent-dk); line-height: 1.2;
+  }
+  .coming div span { display: block; color: #7c4a28; font-size: .93rem; margin-top: .2em; }
+
+  /* ---------- lightbox ---------- */
+  #lb {
+    position: fixed; inset: 0; background: rgba(0,0,0,.94); display: none;
+    place-items: center; z-index: 60; padding: 1rem;
+  }
+  #lb.on { display: grid; }
+  /* Blurred here too. An unblurred lightbox would defeat the point of blurring the grid. */
+  #lb img, #lb video {
+    max-width: 100%; max-height: 86vh; border-radius: 8px; display: block;
+    filter: blur(calc(var(--photoblur) * 2.2));
+  }
+  #lb .x {
+    position: absolute; top: .8rem; right: 1.1rem; font-size: 2rem; color: #fff;
+    background: none; border: 0; cursor: pointer; line-height: 1;
+  }
+  #lb .nav {
+    position: absolute; top: 50%; transform: translateY(-50%); font-size: 2.4rem;
+    color: #fff; background: none; border: 0; cursor: pointer; padding: .3em .5em;
+  }
+  #lb .prev { left: .1rem; } #lb .next { right: .1rem; }
+  #lb .count { position: absolute; bottom: .9rem; color: #bbb; font-size: .85rem; }
+
+  /* ---------- wishes ---------- */
+  #wishsec { display: none; }
+  .wishes { display: grid; gap: .7rem; }
+  @media (min-width: 700px) { .wishes { grid-template-columns: 1fr 1fr; } }
+  .wish {
+    background: #fff; border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 12px; padding: .9rem 1.05rem; box-shadow: var(--shadow);
+  }
+  .wish p { margin: 0; color: #333; }
+  .wish .who {
+    display: block; margin-top: .5em; font-size: .76rem; font-weight: 700;
+    letter-spacing: .07em; color: var(--faint);
+  }
+
+  /* ---------- thanks ---------- */
+  .thanks {
+    background: linear-gradient(150deg, var(--accent-soft), #fff);
+    border: 1px solid #f6dcc9; border-radius: 18px; padding: 1.7rem 1.5rem; margin-top: 1rem;
+  }
+  .thanks h2 { margin-top: 0; }
+  .thanks ul { margin: .7rem 0 0; padding-left: 1.15rem; color: #333; }
+  .thanks li { margin: .45em 0; }
+
+  footer {
+    margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    color: var(--faint); font-size: .88rem; text-align: center;
+  }
+
+  #todo {
+    display: none; background: #fffaeb; border: 1px solid #f0d78a; border-radius: 14px;
+    padding: 1.1rem 1.3rem; margin: 2.5rem 0 0; font-size: .9rem; line-height: 1.55;
+  }
+  #todo.on { display: block; }
+  #todo b { display: block; margin-bottom: .45em; }
+  #todo code { background: #fff; padding: .1em .35em; border-radius: 4px; }
+  #todo ul { margin: .5em 0 0; padding-left: 1.2rem; }
+  #todo li { margin: .3em 0; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="kicker">September 5, 2026</span>
+  <p class="fifty">50</p>
+  <h1>Fifty miles for fifty years</h1>
+  <p class="when" id="when">Saturday, September 5, 2026</p>
+  <p class="oneline">One mile for every year, starting at 2:34 in the morning.</p>
+</header>
+
+<div class="wrap">
+
+  <div class="big" id="big"></div>
+  <div class="stats" id="stats"></div>
+
+  <h2>How it went</h2>
+  <p class="body lead" id="story">
+    I turned fifty on September&nbsp;3rd. Two days later I set off from my own driveway at
+    2:34&nbsp;in the morning to run fifty miles &mdash; one for every year. The first
+    twenty-two were an out-and-back down the Los Gatos Creek Trail; after that I came home and
+    ran loops of the neighborhood. I started out doing a few big ones, then realized lots of
+    little loops were far nicer &mdash; kids could join without committing to much, and I came
+    past the house often enough to see everybody. People walked, ran, biked and scooted
+    alongside me from the small hours right through to the afternoon. I finished at 5:11 in the
+    afternoon and the Oktoberfest started more or less the moment I stopped. Doing it as
+    laps from home instead of heading off somewhere was the entire point, and it worked better
+    than I'd hoped.
+  </p>
+
+  <h2>Three things I'll remember</h2>
+  <p class="sub">Ask me about any of them and I'll happily go on too long.</p>
+  <ol class="hl">
+    <li>
+      <span class="hlnum">1</span>
+      <div>
+        <b>Leo, who is seventeen, rode the first twenty-two miles with me</b>
+        <p>Down the Los Gatos Creek Trail and back, from half past two in the morning. The
+        trail would have been sketchy on my own at 3&nbsp;AM, and Leo was willing to come along
+        on his bike and keep me company through it. So gracious of him. It turned into a
+        father-and-son camping trip and an all-nighter rolled into one, and we talked the whole
+        way out and the whole way back. That's the part of the day I'll keep.</p>
+      </div>
+    </li>
+    <li>
+      <span class="hlnum">2</span>
+      <div>
+        <b>I never ran a single lap on my own</b>
+        <p>Not one. Somebody was next to me for every single loop &mdash; old friends, new
+        friends, people I'd only just met. The conversations were the whole thing. Around a
+        hundred and twenty-five people came out over the course of the day. And the last lap was
+        enormous &mdash; something like thirty of us running it together, with more waiting at
+        the finish line to cheer. Amazing, all of it.</p>
+      </div>
+    </li>
+    <li>
+      <span class="hlnum">3</span>
+      <div>
+        <b>Then the Oktoberfest, which was epic</b>
+        <p>I stopped running at eleven minutes past five and the party started right then. I
+        showered, got into my lederhosen, and spent the rest of the evening just loving seeing
+        everybody. Great food, even better friends, and conversation that went on and on.</p>
+      </div>
+    </li>
+  </ol>
+
+  <section id="mapsec">
+    <h2>The route</h2>
+    <p class="sub">Every loop, traced from the GPS track.</p>
+    <div id="map"></div>
+  </section>
+
+  <section id="gallerysec">
+    <h2>The day, in pictures</h2>
+    <p class="sub" id="gallerysub"></p>
+    <div class="grid" id="grid"></div>
+    <button class="more" id="more" hidden></button>
+    <p class="blurnote">Softened on purpose &mdash; nobody signed up to be sharp on the internet.</p>
+    <div class="coming" id="coming" hidden>
+      <div class="frames"><i></i><i></i><i></i></div>
+      <div>
+        <b>Ones I took come up in a few days</b>
+        <span>Including the lederhosen.</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="wishsec">
+    <h2>Birthday wishes</h2>
+    <p class="sub">Shown as initials only, and only with permission.</p>
+    <div class="wishes" id="wishes"></div>
+  </section>
+
+  <div class="thanks">
+    <h2>Thank you</h2>
+    <ul id="thanks">
+      <li><b>Julie</b>, my wife, for supporting the whole mad idea from the beginning &mdash;
+        and our kids, who were part of it all day.</li>
+      <li><b>Leo</b>, for riding the first twenty-two miles through the middle of the night.</li>
+      <li>My coach, <b><a href="https://www.cptcoach.com" rel="noopener">Tim Borland</a></b>, who
+        got me ready for this &mdash; and who once ran
+        <a href="https://www.imdb.com/title/tt1326771/" rel="noopener">sixty-three marathons in
+        sixty-three days</a>, so he was not especially impressed by fifty miles.</li>
+      <li>Everyone who took a lap &mdash; on foot, on a bike, on a scooter, at 4am or at 4pm.
+        You made fifty miles feel short.</li>
+      <li>Everyone who stood out in the driveway and cheered, handed over a cold drink, or
+        simply turned up.</li>
+    </ul>
+  </div>
+
+  <div id="todo"></div>
+
+  <footer><a href="/">phandel.com</a></footer>
+</div>
+
+<div id="lb" aria-hidden="true">
+  <button class="x" id="lbx" aria-label="Close">&times;</button>
+  <button class="nav prev" id="lbp" aria-label="Previous">&lsaquo;</button>
+  <div id="lbbody"></div>
+  <button class="nav next" id="lbn" aria-label="Next">&rsaquo;</button>
+  <span class="count" id="lbc"></span>
+</div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+
+// Contributions from the shared album: cleared to show, ON CONDITION THEY ARE BLURRED.
+const SHARED_PHOTOS_LIVE = true;
+// Peter's own camera-roll photos: embargoed. None of them are in this repo, and
+// the launchd sync that would pull new album items is unloaded, so nothing arrives early.
+const MY_PHOTOS_LIVE = false;
+
+const LOCAL = location.protocol === 'file:' ||
+              /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+const missing = [];
+const DASH = '—';
+
+// An em dash, never a guess. Anything that lands here is recorded so the local-only panel can
+// list exactly which numbers are still outstanding.
+function val(v, fmt, label) {
+  if (v === null || v === undefined || v === '' || (typeof v === 'number' && !isFinite(v))) {
+    if (label) missing.push(label);
+    return DASH;
+  }
+  return fmt ? fmt(v) : String(v);
+}
+const twoDp = n => (Math.round(n * 100) / 100).toFixed(2);
+const oneDp = n => (Math.round(n * 10) / 10).toFixed(1);
+const hhmm  = s => Math.floor(s / 3600) + 'h ' + String(Math.round(s % 3600 / 60)).padStart(2, '0') + 'm';
+// Exact, not rounded: hhmm() turned 14h 36m 48s into "14h 37m", inflating a time given to
+// the second. Compact h:mm:ss keeps it honest and still fits the card on a phone.
+const hms   = s => Math.floor(s / 3600) + ':' + String(Math.floor(s % 3600 / 60)).padStart(2, '0') +
+                   ':' + String(Math.floor(s % 60)).padStart(2, '0');
+const paceS = p => Math.floor(p) + ':' + String(Math.round((p - Math.floor(p)) * 60)).padStart(2, '0');
+const esc = t => String(t == null ? '' : t).replace(/[<>&"]/g,
+  c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
+
+async function getJSON(path) {
+  try { const r = await fetch(path, { cache: 'no-cache' }); return r.ok ? await r.json() : null; }
+  catch (e) { return null; }        // file:// blocks fetch in some browsers; degrade quietly
+}
+
+/* ---------- numbers ---------- */
+function renderNumbers(d) {
+  d = d || {};
+  if (d.date_pretty) $('when').textContent = d.date_pretty;
+  if (d.story && d.story.trim()) $('story').textContent = d.story;
+
+  // Derive what can be derived rather than asking for the same thing twice.
+  let p = d.avg_pace_min_mi;
+  if (p == null && d.distance_mi > 0 && d.moving_time_s > 0) p = (d.moving_time_s / 60) / d.distance_mi;
+  // NO LAP COUNT. It looked derivable and is not. First it was computed off the full distance
+  // (62 laps), which wrongly assumed all fifty miles were loops -- but the opening 22 were an
+  // out-and-back on the Los Gatos Creek Trail. Taking those off gave 35, which still assumed
+  // every remaining mile was the 0.81-mile little loop -- but Peter began with a few BIG loops
+  // before switching to little ones. The big/little split was never recorded, so any lap number
+  // would be invented. Showing miles-with-Leo instead: that one is known exactly.
+
+  // Three headline cards, and the third is people on purpose: Peter's own summary of the day
+  // was that he never ran a lap alone, so the number of people who came out belongs up here
+  // rather than buried among the physiology. Estimated, hence the tilde.
+  const approx = d.people_estimated ? '~' : '';
+  $('big').innerHTML =
+    '<div class="bigcard"><b>' + val(d.distance_mi, n => (n % 1 ? twoDp(n) : String(Math.round(n))), 'distance_mi') +
+      '</b><span>miles run</span></div>' +
+    '<div class="bigcard alt"><b>' + val(d.elapsed_s, hms, 'elapsed_s') +
+      '</b><span>start to finish</span></div>' +
+    '<div class="bigcard alt"><b>' + (d.people_came_out ? approx + Math.round(d.people_came_out) : val(null, null, 'people_came_out')) +
+      '</b><span>people came out</span></div>';
+
+  // These six are exactly what the rig actually recorded. "Feet climbed" is deliberately
+  // absent: trail.txt stores only epoch/lat/lon and no HealthKit workout was ever written, so
+  // there is no altitude anywhere to derive it from -- better to omit the card than to show a
+  // permanent em dash. Friends numbers are absent too: the tracker was opt-in, so 6 movers and
+  // 7 tracked miles would badly undercount who really came out. Both are kept in
+  // race-summary.json if you ever want them with an honest label.
+  const cards = [
+    ['overall min/mile',  val(p, paceS, 'avg_pace_min_mi')],
+    ['avg heart rate',    val(d.hr_avg, Math.round, 'hr_avg')],
+    ['peak heart rate',   val(d.hr_max, Math.round, 'hr_max')],
+    ['miles with Leo',     val(d.trail_out_and_back_mi, Math.round, 'trail_out_and_back_mi')],
+    ['on the last lap',   d.people_last_lap ? approx + Math.round(d.people_last_lap) : val(null, null, 'people_last_lap')],
+    ['steps',             val(d.steps, n => Math.round(n).toLocaleString(), 'steps')]
+  ];
+  $('stats').innerHTML = cards.map(c =>
+    '<div class="stat"><b>' + c[1] + '</b><span>' + esc(c[0]) + '</span></div>').join('');
+}
+
+/* ---------- gallery: shared-album contributions, blurred ---------- */
+let media = [], shown = 0, lbAt = 0;
+const FIRST = 24;
+const isVid = f => /\.(mp4|mov|m4v)$/i.test(f);
+const poster = f => 'photos/' + f.replace(/\.(mp4|mov|m4v)$/i, '.jpg');
+
+function renderGallery(man) {
+  // The "mine coming later" strip belongs in this section whether or not the album renders.
+  // Copy is static in the markup -- deliberately no date, so it cannot go stale if the upload
+  // slips a day.
+  if (!MY_PHOTOS_LIVE) {
+    $('coming').hidden = false;
+    $('gallerysec').style.display = 'block';
+  }
+  if (!SHARED_PHOTOS_LIVE) return;
+  const items = (man && man.items) || [];
+  if (!items.length) return;
+  media = items.slice().sort((a, b) => (b.taken || 0) - (a.taken || 0));   // newest first
+  $('gallerysec').style.display = 'block';
+  $('gallerysub').textContent = media.length +
+    ' photos and clips, sent in by everyone who came out.';
+  shown = 0;
+  addCells(FIRST);
+  if (shown < media.length) {
+    $('more').hidden = false;
+    $('more').textContent = 'Show all ' + media.length;
+  }
+}
+
+function addCells(n) {
+  const frag = document.createDocumentFragment();
+  const end = Math.min(shown + n, media.length);
+  for (let i = shown; i < end; i++) {
+    const m = media[i], v = isVid(m.file);
+    const b = document.createElement('button');
+    b.className = 'cell'; b.dataset.i = i;
+    b.innerHTML = '<img loading="lazy" decoding="async" src="' +
+      esc(v ? poster(m.file) : 'photos/' + m.file) + '" alt="">' +
+      (v ? '<span class="play"></span>' : '');
+    const im = b.querySelector('img');
+    if (v) {
+      // Three clips have no generated poster frame; a dark tile with the play badge is the
+      // correct final state for those.
+      im.addEventListener('error', function () { this.remove(); b.style.background = '#1c1c1e'; });
+    } else {
+      // Photos deliberately do NOT get the destructive fallback. `error` also fires on a
+      // transient failure -- a dropped request on a phone, or a lazy image cut off mid-flight
+      // -- and removing the <img> would turn a good photo into a permanent black hole. Caught
+      // exactly that way: a headless screenshot cut one request and left a black tile in among
+      // bright daytime photos. Grey tile, keep the <img>, lightbox refetches on click.
+      im.addEventListener('error', function () { b.style.background = '#e4e4e4'; });
+    }
+    frag.appendChild(b);
+  }
+  $('grid').appendChild(frag);
+  shown = end;
+}
+
+$('more').addEventListener('click', () => { addCells(media.length); $('more').hidden = true; });
+
+/* ---------- lightbox ---------- */
+function openLb(i) {
+  lbAt = (i + media.length) % media.length;
+  const m = media[lbAt];
+  $('lbbody').innerHTML = isVid(m.file)
+    ? '<video controls autoplay playsinline src="photos/' + esc(m.file) + '"></video>'
+    : '<img src="photos/' + esc(m.file) + '" alt="">';
+  $('lbc').textContent = (lbAt + 1) + ' / ' + media.length;
+  $('lb').classList.add('on');
+  $('lb').setAttribute('aria-hidden', 'false');
+}
+function closeLb() {
+  $('lb').classList.remove('on');
+  $('lb').setAttribute('aria-hidden', 'true');
+  $('lbbody').innerHTML = '';          // also stops a playing video
+}
+$('grid').addEventListener('click', e => {
+  const c = e.target.closest('.cell');
+  if (c) openLb(+c.dataset.i);
+});
+$('lbx').addEventListener('click', closeLb);
+$('lbp').addEventListener('click', () => openLb(lbAt - 1));
+$('lbn').addEventListener('click', () => openLb(lbAt + 1));
+$('lb').addEventListener('click', e => { if (e.target.id === 'lb') closeLb(); });
+document.addEventListener('keydown', e => {
+  if (!$('lb').classList.contains('on')) return;
+  if (e.key === 'Escape') closeLb();
+  if (e.key === 'ArrowLeft') openLb(lbAt - 1);
+  if (e.key === 'ArrowRight') openLb(lbAt + 1);
+});
+
+/* ---------- wishes: published.json ONLY ---------- */
+function renderWishes(pub) {
+  const list = Array.isArray(pub) ? pub : (pub && pub.wishes) || [];
+  if (!list.length) return;            // nothing approved yet -> section stays hidden
+  $('wishsec').style.display = 'block';
+  $('wishes').innerHTML = list.map(w =>
+    '<div class="wish"><p>' + esc(w.text || w.message || '') + '</p><span class="who">' +
+    esc(w.initials || w.who || '') + '</span></div>').join('');
+}
+
+/* ---------- route map, only if a trail exists ---------- */
+async function renderMap() {
+  const trail = await getJSON('trail.json');
+  const pts = Array.isArray(trail) ? trail : (trail && trail.points) || [];
+  if (pts.length < 2) return;
+  await new Promise((res, rej) => {
+    const c = document.createElement('link');
+    c.rel = 'stylesheet'; c.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(c);
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    s.onload = res; s.onerror = rej; document.head.appendChild(s);
+  }).catch(() => null);
+  if (typeof L === 'undefined') return;
+  $('mapsec').style.display = 'block';
+  const ll = pts.map(x => Array.isArray(x) ? [x[0], x[1]] : [x.lat, x.lon]);
+  const map = L.map('map');
+  // Esri rather than CARTO: CARTO's free tiles began serving an "API KEY REQUIRED" watermark,
+  // which a status-code check does not catch -- only looking at the image does.
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    { maxZoom: 19, attribution: 'Tiles &copy; Esri' }).addTo(map);
+  const line = L.polyline(ll, { color: '#e8590c', weight: 4, opacity: .85 }).addTo(map);
+  map.fitBounds(line.getBounds(), { padding: [24, 24] });
+  L.circleMarker(ll[0], { radius: 6, color: '#fff', weight: 2, fillColor: '#e8590c', fillOpacity: 1 })
+    .addTo(map).bindPopup('Start &middot; 2:34 AM');
+}
+
+/* ---------- thanks ---------- */
+function renderThanks(d) {
+  if (!d || !d.music || !d.music.name) return;
+  const li = document.createElement('li');
+  li.innerHTML = 'To ' + (d.music.url
+    ? '<a href="' + esc(d.music.url) + '" rel="noopener">' + esc(d.music.name) + '</a>'
+    : esc(d.music.name)) + ', for playing live in the backyard all afternoon.';
+  $('thanks').appendChild(li);
+}
+
+/* ---------- local-only gap list ---------- */
+function renderTodo(dataOk, manOk) {
+  if (!LOCAL) return;
+  const n = [];
+  if (!dataOk) n.push('race-summary.json did not load (over file:// some browsers block fetch — use <code>python3 -m http.server</code>)');
+  if (missing.length) n.push('still null in race-summary.json: <code>' + missing.join('</code>, <code>') + '</code>');
+  if (SHARED_PHOTOS_LIVE && !manOk) n.push('photos/manifest.json did not load, so the album is not showing');
+  if (SHARED_PHOTOS_LIVE) n.push('shared-album photos ARE showing, blurred at <code>--photoblur: 3px</code>. That blur is the condition of showing them — do not set it to 0.');
+  n.push('friends telemetry recovered and sitting in race-summary.json: 11 signed in, 6 logged movement, 7.0 tracked miles. Left OUT of the stat grid because the tracker was opt-in and undercounts badly — add it back only with an honest label.');
+  if (!MY_PHOTOS_LIVE) n.push('your own photos are embargoed. None are in the repo and <code>com.phandel.ultra-photos</code> is unloaded, so nothing can sync early. On release: reload the job, sync, set <code>MY_PHOTOS_LIVE = true</code>.');
+  if ($('wishsec').style.display !== 'block') n.push('no approved wishes yet — set <code>approved: true</code> in wishes/candidates.json, then run <code>~/bin/wishes-publish.sh</code>');
+  if ($('mapsec').style.display !== 'block') n.push('no route map, and the phone cannot provide one: <code>TRAIL_KEEP=3000</code> had trimmed trail.txt to the last 3000 fixes, which span 21 m x 39 m — you standing at the house after finishing. Export the GPX from Strava and drop it in as <code>trail.json</code> (<code>[[lat,lon], …]</code>) if you want the map.');
+  if (!n.length) return;
+  $('todo').classList.add('on');
+  $('todo').innerHTML = '<b>Local preview only &mdash; never shown on phandel.com</b><ul><li>' +
+    n.join('</li><li>') + '</li></ul>';
+}
+
+(async function init() {
+  const [data, man, pub] = await Promise.all([
+    getJSON('race-summary.json'),
+    SHARED_PHOTOS_LIVE ? getJSON('photos/manifest.json') : Promise.resolve(null),
+    getJSON('wishes/published.json')
+  ]);
+  renderNumbers(data);
+  renderGallery(man);
+  renderWishes(pub);
+  renderThanks(data);
+  await renderMap();
+  renderTodo(!!data, !!man);
+})();
+</script>
+</body>
+</html>

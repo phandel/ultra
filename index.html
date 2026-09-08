@@ -1,1131 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Peter for 50 Miles! · September 5, 2026</title>
-    <meta name="description" content="I'm running 50 miles for my 50th birthday on September 5, 2026. Come bike/scooter, run, or walk a lap, cheer me on, and celebrate at the 5 PM Oktoberfest with live German music. RSVP here!">
-    <style>
-        :root {
-            --ink: #1a1a1a;
-            --muted: #5c5c5c;
-            --accent: #e8590c;
-            --accent-soft: #fff1e8;
-            --border: #ececec;
-            --card-shadow: 0 2px 16px rgba(0,0,0,0.06);
-        }
-        * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background-color: #ffffff;
-            color: var(--ink);
-            line-height: 1.6;
-            margin: 0;
-            -webkit-font-smoothing: antialiased;
-        }
-        .wrap { max-width: 820px; margin: 0 auto; padding: 0 1.25rem; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peter Handel</title>
+<meta name="description" content="Peter Handel — personal site.">
 
-        /* Hero */
-        header { text-align: center; padding: 4rem 1.25rem 1.5rem; }
-        .eyebrow {
-            display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--accent);
-            background: var(--accent-soft);
-            padding: 0.4em 0.9em;
-            border-radius: 999px;
-            margin-bottom: 1.25rem;
-        }
-        h1 {
-            font-size: clamp(2.2rem, 6vw, 3.6rem);
-            line-height: 1.1;
-            margin: 0 0 0.5rem;
-            letter-spacing: -0.02em;
-        }
-        h1 .accent { color: var(--accent); }
-        .tagline { font-size: 1.2rem; color: var(--muted); margin: 0.5rem auto 1.75rem; max-width: 30ch; }
-        .date-row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; justify-content: center; }
-        .date-badge {
-            display: inline-block;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--ink);
-            text-decoration: none;
-            border: 2px solid var(--ink);
-            border-radius: 12px;
-            padding: 0.6em 1.1em;
-            cursor: pointer;
-            transition: background 0.15s ease, color 0.15s ease;
-        }
-        .date-badge:hover { background: var(--ink); color: #fff; text-decoration: none; }
-        .date-badge:hover .day { color: #fff; }
-        .date-badge .day { color: var(--accent); }
-        .cal-hint { font-size: 0.8rem; color: var(--muted); margin: 0.5rem 0 0; }
-        .location { font-size: 1.1rem; margin: 1rem auto 0; }
-        .location strong { color: var(--accent); }
-        .maplink { text-decoration: none; }
-        .maplink:hover { text-decoration: underline; }
+<!--
+  index.html -- the landing page for phandel.com.
 
-        /* Photo */
-        .photo-frame {
-            margin: 2.5rem auto;
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-        }
-        .photo-frame img { display: block; width: 100%; height: auto; }
+  This REPLACED the Sept 5 race invite page (countdown, lap sign-up sheet, RSVP), which is
+  preserved in git history -- `git log --follow index.html` will find it if it is ever wanted
+  back as a separate page.
 
-        /* Info cards */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 1rem;
-            margin: 2.5rem 0;
-        }
-        .info-card {
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 1.4rem;
-            text-align: center;
-            box-shadow: var(--card-shadow);
-        }
-        .info-card .emoji { font-size: 2rem; line-height: 1; }
-        .info-card h3 { margin: 0.6rem 0 0.3rem; font-size: 1.1rem; }
-        .info-card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+  WRITTEN CONSERVATIVELY ON PURPOSE. This is a public page, so I have only asserted things
+  that are already public on this site: your name, that you ran 50 miles for your 50th, and
+  that you like endurance sport. Everything about work, family detail or location is left as
+  a clearly marked slot for you to fill or delete -- I did not want to publish personal
+  details you had not chosen to put here yourself. Look for "EDIT" below.
+-->
 
-        /* Story */
-        .story { font-size: 1.1rem; margin: 2.5rem 0; }
-        .story h2 { font-size: 1.6rem; letter-spacing: -0.01em; }
-        .story .highlight { color: var(--accent); font-weight: 600; }
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #5c5c5c;
+    --faint: #8a8a8a;
+    --accent: #e8590c;
+    --accent-soft: #fff1e8;
+    --border: #ececec;
+    --card-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #fff; color: var(--ink); line-height: 1.65; margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 1.25rem 4.5rem; }
+  a { color: var(--accent); }
+  a:hover { text-decoration: none; }
 
-        /* RSVP */
-        .rsvp {
-            background: var(--accent-soft);
-            border-radius: 18px;
-            padding: 2.25rem 1.75rem;
-            margin: 3rem 0;
-        }
-        .rsvp h2 { margin-top: 0; font-size: 1.8rem; text-align: center; }
-        .rsvp .sub { text-align: center; color: var(--muted); margin-top: -0.3rem; margin-bottom: 1.75rem; }
-        form { display: grid; gap: 1.1rem; max-width: 460px; margin: 0 auto; }
-        label { display: block; font-weight: 600; font-size: 0.95rem; }
-        input, select {
-            width: 100%;
-            margin-top: 0.4rem;
-            padding: 0.75em 0.9em;
-            font-size: 1rem;
-            border: 1px solid #d9d0c8;
-            border-radius: 10px;
-            background: #fff;
-            font-family: inherit;
-        }
-        input:focus, select:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
-        button {
-            margin-top: 0.5rem;
-            padding: 0.9em 1rem;
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #fff;
-            background: var(--accent);
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: filter 0.15s ease;
-        }
-        button:hover { filter: brightness(1.08); }
-        button.secondary { background: #fff; color: var(--accent); border: 2px solid var(--accent); }
-        button.secondary:hover { background: var(--accent-soft); filter: none; }
-        .btn-row { display: flex; gap: 0.75rem; }
-        .btn-row button { flex: 1; margin-top: 0; }
-        .req { color: var(--accent); }
-        /* Why I'm running callout */
-        .why { border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 14px 14px 0; padding: 1.5rem 1.75rem; margin: 3rem 0; }
-        .why h2 { margin: 0 0 0.5rem; font-size: 1.5rem; letter-spacing: -0.01em; }
-        .why p { font-size: 1.18rem; line-height: 1.7; margin: 0; }
-        /* RSVP thank-you modal */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; padding: 1rem; }
-        .modal-overlay.show { display: flex; }
-        .modal-box { background: #fff; border-radius: 16px; padding: 2rem 1.75rem; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
-        .modal-emoji { font-size: 2.8rem; line-height: 1; }
-        .modal-box h3 { margin: 0.6rem 0 0.3rem; font-size: 1.5rem; color: var(--accent); border: none; }
-        .modal-box p { margin: 0 0 1.4rem; color: var(--muted); }
-        .modal-close { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 0.6em 1.5em; font-weight: 700; font-size: 1rem; cursor: pointer; }
-        .modal-close:hover { filter: brightness(1.08); }
+  /* ---------- intro ---------- */
+  .intro {
+    display: flex; gap: 1.6rem; align-items: center;
+    padding: 3.5rem 0 2.2rem; border-bottom: 1px solid var(--border);
+  }
+  .intro img {
+    width: clamp(96px, 24vw, 140px); aspect-ratio: 1; border-radius: 50%;
+    object-fit: cover; flex: 0 0 auto; box-shadow: var(--card-shadow);
+  }
+  .intro h1 {
+    font-size: clamp(1.8rem, 6vw, 2.6rem); font-weight: 800; letter-spacing: -.03em;
+    margin: 0 0 .15em; line-height: 1.1;
+  }
+  .intro p { margin: 0; color: var(--muted); font-size: clamp(1rem, 2.4vw, 1.12rem); }
 
-        footer { text-align: center; color: var(--muted); font-size: 0.9rem; padding: 2rem 1.25rem 3rem; }
+  h2 {
+    font-size: 1.15rem; font-weight: 800; letter-spacing: -.01em; margin: 2.6rem 0 .6rem;
+  }
+  p.body { color: #333; margin: 0 0 1rem; }
 
-        a { color: var(--accent); font-weight: 600; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+  /* ---------- featured card ---------- */
+  .feature {
+    display: block; text-decoration: none; color: inherit; margin-top: 1rem;
+    background: linear-gradient(150deg, #fff6f0, #fff); border: 1px solid #f6ddcd;
+    border-radius: 18px; padding: 1.5rem 1.5rem; box-shadow: var(--card-shadow);
+    transition: transform .1s ease, box-shadow .15s ease;
+  }
+  .feature:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(232,89,12,.16); }
+  .feature .tag {
+    display: inline-block; font-size: .7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--accent); background: #fff;
+    border: 1px solid #f3d6c4; border-radius: 999px; padding: .35em .9em; margin-bottom: .8rem;
+  }
+  .feature b {
+    display: block; font-size: clamp(1.25rem, 3.6vw, 1.7rem); font-weight: 800;
+    letter-spacing: -.02em; line-height: 1.2;
+  }
+  .feature span { display: block; color: var(--muted); margin-top: .4em; }
+  .feature .go { display: block; margin-top: .9em; font-weight: 700; color: var(--accent); }
 
-        /* Route map */
-        .map-wrap {
-            position: relative;
-            width: 100%;
-            padding-bottom: 66%;
-            height: 0;
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            margin: 1.25rem 0 0.75rem;
-        }
-        .map-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  /* ---------- link list ---------- */
+  .links { list-style: none; margin: .6rem 0 0; padding: 0; }
+  .links li { border-bottom: 1px solid var(--border); }
+  .links a {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding: .85em .2em; text-decoration: none; color: inherit;
+  }
+  .links a:hover { background: #fafafa; }
+  .links b { font-weight: 600; }
+  .links em { color: var(--faint); font-style: normal; font-size: .88rem; text-align: right; }
 
-        @media (max-width: 480px) {
-            header { padding-top: 2.5rem; }
-        }
-
-        /* Oktoberfest / Bavarian */
-        /* index.html had no .hidden utility (live.html's lives in a different file), so the
-           banner markup below would have been visible immediately. !important for the same
-           reason as live.html: .livebanner sets its own display. */
-        .hidden { display: none !important; }
-
-        /* Race-morning banner pointing at the live dashboard. Hidden until LIVE_BANNER is
-           flipped to true -- there is nothing to watch before the run starts.
-           Sized deliberately loud: this is the one thing a visitor should see first on race
-           day, above the countdown, so it uses a bigger clamp than anything else on the page. */
-        .livebanner {
-            display: block;
-            background: linear-gradient(90deg, var(--accent), #ff6a00);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 20px;
-            padding: 2rem 1.5rem;
-            margin: 0 0 2rem;
-            text-align: center;
-            box-shadow: 0 6px 30px rgba(232,89,12,.45);
-            cursor: pointer;
-            -webkit-tap-highlight-color: rgba(255,255,255,.28);
-            transition: transform .08s ease, filter .12s ease;
-        }
-        .livebanner:hover { text-decoration: none; filter: brightness(1.05); }
-        .livebanner:active { transform: scale(.99); filter: brightness(.97); }
-        /* The <a> IS the box -- it wraps every line, so the whole orange card is the link.
-           pointer-events:none on the children guarantees a tap on the text or the padding
-           always lands on the anchor and can never be swallowed by a span. */
-        .livebanner * { pointer-events: none; }
-        .livebanner .lb1 {
-            display: block; font-size: clamp(1.75rem, 6.5vw, 3.1rem); font-weight: 800;
-            letter-spacing: -.02em; line-height: 1.1;
-        }
-        .livebanner .lb2 { display: block; font-size: clamp(1rem, 2.4vw, 1.3rem);
-            opacity: .95; margin-top: .5em; }
-        .livebanner .lb3 { display: block; font-size: clamp(1.05rem, 2.6vw, 1.4rem);
-            font-weight: 700; margin-top: .75em; text-decoration: underline;
-            text-underline-offset: .18em; }
-        .livebanner .lbdot {
-            display: inline-block; width: .6em; height: .6em; border-radius: 50%;
-            background: #fff; margin-right: .5em; animation: lbp 1.6s infinite;
-        }
-        @keyframes lbp { 0%,100% { opacity: 1 } 50% { opacity: .3 } }
-
-        /* Birthday-wish callout. Deliberately styled as an aside and signed by Julie: the
-           rest of this page is written in Peter's first person, so an ask to send PETER a
-           present cannot be in that voice. */
-        .wishbox {
-            margin: 2.5rem 0;
-            border-radius: 18px;
-            box-shadow: var(--card-shadow);
-            background: var(--accent-soft);
-            border: 2px solid var(--accent);
-            padding: 1.75rem 1.5rem 2rem;
-        }
-        .wishbox .from {
-            display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: .09em;
-            font-size: .72rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: .5rem;
-        }
-        .wishbox h2 { margin: 0 0 .6rem; }
-        .wishbox p { font-size: 1.05rem; margin: .5rem 0; }
-        .wishbox ul { margin: .75rem 0 1.1rem; padding-left: 1.2rem; font-size: 1.05rem; }
-        .wishbox li { margin: .35rem 0; }
-        .wishcta {
-            display: inline-block;
-            background: var(--accent);
-            color: #fff;
-            font-weight: 700;
-            text-decoration: none;
-            padding: .85em 1.4em;
-            border-radius: 999px;
-            font-size: 1.05rem;
-        }
-        .wishcta:hover { filter: brightness(1.08); }
-        .wishnote { font-size: .9rem !important; color: #6b6b70; line-height: 1.65; margin-top: 1.1rem !important; }
-        .wishnote code { background: #fff; padding: .1em .4em; border-radius: 5px; }
-        .okt {
-            margin: 3rem 0;
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            background-color: #0a5cc2;
-            background-image:
-                repeating-linear-gradient(45deg, transparent 0 32px, rgba(255,255,255,.9) 32px 64px),
-                repeating-linear-gradient(-45deg, transparent 0 32px, rgba(255,255,255,.55) 32px 64px);
-        }
-        .okt-inner {
-            margin: 18px;
-            background: rgba(255,255,255,0.95);
-            border-radius: 12px;
-            padding: 2.25rem 1.5rem 2.5rem;
-            text-align: center;
-        }
-        .okt-eyebrow {
-            display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #fff;
-            background: #0a5cc2;
-            padding: 0.4em 0.9em;
-            border-radius: 999px;
-            margin-bottom: 1rem;
-        }
-        .okt-inner h2 { color: #0a5cc2; border: none; font-size: clamp(1.8rem, 5vw, 2.6rem); margin: 0 0 0.3rem; padding: 0; }
-        .okt-when { font-weight: 700; font-size: 1.2rem; color: var(--ink); margin: 0 0 1.1rem; }
-        .okt-band {
-            font-size: 1.12rem;
-            line-height: 1.65;
-            margin: 1.5rem auto 0.25rem;
-            max-width: 46ch;
-            color: var(--ink);
-        }
-        .okt-band a { color: #0a5cc2; }
-        .okt-lead { font-size: 1.15rem; max-width: 48ch; margin: 0 auto 1.9rem; }
-        .okt-lead strong { color: #0a5cc2; }
-        .food-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
-        .food { padding: 0.75rem 0.5rem; }
-        .food .badge {
-            width: 92px; height: 92px; margin: 0 auto 0.7rem;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.8rem; border-radius: 50%;
-            background: #eaf2fc; border: 3px solid #0a5cc2;
-        }
-        .food h3 { margin: 0 0 0.2rem; color: #0a5cc2; border: none; font-size: 1.15rem; padding: 0; }
-        .food p { margin: 0; color: var(--muted); font-size: 0.95rem; }
-        .okt-prost { margin-top: 1.9rem; font-size: 1.25rem; font-weight: 700; color: #0a5cc2; }
-    /* WW_CSS_START */
-        .workouts-widget { margin: 3rem 0 1rem; }
-        .workouts-widget h2 { font-size: 1.6rem; }
-        .workouts-widget .ww-sub { color: var(--muted); margin: -0.3rem 0 1rem; }
-        .ww-scroll { max-height: 380px; overflow-y: auto; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--card-shadow); }
-        .ww-scroll table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
-        .ww-scroll th, .ww-scroll td { padding: 0.6em 0.8em; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
-        .ww-scroll th { position: sticky; top: 0; background: #fff; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; z-index: 1; }
-        .ww-scroll tbody tr:nth-child(even) { background: #fafafa; }
-        .ww-scroll td.mi { font-variant-numeric: tabular-nums; font-weight: 600; }
-        .ww-scroll td.type { color: var(--muted); }
-        .ww-toggle { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.9rem; color: var(--muted); margin-bottom: 0.7rem; cursor: pointer; }
-        .ww-toggle input { width: auto; margin: 0; }
-        .ww-scroll .short { display: none; }
-        .ww-scroll.show-short .short { display: table-row; }
-        .ww-more { margin: 0.75rem 0 0; font-size: 0.9rem; }
-    /* WW_CSS_END */
-    /* ---- countdown ------------------------------------------------------ */
-        .countdown { display: flex; gap: 0.9rem; justify-content: center; margin: 0 0 0.5rem; flex-wrap: wrap; }
-        .cd-item { background: var(--accent-soft); border: 1px solid #ffd9c2; border-radius: 18px;
-                   padding: 0.75rem 1rem; min-width: 104px; text-align: center; }
-        .cd-num { display: block; font-size: clamp(2.1rem, 7.5vw, 3.4rem); font-weight: 800;
-                  color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
-        .cd-item.small .cd-num { font-size: clamp(1.7rem, 5.5vw, 2.5rem); }
-        .cd-item.small { min-width: 92px; padding-top: 1.05rem; }
-        .cd-lab { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.13em;
-                  color: var(--muted); margin-top: 0.4rem; font-weight: 700; }
-        .cd-min { text-align: center; color: var(--muted); font-size: 0.92rem; margin: 0 0 2rem; }
-        .cd-done { text-align: center; font-size: 1.4rem; font-weight: 800; color: var(--accent); margin: 0 0 2rem; }
-        @media (max-width: 480px) { .countdown { gap: 0.55rem; }
-          .cd-item, .cd-item.small { min-width: 74px; padding-left: 0.5rem; padding-right: 0.5rem; } }
-
-    /* ---- lap sign-up sheet ---------------------------------------------- */
-        /* Deep links: #signup lands on the heading, #sheet on the grid itself. The margin
-           stops the target sitting flush against the top of the viewport. */
-        #signup, #sheet, #rsvp, #route { scroll-margin-top: 1.5rem; }
-        html { scroll-behavior: smooth; }
-        .signup .su-intro { color: var(--muted); margin-top: -0.4rem; }
-        .su-card { display: flex; gap: 0.9rem; align-items: flex-start; flex-wrap: wrap; margin: 1.2rem 0 0.3rem; }
-        .su-namewrap { flex: 1 1 200px; display: flex; flex-direction: column; gap: 0.28rem; }
-        .su-methodwrap { display: flex; flex-direction: column; gap: 0.28rem; }
-        .su-flab { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.09em;
-                   color: var(--muted); font-weight: 700; padding-left: 0.2rem; }
-        .su-as { font-size: 0.76rem; color: var(--accent); font-weight: 700; min-height: 1em; padding-left: 0.2rem; }
-        .su-card input { width: 100%; padding: 0.7em 0.9em; font-size: 1rem; font-family: inherit;
-                   border: 1px solid var(--border); border-radius: 12px; background: #fff; color: var(--ink); }
-        .su-card input:focus { outline: none; border-color: var(--accent); }
-        .picks { display: flex; gap: 0.4rem; }
-        .pick { font-size: 1.35rem; line-height: 1; padding: 0.38em 0.55em; border: 1px solid var(--border);
-                border-radius: 10px; cursor: pointer; background: #fff; user-select: none; }
-        .pick.sel { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
-        .su-hint { font-size: 0.8rem; color: var(--accent); margin: 0 0 1.2rem; min-height: 1.2em; font-weight: 600; }
-        .who { margin: 0 0 1.2rem; }
-        .wrow { display: flex; align-items: baseline; gap: 0.6rem; padding: 0.42em 0; }
-        .wrow .we { font-size: 1.05rem; }
-        .wrow .wn { font-weight: 700; min-width: 6.5rem; }
-        .wrow .wt { color: var(--muted); font-size: 0.9rem; }
-        .wrow .wm { color: var(--accent); font-size: 0.78rem; font-weight: 700; margin-left: auto; white-space: nowrap; }
-        /* Multi-column, not grid: it flows down then across, so reading DOWN a column is
-           chronological. 1 column on a phone, up to 5 on a desktop, same markup. */
-        .sheet { columns: 190px 5; column-gap: 1rem; }
-        .scell { break-inside: avoid; border: 1px solid var(--border); border-radius: 10px;
-                 padding: 0.42rem 0.55rem; margin-bottom: 0.45rem; cursor: pointer; background: #fff; }
-        .scell:hover { background: #fff8f3; border-color: #ffd9c2; }
-        .scell.mine { background: var(--accent-soft); border-color: var(--accent); }
-        .scell .ct { font-size: 0.72rem; font-weight: 800; color: var(--muted);
-                     font-variant-numeric: tabular-nums; }
-        .scell.mine .ct { color: var(--accent); }
-        .scell .cn { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.2rem; }
-        .scell .open { font-size: 0.72rem; color: #c8c8c8; font-style: italic; }
-        .nchip { display: inline-flex; align-items: center; gap: 0.28em; font-size: 0.8rem;
-                 background: #f2f2f2; border-radius: 999px; padding: 0.14em 0.55em 0.14em 0.4em; }
-        .nchip.self { background: var(--accent); color: #fff; }
-        .su-status { font-size: 0.78rem; color: var(--muted); margin: 0.8rem 0 0; min-height: 1.2em; }
-    </style>
-    <script data-goatcounter="https://phandel.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  footer {
+    margin-top: 3rem; padding-top: 1.4rem; border-top: 1px solid var(--border);
+    color: var(--faint); font-size: .88rem;
+  }
+</style>
 </head>
 <body>
+<div class="wrap">
 
-    <header>
-        <div class="wrap">
-            <span class="eyebrow">You're Invited</span>
-            <h1>50 Miles for my <span class="accent">50th</span></h1>
-            <p class="tagline">Hey everyone!  I'm running an all-day ultramarathon - come run, cheer, and celebrate at the Oktoberfest afterparty</p>
-            <div class="date-row">
-                <a class="date-badge" href="ultra50.ics" download title="Add to calendar">🗓️ <span class="day">Saturday, September 5, 2026</span></a>
-            </div>
-            <p class="location"><a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=1136+Crescent+Dr%2C+San+Jose%2C+CA+95125" target="_blank" rel="noopener">📍 Our Willow Glen neighborhood - <strong>1136 Crescent Dr, 95125</strong></a></p>
-        </div>
-    </header>
-
-    <div class="wrap">
-        <a class="livebanner hidden" id="livebanner" href="live.html">
-            <span class="lb1"><span class="lbdot"></span>Peter is running right now &mdash; watch live</span>
-            <span class="lb2">Live distance, heart rate, pace and map &middot; front-yard camera &middot; your photos on the big screen</span>
-            <span class="lb3">Tap here to follow along &rarr;</span>
-        </a>
-
-        <div class="countdown" id="countdown"></div>
-        <p class="cd-min" id="cdMin"></p>
-
-        <div class="photo-frame">
-            <img src="Triathalon.jpeg" alt="Handel family kids running a triathalon in 2023">
-        </div>
-
-        <div class="info-grid">
-            <div class="info-card">
-                <div class="emoji">🌅</div>
-                <h3>Running All Day</h3>
-                <p>50 miles - fifty 1-mile loops of the neighborhood, dawn to dusk.</p>
-            </div>
-            <div class="info-card">
-                <div class="emoji">🏃</div>
-                <h3>Join Me Anytime</h3>
-                <p>Drop by whenever you like - walk, run, or cheer for a lap.</p>
-            </div>
-            <div class="info-card">
-                <div class="emoji">🍺</div>
-                <h3>Oktoberfest at 5 PM</h3>
-                <p>Bratwurst, pretzels, bier &amp; live German music to celebrate the finish. Prost!</p>
-            </div>
-        </div>
-
-        <section class="wishbox" id="wishes">
-            <span class="from">A note from Julie</span>
-            <h2>Send Peter a birthday wish 🎂</h2>
-            <p>Pete turns 50 on <strong>Thursday, September 3</strong>. Would you take one minute
-               and send him something? Either one is perfect:</p>
-            <ul>
-                <li>A <strong>five-second video</strong> of yourself saying &ldquo;Happy birthday Peter!&rdquo;</li>
-                <li>Or a <strong>selfie</strong> — one hand making a <strong>5</strong>, the other making a <strong>0</strong></li>
-            </ul>
-            <p><a class="wishcta" href="https://photos.icloud.com/shared/album/0303xPdZVRS1ZfXlWzTtJUzZw"
-                  target="_blank" rel="noopener">See examples &amp; upload yours →</a></p>
-            <p class="wishnote">
-                Short link, if you&rsquo;re sharing it: <code>tinyurl.com/Petes50th</code><br>
-                Would rather just text it? Send it to Julie and she&rsquo;ll add it for you — no upload needed.<br>
-                No need to have been texted — everyone&rsquo;s invited.
-            </p>
-        </section>
-
-        <section class="why">
-            <h2>Why I'm running</h2>
-            <p>Turning 50 got me thinking: our worth was never in our youth, our age, or our résumé — it's from being made in God's image. Age matters less than how we feel and how we keep showing up to train. This run is my way of living that out.</p>
-        </section>
-
-        <section class="story">
-            <h2>Here's the plan</h2>
-            <p>To mark turning 50, I'm running <span class="highlight">50 miles in a single day</span> - fifty 1-mile loops around my neighborhood, from early morning until evening.</p>
-            <p>You don't need to be a runner to join in. Come <span class="highlight">bike/scooter</span> (we have a couple), <span class="highlight">run, or walk a lap</span> with me, stop by to cheer, or just show up for the <span class="highlight">Oktoberfest at 5 PM</span>. Every lap is better with company, so join me for any part of the day that works for you.</p>
-            <p>Let me know you're coming below - hope you can make it!</p>
-        </section>
-
-        <section class="story" id="route">
-            <h2>The route</h2>
-            <p>The whole day runs on a simple <strong>1-mile loop</strong> right around the neighborhood - a 0.75-mile outer loop plus a 0.25-mile inner loop, both passing my driveway at <a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=1136+Crescent+Dr%2C+San+Jose%2C+CA+95125" target="_blank" rel="noopener"><strong>1136 Crescent Dr</strong></a>. <span class="highlight">Come find me there anytime</span> - I roll past about every 15 minutes.</p>
-            <div class="map-wrap">
-                <iframe
-                    src="https://maps.google.com/maps?saddr=1136+Crescent+Dr,+San+Jose,+CA+95125&amp;daddr=1096+Carolyn+Ave,+San+Jose,+CA+95125+to:1061+Lincoln+Ave,+San+Jose,+CA+95125+to:1136+Crescent+Dr,+San+Jose,+CA+95125+to:1163+El+Abra+Way,+San+Jose,+CA+95125+to:1136+Crescent+Dr,+San+Jose,+CA+95125&amp;dirflg=w&amp;t=k&amp;output=embed"
-                    loading="lazy" allowfullscreen title="Ultramarathon route map"></iframe>
-            </div>
-            <p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=1136+Crescent+Dr,+San+Jose,+CA+95125&amp;destination=1136+Crescent+Dr,+San+Jose,+CA+95125&amp;travelmode=walking&amp;waypoints=1096+Carolyn+Ave,+San+Jose,+CA+95125%7CRotten+Robbie,+1061+Lincoln+Ave,+San+Jose,+CA+95125%7C1136+Crescent+Dr,+San+Jose,+CA+95125%7C1163+El+Abra+Way,+San+Jose,+CA+95125" target="_blank" rel="noopener">Open the full walking route in Google Maps &rarr;</a></p>
-        </section>
-
-        <section class="okt" id="oktoberfest">
-            <div class="okt-inner">
-                <span class="okt-eyebrow">🍺 The Afterparty 🍺</span>
-                <h2>Oktoberfest Celebration!</h2>
-                <p class="okt-when">5:00 PM - right here at <a class="maplink" href="https://www.google.com/maps/search/?api=1&amp;query=1136+Crescent+Dr%2C+San+Jose%2C+CA+95125" target="_blank" rel="noopener">1136 Crescent Dr</a></p>
-                <p class="okt-lead">Once the 50th mile is done, we're rolling straight into a full-blown <strong>Bavarian Oktoberfest</strong>. Lederhosen optional, appetite mandatory - come hungry and thirsty!</p>
-                <div class="food-grid">
-                    <div class="food">
-                        <div class="badge">🌭</div>
-                        <h3>Bratwurst</h3>
-                        <p>Sizzling off the grill, all evening long.</p>
-                    </div>
-                    <div class="food">
-                        <div class="badge">🥨</div>
-                        <h3>Pretzels</h3>
-                        <p>Warm, salted, and impossibly big.</p>
-                    </div>
-                    <div class="food">
-                        <div class="badge">🍺</div>
-                        <h3>Bier</h3>
-                        <p>Ice-cold steins to toast the finish.</p>
-                    </div>
-                    <div class="food">
-                        <div class="badge">🪗</div>
-                        <h3>Live Music</h3>
-                        <p>Real German Oktoberfest music, played live.</p>
-                    </div>
-                </div>
-                <p class="okt-band">🎶 With live music from
-                    <a href="https://alpinesound.net" target="_blank" rel="noopener"><strong>EJ &amp; AlpineSound</strong></a>
-                    &mdash; Silicon Valley&rsquo;s German music band. Oompah, polkas and singalongs,
-                    the real thing.</p>
-                <p class="okt-prost">Ein Prosit - come raise a glass! 🍻</p>
-            </div>
-        </section>
-
-        <section class="rsvp" id="rsvp">
-            <h2>RSVP</h2>
-            <p class="sub">Hope you can make it - let me know below! 🎈</p>
-            <form id="rsvpForm">
-                <div>
-                    <label for="name">Name <span class="req">*</span></label>
-                    <input type="text" id="name" name="name" placeholder="Your name" required>
-                </div>
-                <div>
-                    <label for="contact">Email or phone <span class="req">*</span></label>
-                    <input type="text" id="contact" name="contact" placeholder="So I can reach you" required>
-                </div>
-                <div>
-                    <label for="count"># Coming <span class="req">*</span></label>
-                    <input type="number" id="count" name="count" min="1" value="1" required>
-                </div>
-                <div>
-                    <label for="jointime">(Optional) What time do you want to walk/run with me? <span style="font-weight:400;color:var(--muted)">(I'm hoping to finish between 5 and 6&nbsp;PM)</span></label>
-                    <input type="text" id="jointime" name="jointime" placeholder="e.g. around 2 PM - or 'not sure yet'">
-                </div>
-                <div class="btn-row">
-                    <button type="button" id="rsvpYes">Yes, I'll be there! 🎉</button>
-                    <button type="button" id="rsvpNo" class="secondary">Can't make it</button>
-                </div>
-            </form>
-        </section>
-
-        <section class="story signup" id="signup">
-            <h2>Sign up to join a lap</h2>
-            <p class="su-intro">I pass my driveway about every 15&nbsp;minutes.
-               <b>Tap any times you can make</b> &mdash; tap again to remove.</p>
-
-            <div class="su-card">
-                <div class="su-namewrap">
-                    <span class="su-flab">Your name</span>
-                    <input type="text" id="suName" placeholder="Bob Smith" maxlength="30" autocomplete="name">
-                    <span class="su-as" id="suAs"></span>
-                </div>
-                <div class="su-methodwrap">
-                    <span class="su-flab">Method</span>
-                    <div class="picks" id="suPicks">
-                    <span class="pick sel" data-e="&#127939;" title="Run">&#127939;</span>
-                    <span class="pick" data-e="&#128694;" title="Walk">&#128694;</span>
-                    <span class="pick" data-e="&#128756;" title="Scooter">&#128756;</span>
-                    <span class="pick" data-e="&#128692;" title="Bike">&#128692;</span>
-                    </div>
-                </div>
-            </div>
-            <p class="su-hint" id="suMsg"></p>
-
-            <div class="who" id="who"></div>
-            <div class="sheet" id="sheet"></div>
-            <p class="su-status" id="suStatus"></p>
-        </section>
+  <div class="intro">
+    <!-- EDIT: swap for a portrait if you would rather not use the triathlon shot. -->
+    <img src="Triathalon.jpeg" alt="Peter Handel">
+    <div>
+      <h1>Peter Handel</h1>
+      <!-- EDIT: one line about yourself. -->
+      <p>Engineer. Runner, cyclist, swimmer &mdash; usually in that order by the end of a long day.</p>
     </div>
+  </div>
 
-    <div class="wrap">
-    <!-- WORKOUTS_WIDGET_START -->
-        <section class="workouts-widget" id="workouts">
-            <h2>Every workout so far</h2>
-            <p class="ww-sub">209 logged since April 1, straight from my watch. Showing 3&nbsp;mi+ efforts &mdash; tick to include the short ones. 💪</p>
-            <label class="ww-toggle"><input type="checkbox" onchange="document.getElementById('wwScroll').classList.toggle('show-short', this.checked)"> Show workouts under 3&nbsp;mi</label>
-            <div class="ww-scroll" id="wwScroll">
-                <table>
-                    <thead><tr><th>Date</th><th>Time</th><th>Miles</th><th>Type</th></tr></thead>
-                    <tbody>
-          <tr class="short"><td>Sep&nbsp;6</td><td>8:41&nbsp;am</td><td class="mi">0.81</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Sep&nbsp;5</td><td>2:33&nbsp;am</td><td class="mi">50.04</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Sep&nbsp;3</td><td>6:15&nbsp;pm</td><td class="mi">2.99</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Sep&nbsp;2</td><td>7:27&nbsp;pm</td><td class="mi">0.68</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Sep&nbsp;2</td><td>6:04&nbsp;pm</td><td class="mi">3.16</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Sep&nbsp;1</td><td>5:57&nbsp;pm</td><td class="mi">2.35</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Sep&nbsp;1</td><td>12:38&nbsp;pm</td><td class="mi">0.80</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Aug&nbsp;31</td><td>3:53&nbsp;pm</td><td class="mi">0.81</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Aug&nbsp;31</td><td>6:35&nbsp;am</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-          <tr><td>Aug&nbsp;29</td><td>7:20&nbsp;am</td><td class="mi">17.83</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Aug&nbsp;28</td><td>7:30&nbsp;am</td><td class="mi">5.09</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Aug&nbsp;26</td><td>6:23&nbsp;am</td><td class="mi">9.32</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;25</td><td>7:51&nbsp;pm</td><td class="mi">0.97</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Aug&nbsp;25</td><td>6:20&nbsp;am</td><td class="mi">8.96</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;23</td><td>5:30&nbsp;pm</td><td class="mi">0.80</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Aug&nbsp;23</td><td>7:32&nbsp;am</td><td class="mi">0.29</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Aug&nbsp;22</td><td>3:03&nbsp;pm</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr><td>Aug&nbsp;22</td><td>8:08&nbsp;am</td><td class="mi">22.00</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Aug&nbsp;21</td><td>6:11&nbsp;am</td><td class="mi">12.27</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Aug&nbsp;20</td><td>7:55&nbsp;am</td><td class="mi">4.75</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;19</td><td>10:03&nbsp;pm</td><td class="mi">0.22</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Aug&nbsp;19</td><td>7:34&nbsp;am</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-          <tr><td>Aug&nbsp;19</td><td>6:28&nbsp;am</td><td class="mi">5.01</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Aug&nbsp;18</td><td>6:44&nbsp;am</td><td class="mi">11.51</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Aug&nbsp;17</td><td>6:22&nbsp;am</td><td class="mi">8.48</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;16</td><td>9:02&nbsp;pm</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-          <tr class="short"><td>Aug&nbsp;16</td><td>8:19&nbsp;am</td><td class="mi">0.47</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Aug&nbsp;15</td><td>7:50&nbsp;am</td><td class="mi">11.43</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Aug&nbsp;14</td><td>5:57&nbsp;am</td><td class="mi">9.74</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;13</td><td>6:37&nbsp;pm</td><td class="mi">0.30</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Aug&nbsp;13</td><td>6:48&nbsp;am</td><td class="mi">11.18</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;10</td><td>8:41&nbsp;am</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr class="short"><td>Aug&nbsp;10</td><td>8:33&nbsp;am</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr><td>Aug&nbsp;10</td><td>7:27&nbsp;am</td><td class="mi">5.76</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;9</td><td>8:53&nbsp;am</td><td class="mi">0.80</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Aug&nbsp;8</td><td>7:45&nbsp;am</td><td class="mi">22.17</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;7</td><td>5:42&nbsp;pm</td><td class="mi">2.11</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Aug&nbsp;6</td><td>12:22&nbsp;pm</td><td class="mi">5.90</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;5</td><td>6:36&nbsp;pm</td><td class="mi">1.86</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Aug&nbsp;4</td><td>8:13&nbsp;am</td><td class="mi">5.93</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;3</td><td>6:46&nbsp;pm</td><td class="mi">1.15</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Aug&nbsp;2</td><td>7:03&nbsp;am</td><td class="mi">10.12</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Aug&nbsp;1</td><td>7:04&nbsp;pm</td><td class="mi">0.45</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Aug&nbsp;1</td><td>4:07&nbsp;pm</td><td class="mi">1.20</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Aug&nbsp;1</td><td>9:06&nbsp;am</td><td class="mi">1.33</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Aug&nbsp;1</td><td>8:58&nbsp;am</td><td class="mi">0.03</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;31</td><td>9:42&nbsp;am</td><td class="mi">2.43</td><td class="type">🥾&nbsp;Hiking</td></tr>
-          <tr><td>Jul&nbsp;31</td><td>7:04&nbsp;am</td><td class="mi">4.27</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;30</td><td>8:30&nbsp;am</td><td class="mi">1.66</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;26</td><td>8:26&nbsp;am</td><td class="mi">0.26</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jul&nbsp;25</td><td>5:31&nbsp;am</td><td class="mi">40.05</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;24</td><td>7:36&nbsp;pm</td><td class="mi">0.86</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jul&nbsp;24</td><td>6:01&nbsp;am</td><td class="mi">10.56</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;23</td><td>7:59&nbsp;am</td><td class="mi">0.98</td><td class="type">🏊&nbsp;Swimming</td></tr>
-          <tr class="short"><td>Jul&nbsp;22</td><td>7:19&nbsp;am</td><td class="mi">0.47</td><td class="type">🏊&nbsp;Swimming</td></tr>
-          <tr class="short"><td>Jul&nbsp;21</td><td>8:02&nbsp;am</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr class="short"><td>Jul&nbsp;21</td><td>6:55&nbsp;am</td><td class="mi">1.56</td><td class="type">🏊&nbsp;Swimming</td></tr>
-          <tr class="short"><td>Jul&nbsp;20</td><td>9:08&nbsp;pm</td><td class="mi">0.82</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;20</td><td>8:00&nbsp;am</td><td class="mi">0.91</td><td class="type">🏊&nbsp;Swimming</td></tr>
-          <tr><td>Jul&nbsp;18</td><td>7:12&nbsp;am</td><td class="mi">30.02</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;17</td><td>4:27&nbsp;pm</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr class="short"><td>Jul&nbsp;17</td><td>8:47&nbsp;am</td><td class="mi">0.98</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;17</td><td>7:42&nbsp;am</td><td class="mi">1.79</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;16</td><td>9:40&nbsp;am</td><td class="mi">0.99</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;15</td><td>4:12&nbsp;pm</td><td class="mi">0.66</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jul&nbsp;15</td><td>7:47&nbsp;am</td><td class="mi">3.45</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;13</td><td>7:22&nbsp;am</td><td class="mi">1.78</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;12</td><td>1:10&nbsp;pm</td><td class="mi">1.53</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;12</td><td>10:29&nbsp;am</td><td class="mi">1.37</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;10</td><td>9:30&nbsp;am</td><td class="mi">0.40</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jul&nbsp;10</td><td>7:59&nbsp;am</td><td class="mi">5.39</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;9</td><td>7:59&nbsp;pm</td><td class="mi">0.12</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;9</td><td>8:23&nbsp;am</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-          <tr class="short"><td>Jul&nbsp;8</td><td>8:43&nbsp;am</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr><td>Jul&nbsp;8</td><td>6:33&nbsp;am</td><td class="mi">10.25</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;7</td><td>7:14&nbsp;pm</td><td class="mi">0.83</td><td class="type">🚴&nbsp;Cycling</td></tr>
-          <tr><td>Jul&nbsp;7</td><td>7:37&nbsp;am</td><td class="mi">3.58</td><td class="type">🚴&nbsp;Cycling</td></tr>
-          <tr><td>Jul&nbsp;6</td><td>7:32&nbsp;am</td><td class="mi">8.31</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;5</td><td>8:14&nbsp;pm</td><td class="mi">0.20</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jul&nbsp;5</td><td>6:41&nbsp;am</td><td class="mi">5.73</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Jul&nbsp;4</td><td>10:11&nbsp;pm</td><td class="mi">3.53</td><td class="type">🚴&nbsp;Cycling</td></tr>
-          <tr><td>Jul&nbsp;4</td><td>8:13&nbsp;pm</td><td class="mi">3.38</td><td class="type">🚴&nbsp;Cycling</td></tr>
-          <tr class="short"><td>Jul&nbsp;4</td><td>12:43&nbsp;pm</td><td class="mi">2.46</td><td class="type">🚴&nbsp;Cycling</td></tr>
-          <tr class="short"><td>Jul&nbsp;4</td><td>9:03&nbsp;am</td><td class="mi">0.39</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;4</td><td>8:47&nbsp;am</td><td class="mi">0.35</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;3</td><td>2:41&nbsp;pm</td><td class="mi">1.78</td><td class="type">🚴&nbsp;Cycling</td></tr>
-          <tr class="short"><td>Jul&nbsp;3</td><td>10:49&nbsp;am</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr class="short"><td>Jul&nbsp;3</td><td>10:17&nbsp;am</td><td class="mi">1.34</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;3</td><td>8:25&nbsp;am</td><td class="mi">2.20</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jul&nbsp;2</td><td>8:08&nbsp;pm</td><td class="mi">0.19</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jul&nbsp;2</td><td>8:40&nbsp;am</td><td class="mi">0.68</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jul&nbsp;2</td><td>7:09&nbsp;am</td><td class="mi">4.98</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Jul&nbsp;1</td><td>7:02&nbsp;am</td><td class="mi">5.66</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;30</td><td>1:52&nbsp;pm</td><td class="mi">1.03</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jun&nbsp;30</td><td>6:26&nbsp;am</td><td class="mi">5.94</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;29</td><td>7:37&nbsp;am</td><td class="mi">2.66</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;29</td><td>6:22&nbsp;am</td><td class="mi">1.06</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;29</td><td>5:59&nbsp;am</td><td class="mi">0.82</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;27</td><td>6:31&nbsp;am</td><td class="mi">0.83</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;26</td><td>4:45&nbsp;pm</td><td class="mi">0.60</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;26</td><td>6:25&nbsp;am</td><td class="mi">1.20</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jun&nbsp;26</td><td>5:03&nbsp;am</td><td class="mi">4.13</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;25</td><td>3:31&nbsp;pm</td><td class="mi">0.93</td><td class="type">🏊&nbsp;Swimming</td></tr>
-          <tr class="short"><td>Jun&nbsp;25</td><td>5:59&nbsp;am</td><td class="mi">2.45</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jun&nbsp;25</td><td>4:53&nbsp;am</td><td class="mi">5.23</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;24</td><td>4:03&nbsp;pm</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr class="short"><td>Jun&nbsp;24</td><td>5:52&nbsp;am</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr><td>Jun&nbsp;24</td><td>4:23&nbsp;am</td><td class="mi">5.40</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;23</td><td>2:43&nbsp;pm</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr class="short"><td>Jun&nbsp;23</td><td>9:59&nbsp;am</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr class="short"><td>Jun&nbsp;23</td><td>9:50&nbsp;am</td><td class="mi">0.40</td><td class="type">🏊&nbsp;Swimming</td></tr>
-          <tr class="short"><td>Jun&nbsp;23</td><td>6:57&nbsp;am</td><td class="mi">1.71</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;22</td><td>5:34&nbsp;am</td><td class="mi">1.73</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jun&nbsp;22</td><td>4:36&nbsp;am</td><td class="mi">4.18</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;21</td><td>1:46&nbsp;pm</td><td class="mi">2.05</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Jun&nbsp;21</td><td>4:18&nbsp;am</td><td class="mi">4.03</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Jun&nbsp;20</td><td>4:22&nbsp;am</td><td class="mi">4.20</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;19</td><td>9:56&nbsp;am</td><td class="mi">0.16</td><td class="type">🏊&nbsp;Swimming</td></tr>
-          <tr class="short"><td>Jun&nbsp;19</td><td>5:44&nbsp;am</td><td class="mi">2.07</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;18</td><td>6:19&nbsp;am</td><td class="mi">1.82</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Jun&nbsp;18</td><td>4:27&nbsp;am</td><td class="mi">5.88</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;17</td><td>8:57&nbsp;am</td><td class="mi">0.76</td><td class="type">🏊&nbsp;Swimming</td></tr>
-          <tr class="short"><td>Jun&nbsp;17</td><td>6:41&nbsp;am</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-          <tr class="short"><td>Jun&nbsp;17</td><td>6:10&nbsp;am</td><td class="mi">1.58</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Jun&nbsp;17</td><td>4:13&nbsp;am</td><td class="mi">4.20</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;16</td><td>9:08&nbsp;am</td><td class="mi">0.86</td><td class="type">🏊&nbsp;Swimming</td></tr>
-          <tr class="short"><td>Jun&nbsp;16</td><td>6:44&nbsp;am</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-          <tr class="short"><td>Jun&nbsp;16</td><td>6:12&nbsp;am</td><td class="mi">1.78</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Jun&nbsp;16</td><td>4:42&nbsp;am</td><td class="mi">4.29</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;15</td><td>8:35&nbsp;am</td><td class="mi">0.56</td><td class="type">🏊&nbsp;Swimming</td></tr>
-          <tr class="short"><td>Jun&nbsp;15</td><td>6:26&nbsp;am</td><td class="mi">0.94</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;15</td><td>6:01&nbsp;am</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>Jun&nbsp;15</td><td>5:31&nbsp;am</td><td class="mi">1.43</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;14</td><td>7:49&nbsp;am</td><td class="mi">—</td><td class="type">🤿&nbsp;Diving</td></tr>
-          <tr class="short"><td>Jun&nbsp;14</td><td>6:47&nbsp;am</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>Jun&nbsp;14</td><td>6:30&nbsp;am</td><td class="mi">1.12</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Jun&nbsp;14</td><td>6:07&nbsp;am</td><td class="mi">0.79</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;13</td><td>9:11&nbsp;am</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>Jun&nbsp;13</td><td>6:04&nbsp;am</td><td class="mi">1.97</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;12</td><td>4:14&nbsp;pm</td><td class="mi">0.78</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;11</td><td>2:57&nbsp;pm</td><td class="mi">0.09</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Jun&nbsp;5</td><td>11:31&nbsp;am</td><td class="mi">1.18</td><td class="type">🥾&nbsp;Hiking</td></tr>
-          <tr class="short"><td>Jun&nbsp;2</td><td>9:22&nbsp;am</td><td class="mi">2.05</td><td class="type">🚴&nbsp;Cycling</td></tr>
-          <tr><td>Jun&nbsp;2</td><td>7:54&nbsp;am</td><td class="mi">5.26</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;31</td><td>7:08&nbsp;am</td><td class="mi">6.40</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;29</td><td>6:56&nbsp;am</td><td class="mi">7.30</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;28</td><td>6:55&nbsp;am</td><td class="mi">5.75</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>May&nbsp;26</td><td>6:52&nbsp;pm</td><td class="mi">0.57</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>May&nbsp;26</td><td>7:53&nbsp;am</td><td class="mi">2.23</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;23</td><td>7:01&nbsp;am</td><td class="mi">21.76</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;22</td><td>7:16&nbsp;am</td><td class="mi">10.71</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;21</td><td>6:59&nbsp;am</td><td class="mi">9.16</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;20</td><td>5:42&nbsp;am</td><td class="mi">8.36</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;19</td><td>5:22&nbsp;am</td><td class="mi">9.62</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;17</td><td>6:22&nbsp;am</td><td class="mi">11.04</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;16</td><td>8:11&nbsp;am</td><td class="mi">10.53</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;15</td><td>9:38&nbsp;pm</td><td class="mi">8.00</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;13</td><td>5:20&nbsp;am</td><td class="mi">5.06</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;11</td><td>11:18&nbsp;am</td><td class="mi">5.76</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>May&nbsp;10</td><td>9:23&nbsp;pm</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>May&nbsp;10</td><td>5:15&nbsp;pm</td><td class="mi">0.43</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>May&nbsp;10</td><td>2:06&nbsp;pm</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr><td>May&nbsp;9</td><td>7:21&nbsp;am</td><td class="mi">9.93</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>May&nbsp;7</td><td>6:48&nbsp;am</td><td class="mi">2.35</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>May&nbsp;6</td><td>1:53&nbsp;pm</td><td class="mi">0.27</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>May&nbsp;6</td><td>7:16&nbsp;am</td><td class="mi">5.01</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>May&nbsp;4</td><td>6:23&nbsp;am</td><td class="mi">4.11</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>May&nbsp;3</td><td>12:11&nbsp;pm</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr><td>May&nbsp;3</td><td>6:03&nbsp;am</td><td class="mi">5.73</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>May&nbsp;2</td><td>9:04&nbsp;pm</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>May&nbsp;2</td><td>7:45&nbsp;pm</td><td class="mi">0.40</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>May&nbsp;2</td><td>1:27&nbsp;pm</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>May&nbsp;1</td><td>10:03&nbsp;pm</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr><td>May&nbsp;1</td><td>6:14&nbsp;am</td><td class="mi">5.93</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Apr&nbsp;30</td><td>6:36&nbsp;am</td><td class="mi">4.68</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Apr&nbsp;29</td><td>6:37&nbsp;am</td><td class="mi">3.91</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;26</td><td>5:39&nbsp;pm</td><td class="mi">0.84</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Apr&nbsp;26</td><td>6:59&nbsp;am</td><td class="mi">7.68</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Apr&nbsp;25</td><td>8:24&nbsp;am</td><td class="mi">11.14</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;24</td><td>7:40&nbsp;pm</td><td class="mi">2.18</td><td class="type">🚴&nbsp;Cycling</td></tr>
-          <tr class="short"><td>Apr&nbsp;24</td><td>6:49&nbsp;pm</td><td class="mi">1.61</td><td class="type">🚴&nbsp;Cycling</td></tr>
-          <tr><td>Apr&nbsp;23</td><td>7:10&nbsp;am</td><td class="mi">6.69</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Apr&nbsp;21</td><td>6:23&nbsp;am</td><td class="mi">5.28</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;19</td><td>8:17&nbsp;am</td><td class="mi">0.67</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Apr&nbsp;19</td><td>7:54&nbsp;am</td><td class="mi">0.80</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr class="short"><td>Apr&nbsp;19</td><td>7:25&nbsp;am</td><td class="mi">2.17</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;18</td><td>8:23&nbsp;am</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-          <tr><td>Apr&nbsp;18</td><td>6:26&nbsp;am</td><td class="mi">5.34</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;17</td><td>7:03&nbsp;pm</td><td class="mi">0.80</td><td class="type">🚶&nbsp;Walking</td></tr>
-          <tr><td>Apr&nbsp;14</td><td>6:35&nbsp;am</td><td class="mi">4.81</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;13</td><td>2:23&nbsp;pm</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-          <tr class="short"><td>Apr&nbsp;11</td><td>8:03&nbsp;am</td><td class="mi">0.89</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Apr&nbsp;11</td><td>6:35&nbsp;am</td><td class="mi">7.00</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;9</td><td>8:52&nbsp;am</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-          <tr class="short"><td>Apr&nbsp;9</td><td>8:19&nbsp;am</td><td class="mi">1.00</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Apr&nbsp;9</td><td>7:22&nbsp;am</td><td class="mi">5.05</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;8</td><td>3:43&nbsp;pm</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>Apr&nbsp;8</td><td>3:15&nbsp;pm</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>Apr&nbsp;8</td><td>9:42&nbsp;am</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>Apr&nbsp;8</td><td>9:11&nbsp;am</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>Apr&nbsp;7</td><td>9:42&nbsp;am</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr class="short"><td>Apr&nbsp;7</td><td>9:14&nbsp;am</td><td class="mi">—</td><td class="type">⭐&nbsp;Other</td></tr>
-          <tr><td>Apr&nbsp;6</td><td>6:42&nbsp;am</td><td class="mi">5.64</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;5</td><td>6:07&nbsp;am</td><td class="mi">2.41</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;4</td><td>4:14&nbsp;pm</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-          <tr><td>Apr&nbsp;4</td><td>7:35&nbsp;am</td><td class="mi">5.77</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr><td>Apr&nbsp;3</td><td>10:25&nbsp;am</td><td class="mi">85.30</td><td class="type">⛷️&nbsp;Skiing</td></tr>
-          <tr><td>Apr&nbsp;2</td><td>8:58&nbsp;am</td><td class="mi">5.89</td><td class="type">🏃&nbsp;Running</td></tr>
-          <tr class="short"><td>Apr&nbsp;2</td><td>6:56&nbsp;am</td><td class="mi">—</td><td class="type">🏋️&nbsp;Strength</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <p class="ww-more"><a href="training.html">Open the full training log &rarr;</a></p>
-        </section>
-    <!-- WORKOUTS_WIDGET_END -->
-    </div>
+  <h2>Hello</h2>
+  <!-- EDIT: a short paragraph or two. I have kept this vague on purpose rather than
+       publishing details about your work or family that you had not put here yourself. -->
+  <p class="body">
+    This is my corner of the internet &mdash; mostly a place to park things worth keeping.
+    In September 2026 I turned fifty and ran fifty miles around the neighborhood to mark it,
+    which is the one page here I would actually point anybody at.
+  </p>
 
-    <footer>
-        <p>See you on September 5th! 🏅</p>
-    </footer>
+  <a class="feature" href="50.html">
+    <span class="tag">September 5, 2026</span>
+    <b>Fifty miles for fifty years</b>
+    <span>One mile for every year, looping the neighborhood from 2:34 in the morning so
+      friends and family could join a lap whenever they liked. Photos, numbers and
+      thank-yous.</span>
+    <span class="go">Read the recap &rarr;</span>
+  </a>
 
-    <div id="rsvpModal" class="modal-overlay" role="dialog" aria-modal="true">
-        <div class="modal-box">
-            <div class="modal-emoji" id="rsvpModalEmoji">🎉</div>
-            <h3 id="rsvpModalTitle">Thanks for your RSVP!</h3>
-            <p id="rsvpModalMsg">See you on September 5th.</p>
-            <button type="button" class="modal-close" id="rsvpModalClose">Close</button>
-        </div>
-    </div>
+  <h2>Also here</h2>
+  <ul class="links">
+    <li><a href="plan.html"><b>The training plan</b><em>How I got ready for it</em></a></li>
+    <li><a href="live.html"><b>The live dashboard</b><em>What friends watched on the day</em></a></li>
+    <!-- EDIT: add or remove. Delete any line you do not want public. -->
+  </ul>
 
-    <script>
-    (function () {
-        var form = document.getElementById('rsvpForm');
-        var yesBtn = document.getElementById('rsvpYes');
-        var noBtn = document.getElementById('rsvpNo');
-        var modal = document.getElementById('rsvpModal');
-        var mEmoji = document.getElementById('rsvpModalEmoji');
-        var mTitle = document.getElementById('rsvpModalTitle');
-        var mMsg = document.getElementById('rsvpModalMsg');
-        var nameEl = document.getElementById('name');
-        var contactEl = document.getElementById('contact');
-        var countEl = document.getElementById('count');
-        var jointimeEl = document.getElementById('jointime');
-        var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwOIEtk4k425xgA2NRXw8hGHeqlTVFjGCyrC-XfiqbGy1ZeCO7gfEqb5lBgYdIf8Er2/exec';
+  <h2>Elsewhere</h2>
+  <ul class="links">
+    <!-- EDIT: fill these in, or delete the whole section. Left blank rather than guessed. -->
+    <li><a href="#"><b>Strava</b><em>add link</em></a></li>
+    <li><a href="#"><b>Email</b><em>add address</em></a></li>
+  </ul>
 
-        function send(isYes, btn) {
-            if (!nameEl.reportValidity() || !contactEl.reportValidity()) return;
-            if (isYes && !countEl.reportValidity()) return;
-            var params = new URLSearchParams();
-            params.set('name', nameEl.value);
-            params.set('contact', contactEl.value);
-            params.set('count', isYes ? countEl.value : '0');   // "Can't make it" -> count 0
-            params.set('jointime', jointimeEl.value);
-            var original = btn.textContent;
-            yesBtn.disabled = noBtn.disabled = true; btn.textContent = 'Sending…';
-            fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', body: params })
-                .then(function () {
-                    form.reset();
-                    if (isYes) {
-                        mEmoji.textContent = '🎉';
-                        mTitle.textContent = 'Thanks for your RSVP!';
-                        mMsg.textContent = 'See you on September 5th.';
-                    } else {
-                        mEmoji.textContent = '💛';
-                        mTitle.textContent = 'Thanks for letting me know';
-                        mMsg.textContent = "Sorry you can't make it — you'll be missed!";
-                    }
-                    modal.classList.add('show');
-                })
-                .catch(function () { alert('Sorry, something went wrong sending your RSVP — please try again.'); })
-                .finally(function () { yesBtn.disabled = noBtn.disabled = false; btn.textContent = original; });
-        }
-        yesBtn.addEventListener('click', function () { send(true, yesBtn); });
-        noBtn.addEventListener('click', function () { send(false, noBtn); });
-        function closeModal() { modal.classList.remove('show'); }
-        document.getElementById('rsvpModalClose').addEventListener('click', closeModal);
-        modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
-    })();
-    </script>
-
-    <script>
-    /* ===== countdown + 15-minute lap sign-up =================================
-       Storage: one telemetry key per person on a shared ThingsBoard device
-       (keys 's_<id>'). One key per person avoids the read-modify-write race a
-       shared per-slot key would have -- two people signing up at once cannot
-       clobber each other.
-
-       Page speed: nothing here blocks first paint. The sheet renders IMMEDIATELY
-       from a localStorage cache of the last known sign-ups, then refreshes in the
-       background (stale-while-revalidate). A slow or failed network shows the
-       cached sheet, never a spinner or an empty page.
-       ====================================================================== */
-    (function () {
-      // ===== RACE-MORNING SWITCH =====
-      // Flip to true when the run actually starts. The whole orange box is one <a>, so
-      // revealing it gives you a full-width clickable link to the live dashboard.
-      var LIVE_BANNER = true;
-      // =================================
-      if (LIVE_BANNER) {
-        var _lb = document.getElementById('livebanner');
-        if (_lb) _lb.classList.remove('hidden');
-      }
-
-      /* Two different "start hours", deliberately separate:
-           RACE_START_HOUR  when Peter actually sets off -- drives the countdown only.
-           SLOT_START_HOUR  when the lap sign-up slots begin. Left at 6 AM on purpose:
-                            nobody is biking a lap at 2 AM, and lowering it would have
-                            added ~15 dead 2-6 AM slots to a sheet people already signed. */
-      var RACE_DAY = '2026-09-05', RACE_START_HOUR = 2;
-      var SLOT_START_HOUR = 6, END_HOUR = 17;
-      var raceStart = new Date(RACE_DAY + 'T' + String(RACE_START_HOUR).padStart(2, '0') + ':00:00-07:00');
-      /* Derived, so the prose under the countdown can never drift from the constant. */
-      var raceStartLabel = (RACE_START_HOUR % 12 === 0 ? 12 : RACE_START_HOUR % 12) +
-                           ':00 ' + (RACE_START_HOUR >= 12 ? 'PM' : 'AM');
-
-      /* ---------- countdown ---------- */
-      var cd = document.getElementById('countdown'), cdMin = document.getElementById('cdMin');
-      function tickCd() {
-        if (!cd) return;
-        var ms = raceStart - new Date();
-        if (ms <= 0) {
-          cd.innerHTML = ''; cdMin.className = 'cd-done';
-          cdMin.textContent = 'It\u2019s race day \u2014 come find me on Crescent Dr! \uD83C\uDFC3';
-          return;
-        }
-        var t = Math.floor(ms / 1000);
-        var d = Math.floor(t / 86400), hh = Math.floor((t % 86400) / 3600),
-            mm = Math.floor((t % 3600) / 60), ss = t % 60;
-        var p = function (n) { return String(n).padStart(2, '0'); };
-        cd.innerHTML =
-          '<div class="cd-item"><span class="cd-num">' + d + '</span><span class="cd-lab">' + (d === 1 ? 'day' : 'days') + '</span></div>' +
-          '<div class="cd-item"><span class="cd-num">' + hh + '</span><span class="cd-lab">' + (hh === 1 ? 'hour' : 'hours') + '</span></div>' +
-          '<div class="cd-item small"><span class="cd-num">' + p(mm) + '</span><span class="cd-lab">min</span></div>' +
-          '<div class="cd-item small"><span class="cd-num">' + p(ss) + '</span><span class="cd-lab">sec</span></div>';
-        cdMin.textContent = 'until the first lap \u00b7 Saturday, September 5 at ' + raceStartLabel;
-      }
-      tickCd(); setInterval(tickCd, 1000);
-
-      /* ---------- sign-up sheet ---------- */
-      var TB = 'https://thingsboard.cloud';
-      // Shared device, public by design. It carries only friend/sign-up data -- never the
-      // race telemetry -- so a leaked token cannot corrupt anything that matters.
-      var TB_TOKEN  = 'fSmStSbu2QzkrenAqZgR';
-      var TB_DEVICE = '424d8160-99fc-11f1-b480-1301d0f2616d';
-      var TB_PUBLIC = '49f60990-993a-11f1-bb5b-f59caa77e86d';
-      // Optional: mirror sign-ups into the RSVP spreadsheet. Left empty on purpose -- the
-      // Apps Script must learn a 'signup' action first, or posts would land as junk RSVP rows.
-      var SHEET_ENDPOINT = '';
-
-      var K_ME = 'phandel.signup.me.v2', K_CACHE = 'phandel.signup.cache.v2';
-      var EMOJI = ['\uD83C\uDFC3', '\uD83D\uDEB6', '\uD83D\uDEF4', '\uD83D\uDEB4'];
-
-      var me = { id: null, n: '', e: EMOJI[0], s: [] };
-      var others = {};      // id -> {n,e,s}
-      var pubTimer = null, tok = null;
-
-      try { var sv = JSON.parse(localStorage.getItem(K_ME) || 'null'); if (sv && sv.id) me = sv; } catch (e) {}
-      if (!me.id) me.id = Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-2);
-      if (!me.s) me.s = [];
-      try { var c = JSON.parse(localStorage.getItem(K_CACHE) || 'null'); if (c) others = c; } catch (e) {}
-
-      var $ = function (id) { return document.getElementById(id); };
-      function saveMe() { try { localStorage.setItem(K_ME, JSON.stringify(me)); } catch (e) {} }
-      function esc(t) { return String(t == null ? '' : t).replace(/[<>&"]/g,
-        function (ch) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[ch]; }); }
-
-      function slotList() {
-        var out = [];
-        for (var hr = SLOT_START_HOUR; hr < END_HOUR; hr++) for (var q = 0; q < 4; q++) out.push(hr * 60 + q * 15);
-        return out;
-      }
-      function label(m) {
-        var hr = Math.floor(m / 60), mn = m % 60;
-        return (hr % 12 === 0 ? 12 : hr % 12) + ':' + String(mn).padStart(2, '0') + (hr >= 12 ? ' PM' : ' AM');
-      }
-      function ranges(sl) {
-        var s = sl.slice().sort(function (a, b) { return a - b; }), out = [], i = 0;
-        while (i < s.length) { var a = s[i], b = s[i];
-          while (i + 1 < s.length && s[i + 1] === b + 15) { b = s[++i]; }
-          out.push([a, b + 15]); i++; }
-        return out;
-      }
-      function rangeLabel(a, b) {
-        var A = label(a), B = label(b);
-        return (A.slice(-2) === B.slice(-2) ? A.slice(0, -3) : A) + '\u2013' + B;
-      }
-      // "Bob Smith" -> "Bob S."
-      function shortName(raw) {
-        var t = String(raw || '').trim().replace(/\s+/g, ' ');
-        if (!t) return '';
-        var parts = t.split(' ');
-        if (parts.length === 1) return parts[0];
-        var last = parts[parts.length - 1].replace(/[^A-Za-z]/g, '');
-        return parts[0] + (last ? ' ' + last.charAt(0).toUpperCase() + '.' : '');
-      }
-      function everyone() {
-        var all = {};
-        for (var id in others) all[id] = others[id];
-        if (me.n && me.s.length) all[me.id] = { n: me.n, e: me.e, s: me.s };
-        else delete all[me.id];
-        return all;
-      }
-      function peopleIn(m) {
-        var all = everyone(), out = [];
-        for (var id in all) if (all[id].s && all[id].s.indexOf(m) !== -1) out.push({ id: id, p: all[id] });
-        out.sort(function (a, b) { return a.id === me.id ? -1 : b.id === me.id ? 1 : 0; });
-        return out;
-      }
-
-      function renderWho() {
-        var all = everyone();
-        var ids = Object.keys(all).filter(function (id) { return all[id].n && all[id].s.length; })
-          .sort(function (a, b) { return Math.min.apply(null, all[a].s) - Math.min.apply(null, all[b].s); });
-        var host = $('who');
-        if (!ids.length) { host.innerHTML = ''; return; }
-        host.innerHTML = ids.map(function (id) {
-          var p = all[id];
-          var rs = ranges(p.s).map(function (r) { return rangeLabel(r[0], r[1]); }).join(', ');
-          return '<div class="wrow"><span class="we">' + esc(p.e) + '</span>' +
-                 '<span class="wn">' + esc(shortName(p.n)) + (id === me.id ? ' (you)' : '') + '</span>' +
-                 '<span class="wt">' + esc(rs) + '</span>' +
-                 '<span class="wm">' + (p.s.length * 15) + ' min</span></div>';
-        }).join('');
-      }
-      function renderSheet() {
-        var host = $('sheet'), html = '';
-        slotList().forEach(function (m) {
-          var who = peopleIn(m), mine = me.s.indexOf(m) !== -1;
-          var chips = who.length
-            ? who.map(function (w) { return '<span class="nchip' + (w.id === me.id ? ' self' : '') + '">' +
-                esc(w.p.e) + esc(shortName(w.p.n) || 'you') + '</span>'; }).join('')
-            : '<span class="open">open</span>';
-          html += '<div class="scell' + (mine ? ' mine' : '') +
-                  '" data-m="' + m + '"><div class="ct">' + label(m) + '</div>' +
-                  '<div class="cn">' + chips + '</div></div>';
-        });
-        host.innerHTML = html;
-        Array.prototype.forEach.call(host.querySelectorAll('.scell'), function (c) {
-          c.addEventListener('click', function () { toggle(parseInt(c.dataset.m, 10)); });
-        });
-      }
-      function renderAll() { renderWho(); renderSheet(); }
-
-      function setMsg(t) { $('suMsg').innerHTML = t; }
-      function showAs() {
-        var s = shortName($('suName').value);
-        $('suAs').textContent = s ? 'shows as \u201c' + s + '\u201d' : '';
-      }
-      function requireName() {
-        var nm = $('suName');
-        if (!nm.value.trim()) { nm.focus(); nm.style.borderColor = '#e8590c';
-          setMsg('Pop your name in first, then tap a time.'); return false; }
-        me.n = nm.value.trim().slice(0, 30); nm.style.borderColor = ''; return true;
-      }
-      // Plain toggle: on, off. No anchors, no ranges, no modes -- tapping a cell only ever
-      // affects that cell, so there is nothing to learn and nothing to undo by mistake.
-      function toggle(m) {
-        if (!requireName()) return;
-        var have = me.s.indexOf(m);
-        if (have !== -1) me.s.splice(have, 1);
-        else { me.s.push(m); me.s.sort(function (p, q) { return p - q; }); }
-        setMsg('');
-        commit();
-      }
-
-      function commit() { saveMe(); renderAll(); schedulePublish(); }
-      // Debounced: filling a block changes state several times, and that should be one POST.
-      function schedulePublish() {
-        $('suStatus').textContent = 'saving\u2026';
-        if (pubTimer) clearTimeout(pubTimer);
-        pubTimer = setTimeout(publish, 900);
-      }
-      function publish() {
-        var body = {}; body['s_' + me.id] = JSON.stringify({ n: me.n, e: me.e, s: me.s, t: Math.round(Date.now() / 1000) });
-        // text/plain keeps this a CORS "simple request" -- no preflight. ThingsBoard rejects
-        // the preflight for this endpoint (403), so a JSON content-type would be blocked.
-        fetch(TB + '/api/v1/' + TB_TOKEN + '/telemetry',
-              { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body) })
-          .then(function () { $('suStatus').textContent = 'saved \u2713'; setTimeout(refresh, 1200); })
-          .catch(function () { $('suStatus').textContent = 'could not save \u2014 check your connection'; });
-        if (SHEET_ENDPOINT) {
-          var p = new URLSearchParams({ action: 'signup', id: me.id, name: me.n,
-            emoji: me.e, slots: me.s.map(label).join(', '), minutes: String(me.s.length * 15) });
-          fetch(SHEET_ENDPOINT, { method: 'POST', mode: 'no-cors', body: p }).catch(function () {});
-        }
-      }
-
-      async function tbAuth() {
-        var r = await fetch(TB + '/api/auth/login/public', { method: 'POST',
-          headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ publicId: TB_PUBLIC }) });
-        if (!r.ok) throw new Error('auth ' + r.status);
-        tok = (await r.json()).token;
-      }
-      async function tbGet(path) {
-        if (!tok) await tbAuth();
-        var hd = function () { return { 'X-Authorization': 'Bearer ' + tok }; };
-        var r = await fetch(TB + path, { headers: hd() });
-        if (r.status === 401) { await tbAuth(); r = await fetch(TB + path, { headers: hd() }); }
-        if (!r.ok) throw new Error('http ' + r.status);
-        return r.json();
-      }
-      async function refresh() {
-        try {
-          var base = '/api/plugins/telemetry/DEVICE/' + TB_DEVICE;
-          var keys = (await tbGet(base + '/keys/timeseries')).filter(function (k) { return k.indexOf('s_') === 0; });
-          var fresh = {};
-          if (keys.length) {
-            var raw = await tbGet(base + '/values/timeseries?keys=' + keys.join(','));
-            for (var i = 0; i < keys.length; i++) {
-              var k = keys[i]; if (!raw[k] || !raw[k][0]) continue;
-              try { var o = JSON.parse(raw[k][0].value);
-                if (o && o.n && o.s && o.s.length) fresh[k.slice(2)] = { n: o.n, e: o.e || EMOJI[0], s: o.s };
-              } catch (e) { /* one bad entry must not sink the sheet */ }
-            }
-          }
-          delete fresh[me.id];        // our own copy is authoritative locally
-          others = fresh;
-          try { localStorage.setItem(K_CACHE, JSON.stringify(others)); } catch (e) {}
-          renderAll();
-          $('suStatus').textContent = '';
-        } catch (e) {
-          // Cached sheet stays on screen; say so rather than blanking it.
-          $('suStatus').textContent = 'showing last known sign-ups (offline?)';
-        }
-      }
-
-      /* ---------- wiring ---------- */
-      var nameEl = $('suName');
-      nameEl.value = me.n || '';
-      showAs();
-      nameEl.addEventListener('input', function () { me.n = nameEl.value.trim().slice(0, 30);
-        saveMe(); showAs(); renderWho(); if (me.s.length) schedulePublish(); });
-      Array.prototype.forEach.call(document.querySelectorAll('#suPicks .pick'), function (el) {
-        if (el.dataset.e === me.e) {
-          Array.prototype.forEach.call(document.querySelectorAll('#suPicks .pick'), function (x) { x.classList.remove('sel'); });
-          el.classList.add('sel');
-        }
-        el.addEventListener('click', function () {
-          Array.prototype.forEach.call(document.querySelectorAll('#suPicks .pick'), function (x) { x.classList.remove('sel'); });
-          el.classList.add('sel'); me.e = el.dataset.e; saveMe(); renderAll();
-          if (me.s.length) schedulePublish();
-        });
-      });
-
-      renderAll();                      // instant, from cache
-      setTimeout(refresh, 60);          // network after first paint
-      setInterval(refresh, 60000);
-    })();
-    </script>
+  <footer>
+    &copy; <span id="yr">2026</span> Peter Handel
+  </footer>
+</div>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
 </body>
 </html>

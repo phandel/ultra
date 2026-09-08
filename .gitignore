@@ -9,3 +9,6 @@ photos/*.log
 # read 15 friends' messages verbatim. Only wishes/published.json (approved, initials only)
 # may ever ship. Keep this ignored.
 wishes/candidates.json
+
+# Stale Aug-21 draft of the invite page. Not for publication.
+index-mockup.html
