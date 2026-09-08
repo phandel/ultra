@@ -63,7 +63,7 @@
   .hero {
     text-align: center; overflow: hidden;
     background: radial-gradient(120% 90% at 50% 0%, #ffe9db 0%, #fff8f3 45%, #fff 100%);
-    padding: 3.2rem 1.25rem 3.6rem;
+    padding: 3.2rem 1.25rem 4.4rem;
   }
   .kicker {
     display: inline-block; font-size: .74rem; font-weight: 700; text-transform: uppercase;
@@ -244,10 +244,9 @@
   .thanks ul { margin: .7rem 0 0; padding-left: 1.15rem; color: #333; }
   .thanks li { margin: .45em 0; }
 
-  /* ---------- closing verse ---------- */
+  /* ---------- verse, as the hero epigraph ---------- */
   .verse {
-    margin: 1.6rem 0 0; padding: 1.1rem 0 0; border-top: 1px solid #f3d9c8;
-    text-align: center;
+    margin: 1.6rem auto 0; padding: 0; max-width: 34ch; text-align: center;
   }
   .verse p {
     margin: 0; font-size: clamp(1.02rem, 2.6vw, 1.2rem); line-height: 1.5;
@@ -283,6 +282,10 @@
   <h1>Fifty miles for fifty years</h1>
   <p class="when" id="when">Saturday, September 5, 2026</p>
   <p class="oneline">One mile for every year, starting at 2:34 in the morning.</p>
+  <blockquote class="verse">
+    <p>&hellip; And let us run with endurance the race God has set before us.</p>
+    <cite>Hebrews 12:1 <span>(NLT)</span></cite>
+  </blockquote>
 </header>
 
 <div class="wrap">
@@ -384,10 +387,6 @@
       <li>Everyone who stood out in the driveway and cheered, handed over a cold drink, or
         simply turned up.</li>
     </ul>
-    <blockquote class="verse">
-      <p>&hellip; And let us run with endurance the race God has set before us.</p>
-      <cite>Hebrews 12:1 <span>(NLT)</span></cite>
-    </blockquote>
   </div>
 
   <div id="todo"></div>
